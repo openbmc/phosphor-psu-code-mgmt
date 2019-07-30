@@ -1,0 +1,15 @@
+# phosphor-psu-code-mgmt
+
+phosphor-psu-code-mgmt is a service to provide management for PSU code,
+including:
+
+* PSU code version
+* PSU code update
+
+
+## Building
+
+```
+meson build/ && ninja -C build
+```
+
