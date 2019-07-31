@@ -7,7 +7,9 @@ bin_PROGRAMS = phosphor-psu-code-manager
 noinst_LTLIBRARIES = libpsu-code-manager.la
 
 libpsu_code_manager_la_SOURCES = \
-	activation.cpp
+	activation.cpp \
+	item_updater.cpp \
+	version.cpp
 
 phosphor_psu_code_manager_SOURCES = main.cpp
 
@@ -27,7 +29,8 @@ generic_cxx_flags = \
 generic_ld_flags = \
 	$(PHOSPHOR_DBUS_INTERFACES_LIBS) \
 	$(SDBUSPLUS_LIBS) \
-	$(PHOSPHOR_LOGGING_LIBS)
+	$(PHOSPHOR_LOGGING_LIBS) \
+	-lstdc++fs
 
 libpsu_code_manager_la_CXXFLAGS = $(generic_cxx_flags)
 libpsu_code_manager_la_LIBADD = $(generic_ld_flags)

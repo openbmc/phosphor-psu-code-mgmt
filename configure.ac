@@ -82,5 +82,9 @@ AC_DEFINE(FILEPATH_IFACE, "xyz.openbmc_project.Common.FilePath",
 AC_DEFINE(BUSNAME_UPDATER, "xyz.openbmc_project.Software.Psu.Updater",
     [The item updater DBus busname to own.])
 
+AC_ARG_VAR(MANIFEST_FILE, [The path to the MANIFEST file])
+AS_IF([test "x$MANIFEST_FILE" == "x"], [MANIFEST_FILE="MANIFEST"])
+AC_DEFINE_UNQUOTED([MANIFEST_FILE], ["$MANIFEST_FILE"], [The path to the MANIFEST file])
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
