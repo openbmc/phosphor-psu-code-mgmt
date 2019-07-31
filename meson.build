@@ -3,7 +3,8 @@ project('phosphor-psu-code-mgmt', 'cpp',
         default_options: [
           'warning_level=3',
           'werror=true',
-          'cpp_std=c++17'
+          'cpp_std=c++17',
+          'b_lto=true',
         ])
 
 systemd = dependency('systemd')
