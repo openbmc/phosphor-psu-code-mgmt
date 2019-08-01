@@ -90,8 +90,13 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
     if (activations.find(versionId) == activations.end())
     {
         // Determine the Activation state by processing the given image dir.
+        AssociationList associations = {};
         auto activationState = server::Activation::Activations::Invalid;
         activationState = server::Activation::Activations::Ready;
+
+        associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
+                                                  ACTIVATION_REV_ASSOCIATION,
+                                                  HOST_INVENTORY_PATH));
 
         fs::path manifestPath(filePath);
         manifestPath /= MANIFEST_FILE;
@@ -103,7 +108,7 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
                 ->second;
 
         auto activation = createActivationObject(
-            path, versionId, extendedVersion, activationState);
+            path, versionId, extendedVersion, activationState, associations);
         activations.emplace(versionId, std::move(activation));
 
         auto versionPtr =
@@ -150,14 +155,58 @@ void ItemUpdater::deleteAll()
     // that are not the running firmware.
 }
 
+void ItemUpdater::createActiveAssociation(const std::string& path)
+{
+    assocs.emplace_back(
+        std::make_tuple(ACTIVE_FWD_ASSOCIATION, ACTIVE_REV_ASSOCIATION, path));
+    associations(assocs);
+}
+
+void ItemUpdater::updateFunctionalAssociation(const std::string& versionId)
+{
+    std::string path = std::string{SOFTWARE_OBJPATH} + '/' + versionId;
+    // remove all functional associations
+    for (auto iter = assocs.begin(); iter != assocs.end();)
+    {
+        if ((std::get<0>(*iter)).compare(FUNCTIONAL_FWD_ASSOCIATION) == 0)
+        {
+            iter = assocs.erase(iter);
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+    assocs.emplace_back(std::make_tuple(FUNCTIONAL_FWD_ASSOCIATION,
+                                        FUNCTIONAL_REV_ASSOCIATION, path));
+    associations(assocs);
+}
+
+void ItemUpdater::removeAssociation(const std::string& path)
+{
+    for (auto iter = assocs.begin(); iter != assocs.end();)
+    {
+        if ((std::get<2>(*iter)).compare(path) == 0)
+        {
+            iter = assocs.erase(iter);
+            associations(assocs);
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+}
+
 std::unique_ptr<Activation> ItemUpdater::createActivationObject(
     const std::string& path, const std::string& versionId,
     const std::string& extVersion,
     sdbusplus::xyz::openbmc_project::Software::server::Activation::Activations
-        activationStatus)
+        activationStatus,
+    const AssociationList& assocs)
 {
     return std::make_unique<Activation>(bus, path, versionId, extVersion,
-                                        activationStatus);
+                                        activationStatus, assocs);
 }
 
 std::unique_ptr<Version> ItemUpdater::createVersionObject(
