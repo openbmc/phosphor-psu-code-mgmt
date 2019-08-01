@@ -2,7 +2,10 @@
 
 #include "config.h"
 
+#include "types.hpp"
+
 #include <sdbusplus/server.hpp>
+#include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Software/Activation/server.hpp>
 #include <xyz/openbmc_project/Software/ExtendedVersion/server.hpp>
 
@@ -13,11 +16,10 @@ namespace software
 namespace updater
 {
 
-using AssociationList =
-    std::vector<std::tuple<std::string, std::string, std::string>>;
 using ActivationInherit = sdbusplus::server::object::object<
     sdbusplus::xyz::openbmc_project::Software::server::ExtendedVersion,
-    sdbusplus::xyz::openbmc_project::Software::server::Activation>;
+    sdbusplus::xyz::openbmc_project::Software::server::Activation,
+    sdbusplus::xyz::openbmc_project::Association::server::Definitions>;
 
 namespace sdbusRule = sdbusplus::bus::match::rules;
 
@@ -36,17 +38,20 @@ class Activation : public ActivationInherit
      * @param[in] versionId  - The software version id
      * @param[in] extVersion - The extended version
      * @param[in] activationStatus - The status of Activation
+     * @param[in] assocs - Association objects
      */
     Activation(sdbusplus::bus::bus& bus, const std::string& path,
                const std::string& versionId, const std::string& extVersion,
                sdbusplus::xyz::openbmc_project::Software::server::Activation::
-                   Activations activationStatus) :
+                   Activations activationStatus,
+               const AssociationList& assocs) :
         ActivationInherit(bus, path.c_str(), true),
         bus(bus), path(path), versionId(versionId)
     {
         // Set Properties.
         extendedVersion(extVersion);
         activation(activationStatus);
+        associations(assocs);
 
         // Emit deferred signal.
         emit_object_added();
