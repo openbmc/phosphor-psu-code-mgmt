@@ -13,3 +13,15 @@ including:
 meson build/ && ninja -C build
 ```
 
+## Unit test
+
+* Run it in OpenBMC CI, refer to [local-ci-build.md][1]
+* Run it in [OE SDK][2], run below commands in a x86-64 SDK env:
+   ```
+   meson -Doe-sdk=enabled -Dtests=enabled build/
+   ninja -C build/ test  # Meson skips running the case due to it thinks it's cross compiling
+   ./build/test/utest  # Manually run the test
+   ```
+
+[1]: https://github.com/openbmc/docs/blob/master/local-ci-build.md
+[2]: https://github.com/openbmc/docs/blob/master/cheatsheet.md#building-the-openbmc-sdk

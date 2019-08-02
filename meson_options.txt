@@ -1,3 +1,6 @@
+option('tests', type: 'feature', description: 'Build tests')
+option('oe-sdk', type: 'feature', description: 'Enable OE SDK')
+
 option('MANIFEST_FILE',
        type: 'string',
        value: 'MANIFEST',
@@ -12,3 +15,8 @@ option('PSU_INVENTORY_PATH',
        type: 'string',
        value: '/xyz/openbmc_project/inventory/system/chassis',
        description: 'The PSU inventory path')
+
+option('PSU_JSON_CONFIG',
+       type: 'string',
+       value: '/etc/default/obmc/psu/psu.json',
+       description: 'The json config for PSU code manager')

@@ -1,0 +1,6 @@
+{
+    "PSU_INVENTORY_PATH": [
+        "/xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0",
+        "/xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply1"
+    ]
+}
