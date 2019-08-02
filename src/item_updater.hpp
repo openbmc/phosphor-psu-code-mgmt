@@ -4,8 +4,10 @@
 
 #include "activation.hpp"
 #include "types.hpp"
+#include "utils.hpp"
 #include "version.hpp"
 
+#include <phosphor-logging/log.hpp>
 #include <sdbusplus/server.hpp>
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Collection/DeleteAll/server.hpp>
@@ -43,6 +45,13 @@ class ItemUpdater : public ItemUpdaterInherit
                      std::bind(std::mem_fn(&ItemUpdater::createActivation),
                                this, std::placeholders::_1))
     {
+        // TODO: create psu inventory objects based on the paths
+        using namespace phosphor::logging;
+        auto paths = utils::getPSUInventoryPath(bus);
+        for (const auto& p : paths)
+        {
+            log<level::INFO>("PSU path", entry("PATH=%s", p.c_str()));
+        }
     }
 
     /** @brief Deletes version
