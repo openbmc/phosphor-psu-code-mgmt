@@ -4,6 +4,7 @@
 
 #include "activation.hpp"
 #include "types.hpp"
+#include "utils.hpp"
 #include "version.hpp"
 
 #include <sdbusplus/server.hpp>
@@ -43,6 +44,12 @@ class ItemUpdater : public ItemUpdaterInherit
                      std::bind(std::mem_fn(&ItemUpdater::createActivation),
                                this, std::placeholders::_1))
     {
+        // TODO: create psu inventory objects based on the paths
+        auto paths = utils::getPSUInventoryPath(bus);
+        for (const auto& p : paths)
+        {
+            fprintf(stderr, "psu path: %s\n", p.c_str());
+        }
     }
 
     /** @brief Deletes version

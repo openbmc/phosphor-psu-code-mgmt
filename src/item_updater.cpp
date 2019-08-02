@@ -92,7 +92,7 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
 
         associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
                                                   ACTIVATION_REV_ASSOCIATION,
-                                                  PSU_INVENTORY_PATH));
+                                                  PSU_INVENTORY_PATH_BASE));
 
         fs::path manifestPath(filePath);
         manifestPath /= MANIFEST_FILE;
