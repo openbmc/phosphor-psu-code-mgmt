@@ -1,0 +1,14 @@
+option('MANIFEST_FILE',
+       type: 'string',
+       value: 'MANIFEST',
+       description: 'The path of the MANIFEST file')
+
+option('SOFTWARE_OBJPATH',
+       type: 'string',
+       value: '/xyz/openbmc_project/software',
+       description: 'The software manager Dbus root')
+
+option('PSU_INVENTORY_PATH',
+       type: 'string',
+       value: '/xyz/openbmc_project/inventory/system/chassis',
+       description: 'The PSU inventory path')
