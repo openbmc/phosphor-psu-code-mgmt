@@ -1,9 +1,3 @@
-phosphor_dbus_interfaces = dependency('phosphor-dbus-interfaces')
-phosphor_logging = dependency('phosphor-logging')
-sdbusplus = dependency('sdbusplus')
-
-add_project_link_arguments(['-lstdc++fs'], language: 'cpp')
-
 cdata = configuration_data()
 cdata.set_quoted('VERSION_IFACE', 'xyz.openbmc_project.Software.Version')
 cdata.set_quoted('FILEPATH_IFACE', 'xyz.openbmc_project.Common.FilePath')
@@ -18,11 +12,12 @@ cdata.set_quoted('FUNCTIONAL_REV_ASSOCIATION', 'software_version')
 cdata.set_quoted('SOFTWARE_OBJPATH', get_option('SOFTWARE_OBJPATH'))
 cdata.set_quoted('MANIFEST_FILE', get_option('MANIFEST_FILE'))
 cdata.set_quoted('PSU_INVENTORY_PATH', get_option('PSU_INVENTORY_PATH'))
+cdata.set_quoted('PSU_JSON_CONFIG', get_option('PSU_JSON_CONFIG'))
 
 configure_file(output: 'config.h',
   configuration: cdata,
 )
-configuration_inc = include_directories('.')
+psu_inc = include_directories('.')
 
 executable(
   'phosphor-psu-code-manager',
@@ -30,7 +25,8 @@ executable(
   'item_updater.cpp',
   'main.cpp',
   'version.cpp',
-  include_directories: configuration_inc,
+  'utils.cpp',
+  include_directories: psu_inc,
   cpp_args: '-flto',
   link_args: '-flto',
   dependencies: [
