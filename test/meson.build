@@ -34,6 +34,7 @@ utest = executable(
     phosphor_logging,
     phosphor_dbus_interfaces,
     sdbusplus,
+    ssl,
   ])
 
 test('all', utest)
