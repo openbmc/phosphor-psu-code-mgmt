@@ -17,6 +17,7 @@ executable(
     phosphor_logging,
     phosphor_dbus_interfaces,
     sdbusplus,
+    ssl,
   ],
   install: true,
   install_dir: get_option('bindir'))

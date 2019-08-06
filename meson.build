@@ -16,6 +16,7 @@ configure_file(input: 'service/xyz.openbmc_project.Software.Psu.Updater.service'
 
 # Common configurations for src and test
 cdata = configuration_data()
+cdata.set_quoted('ITEM_IFACE', 'xyz.openbmc_project.Inventory.Item')
 cdata.set_quoted('VERSION_IFACE', 'xyz.openbmc_project.Software.Version')
 cdata.set_quoted('FILEPATH_IFACE', 'xyz.openbmc_project.Common.FilePath')
 cdata.set_quoted('BUSNAME_UPDATER', 'xyz.openbmc_project.Software.Psu.Updater')
@@ -34,6 +35,7 @@ cdata.set_quoted('PSU_INVENTORY_PATH_BASE', get_option('PSU_INVENTORY_PATH_BASE'
 phosphor_dbus_interfaces = dependency('phosphor-dbus-interfaces')
 phosphor_logging = dependency('phosphor-logging')
 sdbusplus = dependency('sdbusplus')
+ssl = dependency('openssl')
 
 add_project_link_arguments(['-lstdc++fs'], language: 'cpp')
 
