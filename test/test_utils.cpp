@@ -60,3 +60,13 @@ TEST(Utils, GetPSUInventoryPath)
     EXPECT_EQ(path0, ret[0]);
     EXPECT_EQ(path1, ret[1]);
 }
+
+TEST(Utils, GetVersionID)
+{
+
+    auto ret = utils::getVersionId("");
+    EXPECT_EQ("", ret);
+
+    ret = utils::getVersionId("some version");
+    EXPECT_EQ(8u, ret.size());
+}
