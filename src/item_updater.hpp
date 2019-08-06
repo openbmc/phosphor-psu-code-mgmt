@@ -43,6 +43,7 @@ class ItemUpdater : public ItemUpdaterInherit
                      std::bind(std::mem_fn(&ItemUpdater::createActivation),
                                this, std::placeholders::_1))
     {
+        processPSUImage();
     }
 
     /** @brief Deletes version
@@ -64,12 +65,12 @@ class ItemUpdater : public ItemUpdaterInherit
      */
     void createActiveAssociation(const std::string& path);
 
-    /** @brief Updates the functional association to the
+    /** @brief Add the functional association to the
      *  new "running" PSU images
      *
      * @param[in]  versionId - The id of the image to update the association to.
      */
-    void updateFunctionalAssociation(const std::string& versionId);
+    void addFunctionalAssociation(const std::string& path);
 
     /** @brief Removes the associations from the provided software image path
      *
@@ -83,6 +84,13 @@ class ItemUpdater : public ItemUpdaterInherit
      * @param[in]  msg       - Data associated with subscribed signal
      */
     void createActivation(sdbusplus::message::message& msg);
+
+    /** @brief Callback function for PSU inventory match.
+     *  @details Update an Activation D-Bus object for PSU inventory.
+     *
+     * @param[in]  msg       - Data associated with subscribed signal
+     */
+    void onPsuInventoryChanged(sdbusplus::message::message& msg);
 
     /** @brief Create Activation object */
     std::unique_ptr<Activation> createActivationObject(
@@ -101,6 +109,15 @@ class ItemUpdater : public ItemUpdaterInherit
                                 Version::VersionPurpose versionPurpose,
                             const std::string& filePath);
 
+    /** @brief Create Activation and Version object for PSU inventory */
+    void createPsuObject(const std::string& psuInventoryPath,
+                         const std::string& psuVersion);
+
+    /**
+     * @brief Create and populate the active PSU Version.
+     */
+    void processPSUImage();
+
     /** @brief Persistent sdbusplus D-Bus bus connection. */
     sdbusplus::bus::bus& bus;
 
@@ -112,8 +129,11 @@ class ItemUpdater : public ItemUpdaterInherit
      * version id */
     std::map<std::string, std::unique_ptr<Version>> versions;
 
-    /** @brief sdbusplus signal match for Software.Version */
+    /** @brief sdbusplus signal match for PSU Software*/
     sdbusplus::bus::match_t versionMatch;
+
+    /** @brief sdbusplus signal matches for PSU Inventory */
+    std::vector<sdbusplus::bus::match_t> psuMatches;
 
     /** @brief This entry's associations */
     AssociationList assocs;

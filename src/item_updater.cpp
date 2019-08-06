@@ -2,6 +2,8 @@
 
 #include "item_updater.hpp"
 
+#include "utils.hpp"
+
 #include <filesystem>
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/log.hpp>
@@ -18,11 +20,11 @@ namespace fs = std::filesystem;
 
 using namespace sdbusplus::xyz::openbmc_project::Common::Error;
 using namespace phosphor::logging;
+using SVersion = server::Version;
+using VersionPurpose = SVersion::VersionPurpose;
 
 void ItemUpdater::createActivation(sdbusplus::message::message& m)
 {
-    using SVersion = server::Version;
-    using VersionPurpose = SVersion::VersionPurpose;
     namespace msg = sdbusplus::message;
     namespace variant_ns = msg::variant_ns;
 
@@ -158,21 +160,8 @@ void ItemUpdater::createActiveAssociation(const std::string& path)
     associations(assocs);
 }
 
-void ItemUpdater::updateFunctionalAssociation(const std::string& versionId)
+void ItemUpdater::addFunctionalAssociation(const std::string& path)
 {
-    std::string path = std::string{SOFTWARE_OBJPATH} + '/' + versionId;
-    // remove all functional associations
-    for (auto iter = assocs.begin(); iter != assocs.end();)
-    {
-        if ((std::get<0>(*iter)).compare(FUNCTIONAL_FWD_ASSOCIATION) == 0)
-        {
-            iter = assocs.erase(iter);
-        }
-        else
-        {
-            ++iter;
-        }
-    }
     assocs.emplace_back(std::make_tuple(FUNCTIONAL_FWD_ASSOCIATION,
                                         FUNCTIONAL_REV_ASSOCIATION, path));
     associations(assocs);
@@ -205,6 +194,45 @@ std::unique_ptr<Activation> ItemUpdater::createActivationObject(
                                         activationStatus, assocs);
 }
 
+void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
+                                  const std::string& psuVersion)
+{
+    auto versionId = utils::getVersionId(psuVersion);
+    auto path = std::string(SOFTWARE_OBJPATH) + "/" + versionId;
+
+    auto it = activations.find(versionId);
+    if (it != activations.end())
+    {
+        // The versionId is already created, associate the path
+        auto associations = it->second->associations();
+        associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
+                                                  ACTIVATION_REV_ASSOCIATION,
+                                                  psuInventoryPath));
+        it->second->associations(associations);
+    }
+    else
+    {
+        // Create a new object for running PSU inventory
+        AssociationList associations = {};
+        auto activationState = server::Activation::Activations::Active;
+
+        associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
+                                                  ACTIVATION_REV_ASSOCIATION,
+                                                  psuInventoryPath));
+
+        auto activation = createActivationObject(path, versionId, "",
+                                                 activationState, associations);
+        activations.emplace(versionId, std::move(activation));
+
+        auto versionPtr = createVersionObject(path, versionId, psuVersion,
+                                              VersionPurpose::PSU, "");
+        versions.emplace(versionId, std::move(versionPtr));
+
+        createActiveAssociation(path);
+        addFunctionalAssociation(path);
+    }
+}
+
 std::unique_ptr<Version> ItemUpdater::createVersionObject(
     const std::string& objPath, const std::string& versionId,
     const std::string& versionString,
@@ -216,6 +244,34 @@ std::unique_ptr<Version> ItemUpdater::createVersionObject(
         bus, objPath, versionId, versionString, versionPurpose, filePath,
         std::bind(&ItemUpdater::erase, this, std::placeholders::_1));
     return version;
+}
+
+void ItemUpdater::onPsuInventoryChanged(sdbusplus::message::message&)
+{
+    // TODO
+}
+
+void ItemUpdater::processPSUImage()
+{
+    auto pathes = utils::getPSUInventoryPath();
+    for (const auto& p : pathes)
+    {
+        // Assume the same service implement both Version and Item interface
+        auto service = utils::getService(bus, p.c_str(), VERSION_IFACE);
+        auto version = utils::getProperty<std::string>(
+            bus, service.c_str(), p.c_str(), VERSION_IFACE, "Version");
+        auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
+                                                ITEM_IFACE, "Present");
+        if (present)
+        {
+            createPsuObject(p, version);
+        }
+        // Add matches for PSU present changes
+        psuMatches.emplace_back(bus,
+                                MatchRules::propertiesChanged(p, ITEM_IFACE),
+                                std::bind(&ItemUpdater::onPsuInventoryChanged,
+                                          this, std::placeholders::_1));
+    }
 }
 
 } // namespace updater
