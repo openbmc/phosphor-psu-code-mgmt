@@ -13,3 +13,13 @@ TEST(Utils, GetPSUInventoryPath)
               "powersupply1",
               ret[1]);
 }
+
+TEST(Utils, GetVersionID)
+{
+
+    auto ret = utils::getVersionId("");
+    EXPECT_EQ("", ret);
+
+    ret = utils::getVersionId("some version");
+    EXPECT_EQ(8u, ret.size());
+}

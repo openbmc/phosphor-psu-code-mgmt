@@ -25,6 +25,7 @@ configure_file(input: 'config/example.json',
 phosphor_dbus_interfaces = dependency('phosphor-dbus-interfaces')
 phosphor_logging = dependency('phosphor-logging')
 sdbusplus = dependency('sdbusplus')
+ssl = dependency('openssl')
 
 add_project_link_arguments(['-lstdc++fs'], language: 'cpp')
 

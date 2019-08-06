@@ -8,6 +8,7 @@ cdata.set_quoted('ACTIVE_FWD_ASSOCIATION', 'active')
 cdata.set_quoted('ACTIVE_REV_ASSOCIATION', 'software_version')
 cdata.set_quoted('FUNCTIONAL_FWD_ASSOCIATION', 'functional')
 cdata.set_quoted('FUNCTIONAL_REV_ASSOCIATION', 'software_version')
+cdata.set_quoted('ITEM_IFACE', 'xyz.openbmc_project.Inventory.Item')
 
 cdata.set_quoted('SOFTWARE_OBJPATH', get_option('SOFTWARE_OBJPATH'))
 cdata.set_quoted('MANIFEST_FILE', get_option('MANIFEST_FILE'))
@@ -33,6 +34,7 @@ executable(
     phosphor_logging,
     phosphor_dbus_interfaces,
     sdbusplus,
+    ssl,
   ],
   install: true,
   install_dir: get_option('bindir'))
