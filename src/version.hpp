@@ -129,9 +129,6 @@ class Version : public VersionInherit
         getValue(const std::string& filePath,
                  std::map<std::string, std::string> keys);
 
-    /** @brief Persistent Delete D-Bus object */
-    std::unique_ptr<Delete> deleteObject;
-
     /** @brief The temUpdater's erase callback. */
     eraseFunc eraseCallback;
 
@@ -147,6 +144,9 @@ class Version : public VersionInherit
 
     /** @brief This Version's version string */
     const std::string versionStr;
+
+    /** @brief Persistent Delete D-Bus object */
+    std::unique_ptr<Delete> deleteObject;
 };
 
 } // namespace updater
