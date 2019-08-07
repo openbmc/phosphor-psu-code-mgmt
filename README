@@ -20,7 +20,8 @@ meson build/ && ninja -C build
    ```
    meson -Doe-sdk=enabled -Dtests=enabled build/
    ninja -C build/ test  # Meson skips running the case due to it thinks it's cross compiling
-   ./build/test/utest  # Manually run the test
+   # Manually run the tests
+   for t in `find build/test/ -maxdepth 1 -name "test_*"`; do ./$t || break ; done
    ```
 
 [1]: https://github.com/openbmc/docs/blob/master/local-ci-build.md
