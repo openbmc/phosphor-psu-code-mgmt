@@ -5,6 +5,9 @@
 #include <openssl/sha.h>
 
 #include <fstream>
+#include <phosphor-logging/log.hpp>
+
+using namespace phosphor::logging;
 
 namespace utils
 {
@@ -16,7 +19,14 @@ constexpr auto MAPPER_PATH = "/xyz/openbmc_project/object_mapper";
 constexpr auto MAPPER_INTERFACE = "xyz.openbmc_project.ObjectMapper";
 } // namespace
 
-std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus)
+const UtilsInterface& getUtils()
+{
+    static Utils utils;
+    return utils;
+}
+
+std::vector<std::string>
+    Utils::getPSUInventoryPath(sdbusplus::bus::bus& bus) const
 {
     std::vector<std::string> paths;
     auto method = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
@@ -30,8 +40,8 @@ std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus)
     return paths;
 }
 
-std::string getService(sdbusplus::bus::bus& bus, const char* path,
-                       const char* interface)
+std::string Utils::getService(sdbusplus::bus::bus& bus, const char* path,
+                              const char* interface) const
 {
     auto mapper = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
                                       MAPPER_INTERFACE, "GetObject");
@@ -64,7 +74,7 @@ std::string getService(sdbusplus::bus::bus& bus, const char* path,
     }
 }
 
-std::string getVersionId(const std::string& version)
+std::string Utils::getVersionId(const std::string& version) const
 {
     if (version.empty())
     {
@@ -86,6 +96,29 @@ std::string getVersionId(const std::string& version)
     // Only need 8 hex digits.
     std::string hexId = std::string(mdString);
     return (hexId.substr(0, 8));
+}
+
+any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
+                           const char* path, const char* interface,
+                           const char* propertyName) const
+{
+    auto method = bus.new_method_call(service, path,
+                                      "org.freedesktop.DBus.Properties", "Get");
+    method.append(interface, propertyName);
+    try
+    {
+        PropertyType value{};
+        auto reply = bus.call(method);
+        reply.read(value);
+        return any(value);
+    }
+    catch (const sdbusplus::exception::SdBusError& ex)
+    {
+        log<level::ERR>("GetProperty call failed", entry("PATH=%s", path),
+                        entry("INTERFACE=%s", interface),
+                        entry("PROPERTY=%s", propertyName));
+        throw std::runtime_error("GetProperty call failed");
+    }
 }
 
 } // namespace utils
