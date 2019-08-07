@@ -1,6 +1,6 @@
 #pragma once
 
-#include <phosphor-logging/log.hpp>
+#include <experimental/any>
 #include <sdbusplus/bus.hpp>
 #include <string>
 #include <vector>
@@ -8,7 +8,18 @@
 namespace utils
 {
 
-using namespace phosphor::logging;
+class UtilsInterface;
+
+// Due to a libstdc++ bug, we got compile error using std::any with gmock.
+// A temporary workaround is to use std::experimental::any.
+// See details in https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90415
+using std::experimental::any;
+using std::experimental::any_cast;
+
+/**
+ * @brief Get the implementation of UtilsInterface
+ */
+const UtilsInterface& getUtils();
 
 /**
  * @brief Get PSU inventory object path from DBus
@@ -38,26 +49,7 @@ std::string getService(sdbusplus::bus::bus& bus, const char* path,
  */
 template <typename T>
 T getProperty(sdbusplus::bus::bus& bus, const char* service, const char* path,
-              const char* interface, const char* propertyName)
-{
-    auto method = bus.new_method_call(service, path,
-                                      "org.freedesktop.DBus.Properties", "Get");
-    method.append(interface, propertyName);
-    try
-    {
-        sdbusplus::message::variant<T> value{};
-        auto reply = bus.call(method);
-        reply.read(value);
-        return sdbusplus::message::variant_ns::get<T>(value);
-    }
-    catch (const sdbusplus::exception::SdBusError& ex)
-    {
-        log<level::ERR>("GetProperty call failed", entry("PATH=%s", path),
-                        entry("INTERFACE=%s", interface),
-                        entry("PROPERTY=%s", propertyName));
-        throw std::runtime_error("GetProperty call failed");
-    }
-}
+              const char* interface, const char* propertyName);
 
 /**
  * @brief Calculate the version id from the version string.
@@ -70,5 +62,80 @@ T getProperty(sdbusplus::bus::bus& bus, const char* service, const char* path,
  * @return The id.
  */
 std::string getVersionId(const std::string& version);
+
+/**
+ * @brief The interface for utils
+ */
+class UtilsInterface
+{
+  public:
+    // For now the code needs to get property for Present and Version
+    using PropertyType = sdbusplus::message::variant<std::string, bool>;
+
+    virtual ~UtilsInterface() = default;
+
+    virtual std::vector<std::string>
+        getPSUInventoryPath(sdbusplus::bus::bus& bus) const = 0;
+
+    virtual std::string getService(sdbusplus::bus::bus& bus, const char* path,
+                                   const char* interface) const = 0;
+
+    virtual std::string getVersionId(const std::string& version) const = 0;
+
+    virtual any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
+                                const char* path, const char* interface,
+                                const char* propertyName) const = 0;
+
+    template <typename T>
+    T getProperty(sdbusplus::bus::bus& bus, const char* service,
+                  const char* path, const char* interface,
+                  const char* propertyName) const
+    {
+        any result =
+            getPropertyImpl(bus, service, path, interface, propertyName);
+        auto value = any_cast<PropertyType>(result);
+        return sdbusplus::message::variant_ns::get<T>(value);
+    }
+};
+
+class Utils : public UtilsInterface
+{
+  public:
+    std::vector<std::string>
+        getPSUInventoryPath(sdbusplus::bus::bus& bus) const override;
+
+    std::string getService(sdbusplus::bus::bus& bus, const char* path,
+                           const char* interface) const override;
+
+    std::string getVersionId(const std::string& version) const override;
+
+    any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
+                        const char* path, const char* interface,
+                        const char* propertyName) const override;
+};
+
+inline std::string getService(sdbusplus::bus::bus& bus, const char* path,
+                              const char* interface)
+{
+    return getUtils().getService(bus, path, interface);
+}
+
+inline std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus)
+{
+    return getUtils().getPSUInventoryPath(bus);
+}
+
+inline std::string getVersionId(const std::string& version)
+{
+    return getUtils().getVersionId(version);
+}
+
+template <typename T>
+T getProperty(sdbusplus::bus::bus& bus, const char* service, const char* path,
+              const char* interface, const char* propertyName)
+{
+    return getUtils().getProperty<T>(bus, service, path, interface,
+                                     propertyName);
+}
 
 } // namespace utils

@@ -55,7 +55,7 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
                         purpose = value;
                     }
                 }
-                else if (propertyName == "Version")
+                else if (propertyName == VERSION)
                 {
                     version = variant_ns::get<std::string>(propertyValue);
                 }
@@ -304,13 +304,13 @@ void ItemUpdater::onPsuInventoryChanged(sdbusplus::message::message& msg)
     // The code was expeting to get callback on mutliple properties changed.
     // But in practice, the callback is received one-by-one for each property.
     // So it has to be handle Present and Version property separately.
-    auto p = properties.find("Present");
+    auto p = properties.find(PRESENT);
     if (p != properties.end())
     {
         present = sdbusplus::message::variant_ns::get<bool>(p->second);
         psuStatusMap[psuPath].present = *present;
     }
-    p = properties.find("Version");
+    p = properties.find(VERSION);
     if (p != properties.end())
     {
         version = sdbusplus::message::variant_ns::get<std::string>(p->second);
@@ -341,7 +341,7 @@ void ItemUpdater::onPsuInventoryChanged(sdbusplus::message::message& msg)
         {
             // If a PSU is plugged out, version property is update to empty as
             // well, and we get callback here, but ignore that because it is
-            // handled by "Present" callback.
+            // handled by PRESENT callback.
             return;
         }
         // Remove object or association
@@ -357,9 +357,9 @@ void ItemUpdater::processPSUImage()
         // Assume the same service implement both Version and Item interface
         auto service = utils::getService(bus, p.c_str(), VERSION_IFACE);
         auto version = utils::getProperty<std::string>(
-            bus, service.c_str(), p.c_str(), VERSION_IFACE, "Version");
+            bus, service.c_str(), p.c_str(), VERSION_IFACE, VERSION);
         auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
-                                                ITEM_IFACE, "Present");
+                                                ITEM_IFACE, PRESENT);
         if (present)
         {
             createPsuObject(p, version);
