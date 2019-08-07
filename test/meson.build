@@ -21,8 +21,8 @@ configure_file(output: 'config.h',
 )
 test_inc = include_directories('.')
 
-utest = executable(
-  'utest',
+test_util = executable(
+  'test_util',
   '../src/utils.cpp',
   'test_utils.cpp',
   include_directories: [psu_inc, test_inc],
@@ -37,4 +37,24 @@ utest = executable(
     ssl,
   ])
 
-test('all', utest)
+test_item_updater = executable(
+  'test_item_updater',
+  '../src/activation.cpp',
+  '../src/item_updater.cpp',
+  '../src/version.cpp',
+  'test_item_updater.cpp',
+  include_directories: [psu_inc, test_inc],
+  cpp_args: '-flto',
+  link_args: oe_sdk.enabled() ? ['-flto', dynamic_linker] : '-flto',
+  build_rpath: oe_sdk.enabled() ? rpath : '',
+  dependencies: [
+    gtest,
+    gmock,
+    phosphor_logging,
+    phosphor_dbus_interfaces,
+    sdbusplus,
+    ssl,
+  ])
+
+test('util', test_util)
+test('item_updater', test_item_updater)
