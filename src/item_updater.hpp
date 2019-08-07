@@ -11,6 +11,8 @@
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Collection/DeleteAll/server.hpp>
 
+class TestItemUpdater;
+
 namespace phosphor
 {
 namespace software
@@ -30,6 +32,8 @@ namespace MatchRules = sdbusplus::bus::match::rules;
  */
 class ItemUpdater : public ItemUpdaterInherit
 {
+    friend class ::TestItemUpdater;
+
   public:
     /** @brief Constructs ItemUpdater
      *
