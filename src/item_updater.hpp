@@ -111,9 +111,20 @@ class ItemUpdater : public ItemUpdaterInherit
                                 Version::VersionPurpose versionPurpose,
                             const std::string& filePath);
 
-    /** @brief Create Activation and Version object for PSU inventory */
+    /** @brief Create Activation and Version object for PSU inventory
+     *  @details If the same version exists for multiple PSUs, just add
+     *           related association, instead of creating new objects.
+     * */
     void createPsuObject(const std::string& psuInventoryPath,
                          const std::string& psuVersion);
+
+    /** @brief Remove Activation and Version object for PSU inventory
+     *  @details If the same version exists for mutliple PSUs, just remove
+     *           related association.
+     *           If the version has no association, the Activation and
+     *           Version object will be removed
+     */
+    void removePsuObject(const std::string& psuInventoryPath);
 
     /**
      * @brief Create and populate the active PSU Version.
@@ -130,6 +141,21 @@ class ItemUpdater : public ItemUpdaterInherit
     /** @brief Persistent map of Version D-Bus objects and their
      * version id */
     std::map<std::string, std::unique_ptr<Version>> versions;
+
+    /** @brief The reference map of PSU Inventory objects and the
+     * Activation*/
+    std::map<std::string, const std::unique_ptr<Activation>&>
+        psuPathActivationMap;
+
+    /** @brief A strcut to hold the PSU present and status */
+    struct psuStatus
+    {
+        bool present;
+        std::string version;
+    };
+
+    /** @brief The map of PSU's version and present status */
+    std::map<std::string, psuStatus> psuStatusMap;
 
     /** @brief sdbusplus signal match for PSU Software*/
     sdbusplus::bus::match_t versionMatch;

@@ -199,6 +199,8 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
     auto versionId = utils::getVersionId(psuVersion);
     auto path = std::string(SOFTWARE_OBJPATH) + "/" + versionId;
 
+    psuStatusMap[psuInventoryPath] = {true, psuVersion};
+
     auto it = activations.find(versionId);
     if (it != activations.end())
     {
@@ -208,6 +210,7 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
                                                   ACTIVATION_REV_ASSOCIATION,
                                                   psuInventoryPath));
         it->second->associations(associations);
+        psuPathActivationMap.emplace(psuInventoryPath, it->second);
     }
     else
     {
@@ -222,6 +225,7 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
         auto activation = createActivationObject(path, versionId, "",
                                                  activationState, associations);
         activations.emplace(versionId, std::move(activation));
+        psuPathActivationMap.emplace(psuInventoryPath, activations[versionId]);
 
         auto versionPtr = createVersionObject(path, versionId, psuVersion,
                                               VersionPurpose::PSU, "");
@@ -229,6 +233,43 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
 
         createActiveAssociation(path);
         addFunctionalAssociation(path);
+    }
+}
+
+void ItemUpdater::removePsuObject(const std::string& psuInventoryPath)
+{
+    psuStatusMap[psuInventoryPath] = {false, ""};
+    auto it = psuPathActivationMap.find(psuInventoryPath);
+    if (it == psuPathActivationMap.end())
+    {
+        log<level::ERR>("No Activation found for PSU",
+                        entry("PSUPATH=%s", psuInventoryPath.c_str()));
+        return;
+    }
+    const auto& activationPtr = it->second;
+    psuPathActivationMap.erase(psuInventoryPath);
+
+    auto associations = activationPtr->associations();
+    for (auto iter = associations.begin(); iter != associations.end();)
+    {
+        if ((std::get<2>(*iter)).compare(psuInventoryPath) == 0)
+        {
+            iter = associations.erase(iter);
+        }
+        else
+        {
+            ++iter;
+        }
+    }
+    if (associations.empty())
+    {
+        // Remove the activation
+        erase(activationPtr->versionId);
+    }
+    else
+    {
+        // Update association
+        activationPtr->associations(associations);
     }
 }
 
@@ -245,9 +286,67 @@ std::unique_ptr<Version> ItemUpdater::createVersionObject(
     return version;
 }
 
-void ItemUpdater::onPsuInventoryChanged(sdbusplus::message::message&)
+void ItemUpdater::onPsuInventoryChanged(sdbusplus::message::message& msg)
 {
-    // TODO
+    using Interface = std::string;
+    using Property = std::string;
+    using Properties =
+        std::map<Property, sdbusplus::message::variant<bool, std::string>>;
+
+    Interface interface;
+    Properties properties;
+    std::optional<bool> present;
+    std::optional<std::string> version;
+    std::string psuPath = msg.get_path();
+
+    msg.read(interface, properties);
+
+    // The code was expeting to get callback on mutliple properties changed.
+    // But in practice, the callback is received one-by-one for each property.
+    // So it has to be handle Present and Version property separately.
+    auto p = properties.find("Present");
+    if (p != properties.end())
+    {
+        present = sdbusplus::message::variant_ns::get<bool>(p->second);
+        psuStatusMap[psuPath].present = *present;
+    }
+    p = properties.find("Version");
+    if (p != properties.end())
+    {
+        version = sdbusplus::message::variant_ns::get<std::string>(p->second);
+        psuStatusMap[psuPath].version = *version;
+    }
+
+    // If present or version is not changed, ignore
+    if (!present.has_value() && !version.has_value())
+    {
+        return;
+    }
+
+    if (psuStatusMap[psuPath].present)
+    {
+        // If version is not updated, let's wait for it
+        if (psuStatusMap[psuPath].version.empty())
+        {
+            log<level::DEBUG>("Waiting for version to be updated");
+            return;
+        }
+        // Create object or association based on the version and psu inventory
+        // path
+        createPsuObject(psuPath, psuStatusMap[psuPath].version);
+    }
+    else
+    {
+        if (!present.has_value())
+        {
+            // If a PSU is plugged out, version property is update to empty as
+            // well, and we get callback here, but ignore that because it is
+            // handled by "Present" callback.
+            return;
+        }
+        // Remove object or association
+        removePsuObject(psuPath);
+    }
 }
 
 void ItemUpdater::processPSUImage()
@@ -265,11 +364,14 @@ void ItemUpdater::processPSUImage()
         {
             createPsuObject(p, version);
         }
-        // Add matches for PSU present changes
-        psuMatches.emplace_back(bus,
-                                MatchRules::propertiesChanged(p, ITEM_IFACE),
-                                std::bind(&ItemUpdater::onPsuInventoryChanged,
-                                          this, std::placeholders::_1));
+        // Add matches for PSU Inventory's property changes
+        psuMatches.emplace_back(
+            bus,
+            MatchRules::type::signal() + MatchRules::path(p) +
+                MatchRules::member("PropertiesChanged") +
+                MatchRules::interface("org.freedesktop.DBus.Properties"),
+            std::bind(&ItemUpdater::onPsuInventoryChanged, this,
+                      std::placeholders::_1));
     }
 }
 
