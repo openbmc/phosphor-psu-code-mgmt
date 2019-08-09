@@ -91,12 +91,24 @@ class ItemUpdater : public ItemUpdaterInherit
      */
     void createActivation(sdbusplus::message::message& msg);
 
+    using Properties =
+        std::map<std::string, utils::UtilsInterface::PropertyType>;
+
     /** @brief Callback function for PSU inventory match.
      *  @details Update an Activation D-Bus object for PSU inventory.
      *
      * @param[in]  msg       - Data associated with subscribed signal
      */
-    void onPsuInventoryChanged(sdbusplus::message::message& msg);
+    void onPsuInventoryChangedMsg(sdbusplus::message::message& msg);
+
+    /** @brief Callback function for PSU inventory match.
+     *  @details Update an Activation D-Bus object for PSU inventory.
+     *
+     * @param[in]  psuPath - The PSU inventory path
+     * @param[in]  properties - The updated properties
+     */
+    void onPsuInventoryChanged(const std::string& psuPath,
+                               const Properties& properties);
 
     /** @brief Create Activation object */
     std::unique_ptr<Activation> createActivationObject(
