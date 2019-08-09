@@ -286,20 +286,22 @@ std::unique_ptr<Version> ItemUpdater::createVersionObject(
     return version;
 }
 
-void ItemUpdater::onPsuInventoryChanged(sdbusplus::message::message& msg)
+void ItemUpdater::onPsuInventoryChangedMsg(sdbusplus::message::message& msg)
 {
     using Interface = std::string;
-    using Property = std::string;
-    using Properties =
-        std::map<Property, sdbusplus::message::variant<bool, std::string>>;
-
     Interface interface;
     Properties properties;
-    std::optional<bool> present;
-    std::optional<std::string> version;
     std::string psuPath = msg.get_path();
 
     msg.read(interface, properties);
+    onPsuInventoryChanged(psuPath, properties);
+}
+
+void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
+                                        const Properties& properties)
+{
+    std::optional<bool> present;
+    std::optional<std::string> version;
 
     // The code was expecting to get callback on mutliple properties changed.
     // But in practice, the callback is received one-by-one for each property.
@@ -370,7 +372,7 @@ void ItemUpdater::processPSUImage()
             MatchRules::type::signal() + MatchRules::path(p) +
                 MatchRules::member("PropertiesChanged") +
                 MatchRules::interface("org.freedesktop.DBus.Properties"),
-            std::bind(&ItemUpdater::onPsuInventoryChanged, this,
+            std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
                       std::placeholders::_1));
     }
 }
