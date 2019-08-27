@@ -69,9 +69,8 @@ TEST_F(TestItemUpdater, NotCreateObjectOnNotPresent)
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
-                                             _, StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(std::string(version)))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(false)))); // not present
@@ -96,9 +95,8 @@ TEST_F(TestItemUpdater, CreateOnePSUOnPresent)
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
-                                             _, StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(std::string(version)))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
@@ -129,15 +127,13 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithSameVersion)
         .WillOnce(Return(service));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu1), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
-                                             StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(version0))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu0)))
+        .WillOnce(Return(std::string(version0)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
-                                             StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(version1))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
+        .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
@@ -177,15 +173,13 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithDifferentVersion)
         .WillOnce(Return(service));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu1), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
-                                             StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(version0))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu0)))
+        .WillOnce(Return(std::string(version0)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
-                                             StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(version1))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
+        .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
@@ -225,9 +219,8 @@ TEST_F(TestItemUpdater, OnOnePSURemoved)
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
-                                             _, StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(std::string(version)))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
@@ -262,9 +255,8 @@ TEST_F(TestItemUpdater, OnOnePSUAdded)
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
-                                             _, StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(std::string(version)))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(false)))); // not present
@@ -296,9 +288,8 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAdded)
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
-                                             _, StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(std::string(version)))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
@@ -349,15 +340,13 @@ TEST_F(TestItemUpdater,
         .WillOnce(Return(service));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu1), _))
         .WillOnce(Return(service));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
-                                             StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(version0))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu0)))
+        .WillOnce(Return(std::string(version0)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
-                                             StrEq(VERSION)))
-        .WillOnce(Return(any(PropertyType(version1))));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
+        .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present

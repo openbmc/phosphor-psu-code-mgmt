@@ -19,6 +19,8 @@ class MockedUtils : public UtilsInterface
 
     MOCK_CONST_METHOD1(getVersionId, std::string(const std::string& version));
 
+    MOCK_CONST_METHOD1(getVersion, std::string(const std::string& psuInventoryPath));
+
     MOCK_CONST_METHOD5(getPropertyImpl,
                        any(sdbusplus::bus::bus& bus, const char* service,
                            const char* path, const char* interface,
