@@ -34,6 +34,7 @@ cdata.set_quoted('PRESENT', 'Present')
 cdata.set_quoted('SOFTWARE_OBJPATH', get_option('SOFTWARE_OBJPATH'))
 cdata.set_quoted('MANIFEST_FILE', get_option('MANIFEST_FILE'))
 cdata.set_quoted('PSU_INVENTORY_PATH_BASE', get_option('PSU_INVENTORY_PATH_BASE'))
+cdata.set_quoted('PSU_VERSION_UTIL', get_option('PSU_VERSION_UTIL'))
 
 phosphor_dbus_interfaces = dependency('phosphor-dbus-interfaces')
 phosphor_logging = dependency('phosphor-logging')
@@ -45,6 +46,11 @@ add_project_link_arguments(['-lstdc++fs'], language: 'cpp')
 subdir('src')
 
 build_tests = get_option('tests')
+build_examples = get_option('examples')
+
+if build_examples
+  subdir('vendor-example')
+endif
 
 if not build_tests.disabled()
   subdir('test')

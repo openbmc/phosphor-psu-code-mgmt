@@ -358,8 +358,7 @@ void ItemUpdater::processPSUImage()
     {
         // Assume the same service implement both Version and Item interface
         auto service = utils::getService(bus, p.c_str(), VERSION_IFACE);
-        auto version = utils::getProperty<std::string>(
-            bus, service.c_str(), p.c_str(), VERSION_IFACE, VERSION);
+        auto version = utils::getVersion(p);
         auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
                                                 ITEM_IFACE, PRESENT);
         if (present && !version.empty())
