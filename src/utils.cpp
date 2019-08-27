@@ -6,6 +6,7 @@
 
 #include <fstream>
 #include <phosphor-logging/log.hpp>
+#include <sstream>
 
 using namespace phosphor::logging;
 
@@ -19,6 +20,39 @@ constexpr auto MAPPER_PATH = "/xyz/openbmc_project/object_mapper";
 constexpr auto MAPPER_INTERFACE = "xyz.openbmc_project.ObjectMapper";
 } // namespace
 
+namespace internal
+{
+template <typename... Ts>
+std::string concat_string(Ts const&... ts)
+{
+    std::stringstream s;
+    ((s << ts << " "), ...) << std::endl;
+    return s.str();
+}
+
+// Helper function to run command
+// Returns return code and the stdout
+template <typename... Ts>
+std::pair<int, std::string> exec(Ts const&... ts)
+{
+    std::array<char, 512> buffer;
+    std::string cmd = concat_string(ts...);
+    std::stringstream result;
+    int rc;
+    FILE* pipe = popen(cmd.c_str(), "r");
+    if (!pipe)
+    {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe) != nullptr)
+    {
+        result << buffer.data();
+    }
+    rc = pclose(pipe);
+    return {rc, result.str()};
+}
+
+} // namespace internal
 const UtilsInterface& getUtils()
 {
     static Utils utils;
@@ -96,6 +130,15 @@ std::string Utils::getVersionId(const std::string& version) const
     // Only need 8 hex digits.
     std::string hexId = std::string(mdString);
     return (hexId.substr(0, 8));
+}
+
+std::string Utils::getVersion(const std::string& inventoryPath) const
+{
+    // Invoke vendor-specify tool to get the version string, e.g.
+    //   psutils get-version
+    //   /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0
+    auto [rc, r] = internal::exec(PSU_VERSION_UTIL, inventoryPath);
+    return (rc == 0) ? r : "";
 }
 
 any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,

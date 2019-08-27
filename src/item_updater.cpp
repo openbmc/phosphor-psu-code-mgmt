@@ -356,12 +356,10 @@ void ItemUpdater::processPSUImage()
     auto paths = utils::getPSUInventoryPath(bus);
     for (const auto& p : paths)
     {
-        // Assume the same service implement both Version and Item interface
-        auto service = utils::getService(bus, p.c_str(), VERSION_IFACE);
-        auto version = utils::getProperty<std::string>(
-            bus, service.c_str(), p.c_str(), VERSION_IFACE, VERSION);
+        auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
         auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
                                                 ITEM_IFACE, PRESENT);
+        auto version = utils::getVersion(p);
         if (present && !version.empty())
         {
             createPsuObject(p, version);

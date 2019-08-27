@@ -1,5 +1,6 @@
 option('tests', type: 'feature', description: 'Build tests')
 option('oe-sdk', type: 'feature', description: 'Enable OE SDK')
+option('examples', type: 'boolean', value: true, description: 'Build vendor-example')
 
 option('MANIFEST_FILE',
        type: 'string',
@@ -15,3 +16,14 @@ option('PSU_INVENTORY_PATH_BASE',
        type: 'string',
        value: '/xyz/openbmc_project/inventory/system',
        description: 'The base path for PSU inventory')
+
+
+# The PSU_VERSION_UTIL specifies an executable that accepts the PSU
+# inventory path as input, and output the version string, e.g
+#   psutils get-version /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0
+# or in vendor-example
+#   get-version <some-psu-path>
+option('PSU_VERSION_UTIL',
+       type: 'string',
+       value: '/usr/bin/psutils --getversion',
+       description: 'The command and arguments to get PSU version')

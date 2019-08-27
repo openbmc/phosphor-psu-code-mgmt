@@ -63,6 +63,14 @@ T getProperty(sdbusplus::bus::bus& bus, const char* service, const char* path,
  */
 std::string getVersionId(const std::string& version);
 
+/** @brief Get version of PSU specified by the inventory path
+ *
+ * @param[in] inventoryPath - The PSU inventory object path
+ *
+ * @return The version string, or empry string if it fails to get the version
+ */
+std::string getVersion(const std::string& inventoryPath);
+
 /**
  * @brief The interface for utils
  */
@@ -81,6 +89,8 @@ class UtilsInterface
                                    const char* interface) const = 0;
 
     virtual std::string getVersionId(const std::string& version) const = 0;
+
+    virtual std::string getVersion(const std::string& inventoryPath) const = 0;
 
     virtual any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                                 const char* path, const char* interface,
@@ -109,6 +119,8 @@ class Utils : public UtilsInterface
 
     std::string getVersionId(const std::string& version) const override;
 
+    std::string getVersion(const std::string& inventoryPath) const override;
+
     any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                         const char* path, const char* interface,
                         const char* propertyName) const override;
@@ -128,6 +140,11 @@ inline std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus)
 inline std::string getVersionId(const std::string& version)
 {
     return getUtils().getVersionId(version);
+}
+
+inline std::string getVersion(const std::string& inventoryPath)
+{
+    return getUtils().getVersion(inventoryPath);
 }
 
 template <typename T>
