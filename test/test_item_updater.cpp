@@ -271,8 +271,9 @@ TEST_F(TestItemUpdater, OnOnePSUAdded)
     itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
 
     // The PSU is present and version is added in a single call
-    Properties propAdded{{PRESENT, PropertyType(true)},
-                         {VERSION, PropertyType(std::string(version))}};
+    Properties propAdded{{PRESENT, PropertyType(true)}};
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath)))
         .Times(2);
     onPsuInventoryChanged(psuPath, propAdded);
@@ -310,11 +311,11 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAdded)
     onPsuInventoryChanged(psuPath, propRemoved);
 
     Properties propAdded{{PRESENT, PropertyType(true)}};
-    Properties propVersion{{VERSION, PropertyType(std::string(version))}};
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath)))
         .Times(2);
     onPsuInventoryChanged(psuPath, propAdded);
-    onPsuInventoryChanged(psuPath, propVersion);
 
     // on exit, objects are removed
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_removed(_, StrEq(objPath)))
@@ -384,10 +385,12 @@ TEST_F(TestItemUpdater,
     // Add PSU0 and PSU1 back, but PSU1 with a different version
     version1 = "version1";
     objPath1 = getObjPath(version1);
-    Properties propAdded0{{PRESENT, PropertyType(true)},
-                          {VERSION, PropertyType(std::string(version0))}};
-    Properties propAdded1{{PRESENT, PropertyType(true)},
-                          {VERSION, PropertyType(std::string(version1))}};
+    Properties propAdded0{{PRESENT, PropertyType(true)}};
+    Properties propAdded1{{PRESENT, PropertyType(true)}};
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu0)))
+        .WillOnce(Return(std::string(version0)));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
+        .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath0)))
         .Times(2);
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath1)))

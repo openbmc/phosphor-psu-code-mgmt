@@ -163,16 +163,6 @@ class ItemUpdater : public ItemUpdaterInherit
     std::map<std::string, const std::unique_ptr<Activation>&>
         psuPathActivationMap;
 
-    /** @brief A struct to hold the PSU present status and version */
-    struct psuStatus
-    {
-        bool present;
-        std::string version;
-    };
-
-    /** @brief The map of PSU inventory path and the psuStatus */
-    std::map<std::string, psuStatus> psuStatusMap;
-
     /** @brief sdbusplus signal match for PSU Software*/
     sdbusplus::bus::match_t versionMatch;
 
