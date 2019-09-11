@@ -59,6 +59,7 @@ auto Activation::activation(Activations value) -> Activations
     else
     {
         activationBlocksTransition.reset();
+        activationProgress.reset();
     }
 
     return SoftwareActivation::activation(value);
@@ -108,6 +109,10 @@ void Activation::unitStateChange(sdbusplus::message::message& msg)
 
 void Activation::startActivation()
 {
+    if (!activationProgress)
+    {
+        activationProgress = std::make_unique<ActivationProgress>(bus, path);
+    }
     if (!activationBlocksTransition)
     {
         activationBlocksTransition =
@@ -128,11 +133,15 @@ void Activation::startActivation()
                                       SYSTEMD_INTERFACE, "StartUnit");
     method.append(psuUpdateUnit, "replace");
     bus.call_noreply(method);
+
+    activationProgress->progress(10);
 }
 
 void Activation::finishActivation()
 {
+    activationProgress->progress(100);
     activationBlocksTransition.reset();
+    activationProgress.reset();
 
     // TODO: delete the old software object
     // TODO: create related associations
