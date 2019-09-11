@@ -99,6 +99,12 @@ class Activation : public ActivationInherit
      */
     void unitStateChange(sdbusplus::message::message& msg);
 
+    /**
+     * @brief Deletes the version from Image Manager and the
+     *        untar image from image upload dir.
+     */
+    void deleteImageManagerObject();
+
     /** @brief Start PSU update */
     void startActivation();
 
