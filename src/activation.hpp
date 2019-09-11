@@ -7,6 +7,7 @@
 #include <sdbusplus/server.hpp>
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Software/Activation/server.hpp>
+#include <xyz/openbmc_project/Software/ActivationBlocksTransition/server.hpp>
 #include <xyz/openbmc_project/Software/ExtendedVersion/server.hpp>
 
 namespace phosphor
@@ -17,6 +18,45 @@ namespace updater
 {
 
 namespace sdbusRule = sdbusplus::bus::match::rules;
+
+using ActivationBlocksTransitionInherit = sdbusplus::server::object::object<
+    sdbusplus::xyz::openbmc_project::Software::server::
+        ActivationBlocksTransition>;
+
+/** @class ActivationBlocksTransition
+ *  @brief OpenBMC ActivationBlocksTransition implementation.
+ *  @details A concrete implementation for
+ *  xyz.openbmc_project.Software.ActivationBlocksTransition DBus API.
+ */
+class ActivationBlocksTransition : public ActivationBlocksTransitionInherit
+{
+  public:
+    /** @brief Constructs ActivationBlocksTransition.
+     *
+     * @param[in] bus    - The Dbus bus object
+     * @param[in] path   - The Dbus object path
+     */
+    ActivationBlocksTransition(sdbusplus::bus::bus& bus,
+                               const std::string& path) :
+        ActivationBlocksTransitionInherit(bus, path.c_str(), true),
+        bus(bus), path(path)
+    {
+        std::vector<std::string> interfaces({interface});
+        bus.emit_interfaces_added(path.c_str(), interfaces);
+    }
+
+    ~ActivationBlocksTransition()
+    {
+        std::vector<std::string> interfaces({interface});
+        bus.emit_interfaces_removed(path.c_str(), interfaces);
+    }
+
+  private:
+    static constexpr auto interface =
+        "xyz.openbmc_project.Software.ActivationBlocksTransition";
+    sdbusplus::bus::bus& bus;
+    std::string path;
+};
 
 using ActivationInherit = sdbusplus::server::object::object<
     sdbusplus::xyz::openbmc_project::Software::server::ExtendedVersion,
@@ -121,6 +161,9 @@ class Activation : public ActivationInherit
 
     /** @brief The PSU update systemd unit */
     std::string psuUpdateUnit;
+
+    /** @brief Persistent ActivationBlocksTransition dbus object */
+    std::unique_ptr<ActivationBlocksTransition> activationBlocksTransition;
 };
 
 } // namespace updater

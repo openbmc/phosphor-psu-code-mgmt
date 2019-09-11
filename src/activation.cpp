@@ -58,7 +58,7 @@ auto Activation::activation(Activations value) -> Activations
     }
     else
     {
-        // TODO
+        activationBlocksTransition.reset();
     }
 
     return SoftwareActivation::activation(value);
@@ -108,6 +108,12 @@ void Activation::unitStateChange(sdbusplus::message::message& msg)
 
 void Activation::startActivation()
 {
+    if (!activationBlocksTransition)
+    {
+        activationBlocksTransition =
+            std::make_unique<ActivationBlocksTransition>(bus, path);
+    }
+
     // TODO: for now only update one psu, future commits shall handle update
     // multiple psus
     auto psuPaths = utils::getPSUInventoryPath(bus);
@@ -126,6 +132,8 @@ void Activation::startActivation()
 
 void Activation::finishActivation()
 {
+    activationBlocksTransition.reset();
+
     // TODO: delete the old software object
     // TODO: create related associations
     deleteImageManagerObject();
