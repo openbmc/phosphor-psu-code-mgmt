@@ -16,6 +16,8 @@ namespace software
 namespace updater
 {
 
+namespace sdbusRule = sdbusplus::bus::match::rules;
+
 using ActivationInherit = sdbusplus::server::object::object<
     sdbusplus::xyz::openbmc_project::Software::server::ExtendedVersion,
     sdbusplus::xyz::openbmc_project::Software::server::Activation,
@@ -29,6 +31,7 @@ using ActivationInherit = sdbusplus::server::object::object<
 class Activation : public ActivationInherit
 {
   public:
+    using Status = Activations;
     /** @brief Constructs Activation Software Manager
      *
      * @param[in] bus    - The Dbus bus object
@@ -44,7 +47,14 @@ class Activation : public ActivationInherit
                    Activations activationStatus,
                const AssociationList& assocs) :
         ActivationInherit(bus, path.c_str(), true),
-        bus(bus), path(path), versionId(versionId)
+        versionId(versionId), bus(bus), path(path),
+        systemdSignals(
+            bus,
+            sdbusRule::type::signal() + sdbusRule::member("JobRemoved") +
+                sdbusRule::path("/org/freedesktop/systemd1") +
+                sdbusRule::interface("org.freedesktop.systemd1.Manager"),
+            std::bind(&Activation::unitStateChange, this,
+                      std::placeholders::_1))
     {
         // Set Properties.
         extendedVersion(extVersion);
@@ -75,14 +85,37 @@ class Activation : public ActivationInherit
     RequestedActivations
         requestedActivation(RequestedActivations value) override;
 
+    /** @brief Version id */
+    std::string versionId;
+
+  private:
+    /** @brief Check if systemd state change is relevant to this object
+     *
+     * Instance specific interface to handle the detected systemd state
+     * change
+     *
+     * @param[in]  msg       - Data associated with subscribed signal
+     *
+     */
+    void unitStateChange(sdbusplus::message::message& msg);
+
+    /** @brief Start PSU update */
+    void startActivation();
+
+    /** @brief Finish PSU update */
+    void finishActivation();
+
     /** @brief Persistent sdbusplus DBus bus connection */
     sdbusplus::bus::bus& bus;
 
     /** @brief Persistent DBus object path */
     std::string path;
 
-    /** @brief Version id */
-    std::string versionId;
+    /** @brief Used to subscribe to dbus systemd signals */
+    sdbusplus::bus::match_t systemdSignals;
+
+    /** @brief The PSU update systemd unit */
+    std::string psuUpdateUnit;
 };
 
 } // namespace updater

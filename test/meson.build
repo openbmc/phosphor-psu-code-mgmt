@@ -37,12 +37,13 @@ test_util = executable(
     ssl,
   ])
 
-test_item_updater = executable(
-  'test_item_updater',
+test_phosphor_psu_manager = executable(
+  'test_phosphor_psu_manager',
   '../src/activation.cpp',
   '../src/item_updater.cpp',
   '../src/version.cpp',
   'test_item_updater.cpp',
+  'test_activation.cpp',
   include_directories: [psu_inc, test_inc],
   link_args: dynamic_linker,
   build_rpath: oe_sdk.enabled() ? rpath : '',
@@ -56,4 +57,4 @@ test_item_updater = executable(
   ])
 
 test('util', test_util)
-test('item_updater', test_item_updater)
+test('phosphor_psu_manager', test_phosphor_psu_manager)

@@ -35,6 +35,8 @@ cdata.set_quoted('SOFTWARE_OBJPATH', get_option('SOFTWARE_OBJPATH'))
 cdata.set_quoted('MANIFEST_FILE', get_option('MANIFEST_FILE'))
 cdata.set_quoted('PSU_INVENTORY_PATH_BASE', get_option('PSU_INVENTORY_PATH_BASE'))
 cdata.set_quoted('PSU_VERSION_UTIL', get_option('PSU_VERSION_UTIL'))
+cdata.set_quoted('PSU_UPDATE_SERVICE', get_option('PSU_UPDATE_SERVICE'))
+cdata.set_quoted('IMG_DIR', get_option('IMG_DIR'))
 
 phosphor_dbus_interfaces = dependency('phosphor-dbus-interfaces')
 phosphor_logging = dependency('phosphor-logging')

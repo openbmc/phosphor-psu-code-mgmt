@@ -17,6 +17,10 @@ option('PSU_INVENTORY_PATH_BASE',
        value: '/xyz/openbmc_project/inventory/system',
        description: 'The base path for PSU inventory')
 
+option('IMG_DIR',
+       type: 'string',
+       value: '/tmp/images',
+       description: 'The directory where downloaded or uploaded PSU images are placed and extracted')
 
 # The PSU_VERSION_UTIL specifies an executable that accepts the PSU
 # inventory path as input, and output the version string, e.g
@@ -27,3 +31,10 @@ option('PSU_VERSION_UTIL',
        type: 'string',
        value: '/usr/bin/psutils --getversion',
        description: 'The command and arguments to get PSU version')
+
+# The PSU update service
+# It shall take a path containing the PSU image(s) as the input
+option('PSU_UPDATE_SERVICE',
+       type: 'string',
+       value: 'psu-update@.service',
+       description: 'The PSU update service')
