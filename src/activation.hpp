@@ -8,6 +8,7 @@
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Software/Activation/server.hpp>
 #include <xyz/openbmc_project/Software/ActivationBlocksTransition/server.hpp>
+#include <xyz/openbmc_project/Software/ActivationProgress/server.hpp>
 #include <xyz/openbmc_project/Software/ExtendedVersion/server.hpp>
 
 namespace phosphor
@@ -43,6 +44,39 @@ class ActivationBlocksTransition : public ActivationBlocksTransitionInherit
         // Empty
     }
     ~ActivationBlocksTransition() = default;
+};
+
+using ActivationProgressInherit = sdbusplus::server::object::object<
+    sdbusplus::xyz::openbmc_project::Software::server::ActivationProgress>;
+
+class ActivationProgress : public ActivationProgressInherit
+{
+  public:
+    /** @brief Constructs ActivationProgress.
+     *
+     * @param[in] bus    - The Dbus bus object
+     * @param[in] path   - The Dbus object path
+     */
+    ActivationProgress(sdbusplus::bus::bus& bus, const std::string& path) :
+        ActivationProgressInherit(bus, path.c_str(), true), bus(bus), path(path)
+    {
+        progress(0);
+        std::vector<std::string> interfaces({interface});
+        bus.emit_interfaces_added(path.c_str(), interfaces);
+    }
+
+    ~ActivationProgress()
+    {
+        std::vector<std::string> interfaces({interface});
+        bus.emit_interfaces_removed(path.c_str(), interfaces);
+    }
+
+  private:
+    // TODO Remove once openbmc/openbmc#1975 is resolved
+    static constexpr auto interface =
+        "xyz.openbmc_project.Software.ActivationProgress";
+    sdbusplus::bus::bus& bus;
+    std::string path;
 };
 
 using ActivationInherit = sdbusplus::server::object::object<
@@ -152,6 +186,9 @@ class Activation : public ActivationInherit
 
     /** @brief Persistent ActivationBlocksTransition dbus object */
     std::unique_ptr<ActivationBlocksTransition> activationBlocksTransition;
+
+    /** @brief Persistent ActivationProgress dbus object */
+    std::unique_ptr<ActivationProgress> activationProgress;
 };
 
 } // namespace updater
