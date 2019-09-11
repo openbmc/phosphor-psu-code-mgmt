@@ -37,6 +37,17 @@ std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus);
 std::string getService(sdbusplus::bus::bus& bus, const char* path,
                        const char* interface);
 
+/** @brief Get all the service names from object path and interface
+ *
+ * @param[in] bus          - The Dbus bus object
+ * @param[in] path         - The Dbus object path
+ * @param[in] interface    - The Dbus interface
+ *
+ * @return The name of the services
+ */
+std::vector<std::string> getServices(sdbusplus::bus::bus& bus, const char* path,
+                                     const char* interface);
+
 /** @brief The template function to get property from the requested dbus path
  *
  * @param[in] bus          - The Dbus bus object
@@ -88,6 +99,10 @@ class UtilsInterface
     virtual std::string getService(sdbusplus::bus::bus& bus, const char* path,
                                    const char* interface) const = 0;
 
+    virtual std::vector<std::string>
+        getServices(sdbusplus::bus::bus& bus, const char* path,
+                    const char* interface) const = 0;
+
     virtual std::string getVersionId(const std::string& version) const = 0;
 
     virtual std::string getVersion(const std::string& inventoryPath) const = 0;
@@ -117,6 +132,10 @@ class Utils : public UtilsInterface
     std::string getService(sdbusplus::bus::bus& bus, const char* path,
                            const char* interface) const override;
 
+    std::vector<std::string> getServices(sdbusplus::bus::bus& bus,
+                                         const char* path,
+                                         const char* interface) const override;
+
     std::string getVersionId(const std::string& version) const override;
 
     std::string getVersion(const std::string& inventoryPath) const override;
@@ -130,6 +149,13 @@ inline std::string getService(sdbusplus::bus::bus& bus, const char* path,
                               const char* interface)
 {
     return getUtils().getService(bus, path, interface);
+}
+
+inline std::vector<std::string> getServices(sdbusplus::bus::bus& bus,
+                                            const char* path,
+                                            const char* interface)
+{
+    return getUtils().getServices(bus, path, interface);
 }
 
 inline std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus)

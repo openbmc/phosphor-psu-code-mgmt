@@ -6,6 +6,8 @@
 
 #include <cassert>
 #include <filesystem>
+#include <phosphor-logging/elog-errors.hpp>
+#include <phosphor-logging/log.hpp>
 
 namespace phosphor
 {
@@ -21,6 +23,8 @@ constexpr auto SYSTEMD_INTERFACE = "org.freedesktop.systemd1.Manager";
 namespace fs = std::filesystem;
 namespace softwareServer = sdbusplus::xyz::openbmc_project::Software::server;
 
+using namespace phosphor::logging;
+using sdbusplus::exception::SdBusError;
 using SoftwareActivation = softwareServer::Activation;
 
 namespace internal
@@ -118,10 +122,49 @@ void Activation::startActivation()
 
 void Activation::finishActivation()
 {
-    // TODO: delete the interfaces created by phosphor-software-manager
     // TODO: delete the old software object
     // TODO: create related associations
+    deleteImageManagerObject();
     activation(Status::Active);
+}
+
+void Activation::deleteImageManagerObject()
+{
+    // Get the Delete object for <versionID> inside image_manager
+    constexpr auto versionServiceStr = "xyz.openbmc_project.Software.Version";
+    constexpr auto deleteInterface = "xyz.openbmc_project.Object.Delete";
+    std::string versionService;
+    auto services = utils::getServices(bus, path.c_str(), deleteInterface);
+
+    // We need to find the phosphor-version-software-manager's version service
+    // to invoke the delete interface
+    for (const auto& service : services)
+    {
+        if (service.find(versionServiceStr) != std::string::npos)
+        {
+            versionService = service;
+            break;
+        }
+    }
+    if (versionService.empty())
+    {
+        log<level::ERR>("Error finding version service");
+        return;
+    }
+
+    // Call the Delete object for <versionID> inside image_manager
+    auto method = bus.new_method_call(versionService.c_str(), path.c_str(),
+                                      deleteInterface, "Delete");
+    try
+    {
+        bus.call(method);
+    }
+    catch (const SdBusError& e)
+    {
+        log<level::ERR>("Error performing call to Delete object path",
+                        entry("ERROR=%s", e.what()),
+                        entry("PATH=%s", path.c_str()));
+    }
 }
 
 } // namespace updater
