@@ -32,7 +32,7 @@ class MockedUtils : public UtilsInterface
                            const char* propertyName));
 };
 
-const UtilsInterface& getUtils()
+inline const UtilsInterface& getUtils()
 {
     static MockedUtils utils;
     return utils;
