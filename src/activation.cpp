@@ -54,7 +54,7 @@ auto Activation::activation(Activations value) -> Activations
 {
     if (value == Status::Activating)
     {
-        startActivation();
+        value = startActivation();
     }
     else
     {
@@ -94,16 +94,55 @@ void Activation::unitStateChange(sdbusplus::message::message& msg)
     {
         if (newStateResult == "done")
         {
-            finishActivation();
+            onUpdateDone();
         }
         if (newStateResult == "failed" || newStateResult == "dependency")
         {
-            activation(Status::Failed);
+            onUpdateFailed();
         }
     }
 }
 
-void Activation::startActivation()
+void Activation::doUpdate(const std::string psuInventoryPath)
+{
+    psuUpdateUnit = internal::getUpdateService(psuInventoryPath, versionId);
+    auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
+                                      SYSTEMD_INTERFACE, "StartUnit");
+    method.append(psuUpdateUnit, "replace");
+    bus.call_noreply(method);
+}
+
+void Activation::doUpdate()
+{
+    // When the queue is empty, all updates are done
+    if (psuQueue.empty())
+    {
+        finishActivation();
+        return;
+    }
+
+    // Do the update on a PSU
+    const auto& psu = psuQueue.front();
+    doUpdate(psu);
+}
+
+void Activation::onUpdateDone()
+{
+    auto progress = activationProgress->progress() + progressStep;
+    activationProgress->progress(progress);
+
+    psuQueue.pop();
+    doUpdate(); // Update the next psu
+}
+
+void Activation::onUpdateFailed()
+{
+    log<level::ERR>("Failed to udpate PSU",
+                    entry("PSU=%s", psuQueue.front().c_str()));
+    activation(Status::Failed);
+}
+
+Activation::Status Activation::startActivation()
 {
     if (!activationProgress)
     {
@@ -120,17 +159,19 @@ void Activation::startActivation()
     auto psuPaths = utils::getPSUInventoryPath(bus);
     if (psuPaths.empty())
     {
-        return;
+        log<level::WARNING>("No PSU inventory found");
+        return Status::Failed;
     }
 
-    psuUpdateUnit = internal::getUpdateService(psuPaths[0], versionId);
+    for (const auto& p : psuPaths)
+    {
+        psuQueue.push(p);
+    }
 
-    auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
-                                      SYSTEMD_INTERFACE, "StartUnit");
-    method.append(psuUpdateUnit, "replace");
-    bus.call_noreply(method);
-
+    progressStep = 80 / psuPaths.size();
+    doUpdate();
     activationProgress->progress(10);
+    return Status::Activating;
 }
 
 void Activation::finishActivation()
