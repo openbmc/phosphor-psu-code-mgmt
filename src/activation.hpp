@@ -4,12 +4,15 @@
 
 #include "types.hpp"
 
+#include <queue>
 #include <sdbusplus/server.hpp>
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Software/Activation/server.hpp>
 #include <xyz/openbmc_project/Software/ActivationBlocksTransition/server.hpp>
 #include <xyz/openbmc_project/Software/ActivationProgress/server.hpp>
 #include <xyz/openbmc_project/Software/ExtendedVersion/server.hpp>
+
+class TestActivation;
 
 namespace phosphor
 {
@@ -92,7 +95,9 @@ using ActivationInherit = sdbusplus::server::object::object<
 class Activation : public ActivationInherit
 {
   public:
+    friend class ::TestActivation;
     using Status = Activations;
+
     /** @brief Constructs Activation Software Manager
      *
      * @param[in] bus    - The Dbus bus object
@@ -104,9 +109,7 @@ class Activation : public ActivationInherit
      */
     Activation(sdbusplus::bus::bus& bus, const std::string& path,
                const std::string& versionId, const std::string& extVersion,
-               sdbusplus::xyz::openbmc_project::Software::server::Activation::
-                   Activations activationStatus,
-               const AssociationList& assocs) :
+               Status activationStatus, const AssociationList& assocs) :
         ActivationInherit(bus, path.c_str(), true),
         versionId(versionId), bus(bus), path(path),
         systemdSignals(
@@ -132,7 +135,7 @@ class Activation : public ActivationInherit
      *
      * @return Success or exception thrown
      */
-    Activations activation(Activations value) override;
+    Status activation(Status value) override;
 
     /** @brief Activation */
     using ActivationInherit::activation;
@@ -166,8 +169,20 @@ class Activation : public ActivationInherit
      */
     void deleteImageManagerObject();
 
+    /** @brief Invoke the update service for the PSU */
+    void doUpdate(const std::string& psuInventoryPath);
+
+    /** @brief Do PSU update one-by-one */
+    void doUpdate();
+
+    /** @brief Handle an update done event */
+    void onUpdateDone();
+
+    /** @brief Handle an update failure event */
+    void onUpdateFailed();
+
     /** @brief Start PSU update */
-    void startActivation();
+    Status startActivation();
 
     /** @brief Finish PSU update */
     void finishActivation();
@@ -180,6 +195,12 @@ class Activation : public ActivationInherit
 
     /** @brief Used to subscribe to dbus systemd signals */
     sdbusplus::bus::match_t systemdSignals;
+
+    /** @brief The queue of psu objects to be updated */
+    std::queue<std::string> psuQueue;
+
+    /** @brief The progress step for each PSU update is done */
+    uint32_t progressStep;
 
     /** @brief The PSU update systemd unit */
     std::string psuUpdateUnit;
