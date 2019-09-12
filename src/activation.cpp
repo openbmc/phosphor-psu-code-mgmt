@@ -54,7 +54,7 @@ auto Activation::activation(Activations value) -> Activations
 {
     if (value == Status::Activating)
     {
-        startActivation();
+        value = startActivation();
     }
     else
     {
@@ -94,16 +94,67 @@ void Activation::unitStateChange(sdbusplus::message::message& msg)
     {
         if (newStateResult == "done")
         {
-            finishActivation();
+            onUpdateDone();
         }
         if (newStateResult == "failed" || newStateResult == "dependency")
         {
-            activation(Status::Failed);
+            onUpdateFailed();
         }
     }
 }
 
-void Activation::startActivation()
+bool Activation::doUpdate(const std::string& psuInventoryPath)
+{
+    psuUpdateUnit = internal::getUpdateService(psuInventoryPath, versionId);
+    try
+    {
+        auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
+                                          SYSTEMD_INTERFACE, "StartUnit");
+        method.append(psuUpdateUnit, "replace");
+        bus.call_noreply(method);
+        return true;
+    }
+    catch (const SdBusError& e)
+    {
+        log<level::ERR>("Error staring service", entry("ERROR=%s", e.what()));
+        onUpdateFailed();
+        return false;
+    }
+}
+
+bool Activation::doUpdate()
+{
+    // When the queue is empty, all updates are done
+    if (psuQueue.empty())
+    {
+        finishActivation();
+        return true;
+    }
+
+    // Do the update on a PSU
+    const auto& psu = psuQueue.front();
+    return doUpdate(psu);
+}
+
+void Activation::onUpdateDone()
+{
+    auto progress = activationProgress->progress() + progressStep;
+    activationProgress->progress(progress);
+
+    psuQueue.pop();
+    doUpdate(); // Update the next psu
+}
+
+void Activation::onUpdateFailed()
+{
+    // TODO: report an event
+    log<level::ERR>("Failed to udpate PSU",
+                    entry("PSU=%s", psuQueue.front().c_str()));
+    std::queue<std::string>().swap(psuQueue); // Clear the queue
+    activation(Status::Failed);
+}
+
+Activation::Status Activation::startActivation()
 {
     if (!activationProgress)
     {
@@ -115,29 +166,40 @@ void Activation::startActivation()
             std::make_unique<ActivationBlocksTransition>(bus, path);
     }
 
-    // TODO: for now only update one psu, future commits shall handle update
-    // multiple psus
     auto psuPaths = utils::getPSUInventoryPath(bus);
     if (psuPaths.empty())
     {
-        return;
+        log<level::WARNING>("No PSU inventory found");
+        return Status::Failed;
     }
 
-    psuUpdateUnit = internal::getUpdateService(psuPaths[0], versionId);
+    for (const auto& p : psuPaths)
+    {
+        psuQueue.push(p);
+    }
 
-    auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
-                                      SYSTEMD_INTERFACE, "StartUnit");
-    method.append(psuUpdateUnit, "replace");
-    bus.call_noreply(method);
-
-    activationProgress->progress(10);
+    // The progress to be increased for each successful update of PSU
+    // E.g. in case we have 4 PSUs:
+    //   1. Initial progrss is 10
+    //   2. Add 20 after each update is done, so we will see progress to be 30,
+    //      50, 70, 90
+    //   3. When all PSUs are updated, it will be 100 and the interface is
+    //   removed.
+    progressStep = 80 / psuQueue.size();
+    if (doUpdate())
+    {
+        activationProgress->progress(10);
+        return Status::Activating;
+    }
+    else
+    {
+        return Status::Failed;
+    }
 }
 
 void Activation::finishActivation()
 {
     activationProgress->progress(100);
-    activationBlocksTransition.reset();
-    activationProgress.reset();
 
     // TODO: delete the old software object
     // TODO: create related associations
