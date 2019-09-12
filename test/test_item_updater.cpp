@@ -25,6 +25,8 @@ class TestItemUpdater : public ::testing::Test
             reinterpret_cast<const utils::MockedUtils&>(utils::getUtils()))
     {
         ON_CALL(mockedUtils, getVersionId(_)).WillByDefault(ReturnArg<0>());
+        ON_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(PRESENT)))
+            .WillByDefault(Return(any(PropertyType(true))));
     }
 
     ~TestItemUpdater()
