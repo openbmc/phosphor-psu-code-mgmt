@@ -1,4 +1,5 @@
 #include "activation.hpp"
+#include "mocked_association_interface.hpp"
 #include "mocked_utils.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
@@ -37,13 +38,14 @@ class TestActivation : public ::testing::Test
     {
         return activation->activationProgress->progress();
     }
-    static constexpr auto dBusPath = SOFTWARE_OBJPATH;
     sdbusplus::SdBusMock sdbusMock;
     sdbusplus::bus::bus mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
     const utils::MockedUtils& mockedUtils;
+    MockedAssociationInterface mockedAssociationInterface;
     std::unique_ptr<Activation> activation;
     std::string versionId = "abcdefgh";
     std::string extVersion = "Some Ext Version";
+    std::string dBusPath = std::string(SOFTWARE_OBJPATH) + "/" + versionId;
     Status status = Status::Ready;
     AssociationList associations;
 };
@@ -51,7 +53,8 @@ class TestActivation : public ::testing::Test
 TEST_F(TestActivation, ctordtor)
 {
     activation = std::make_unique<Activation>(mockedBus, dBusPath, versionId,
-                                              extVersion, status, associations);
+                                              extVersion, status, associations,
+                                              &mockedAssociationInterface);
 }
 
 namespace phosphor::software::updater::internal
@@ -75,12 +78,17 @@ TEST_F(TestActivation, getUpdateService)
 TEST_F(TestActivation, doUpdateWhenNoPSU)
 {
     activation = std::make_unique<Activation>(mockedBus, dBusPath, versionId,
-                                              extVersion, status, associations);
+                                              extVersion, status, associations,
+                                              &mockedAssociationInterface);
     ON_CALL(mockedUtils, getPSUInventoryPath(_))
         .WillByDefault(
             Return(std::vector<std::string>({}))); // No PSU inventory
     activation->requestedActivation(RequestedStatus::Active);
 
+    EXPECT_CALL(mockedAssociationInterface, createActiveAssociation(dBusPath))
+        .Times(0);
+    EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
+        .Times(0);
     EXPECT_EQ(Status::Failed, activation->activation());
 }
 
@@ -88,7 +96,8 @@ TEST_F(TestActivation, doUpdateOnePSUOK)
 {
     constexpr auto psu0 = "/com/example/inventory/psu0";
     activation = std::make_unique<Activation>(mockedBus, dBusPath, versionId,
-                                              extVersion, status, associations);
+                                              extVersion, status, associations,
+                                              &mockedAssociationInterface);
     ON_CALL(mockedUtils, getPSUInventoryPath(_))
         .WillByDefault(
             Return(std::vector<std::string>({psu0}))); // One PSU inventory
@@ -96,6 +105,10 @@ TEST_F(TestActivation, doUpdateOnePSUOK)
 
     EXPECT_EQ(Status::Activating, activation->activation());
 
+    EXPECT_CALL(mockedAssociationInterface, createActiveAssociation(dBusPath))
+        .Times(1);
+    EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
+        .Times(1);
     onUpdateDone();
     EXPECT_EQ(Status::Active, activation->activation());
 }
@@ -107,7 +120,8 @@ TEST_F(TestActivation, doUpdateFourPSUsOK)
     constexpr auto psu2 = "/com/example/inventory/psu2";
     constexpr auto psu3 = "/com/example/inventory/psu3";
     activation = std::make_unique<Activation>(mockedBus, dBusPath, versionId,
-                                              extVersion, status, associations);
+                                              extVersion, status, associations,
+                                              &mockedAssociationInterface);
     ON_CALL(mockedUtils, getPSUInventoryPath(_))
         .WillByDefault(Return(
             std::vector<std::string>({psu0, psu1, psu2, psu3}))); // 4 PSUs
@@ -128,6 +142,11 @@ TEST_F(TestActivation, doUpdateFourPSUsOK)
     EXPECT_EQ(Status::Activating, activation->activation());
     EXPECT_EQ(70, getProgress());
 
+    EXPECT_CALL(mockedAssociationInterface, createActiveAssociation(dBusPath))
+        .Times(1);
+    EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
+        .Times(1);
+
     onUpdateDone();
     EXPECT_EQ(Status::Active, activation->activation());
 }
@@ -139,7 +158,8 @@ TEST_F(TestActivation, doUpdateFourPSUsFailonSecond)
     constexpr auto psu2 = "/com/example/inventory/psu2";
     constexpr auto psu3 = "/com/example/inventory/psu3";
     activation = std::make_unique<Activation>(mockedBus, dBusPath, versionId,
-                                              extVersion, status, associations);
+                                              extVersion, status, associations,
+                                              &mockedAssociationInterface);
     ON_CALL(mockedUtils, getPSUInventoryPath(_))
         .WillByDefault(Return(
             std::vector<std::string>({psu0, psu1, psu2, psu3}))); // 4 PSUs
@@ -152,6 +172,10 @@ TEST_F(TestActivation, doUpdateFourPSUsFailonSecond)
     EXPECT_EQ(Status::Activating, activation->activation());
     EXPECT_EQ(30, getProgress());
 
+    EXPECT_CALL(mockedAssociationInterface, createActiveAssociation(dBusPath))
+        .Times(0);
+    EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
+        .Times(0);
     onUpdateFailed();
     EXPECT_EQ(Status::Failed, activation->activation());
 }

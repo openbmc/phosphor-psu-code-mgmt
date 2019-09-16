@@ -190,7 +190,7 @@ std::unique_ptr<Activation> ItemUpdater::createActivationObject(
     const AssociationList& assocs)
 {
     return std::make_unique<Activation>(bus, path, versionId, extVersion,
-                                        activationStatus, assocs);
+                                        activationStatus, assocs, this);
 }
 
 void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,

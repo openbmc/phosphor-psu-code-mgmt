@@ -105,7 +105,8 @@ void Activation::unitStateChange(sdbusplus::message::message& msg)
 
 void Activation::doUpdate(const std::string& psuInventoryPath)
 {
-    psuUpdateUnit = internal::getUpdateService(psuInventoryPath, versionId);
+    currentUpdatingPsu = psuInventoryPath;
+    psuUpdateUnit = internal::getUpdateService(currentUpdatingPsu, versionId);
     auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
                                       SYSTEMD_INTERFACE, "StartUnit");
     method.append(psuUpdateUnit, "replace");
@@ -130,6 +131,14 @@ void Activation::onUpdateDone()
 {
     auto progress = activationProgress->progress() + progressStep;
     activationProgress->progress(progress);
+
+    // Update the activation association
+    auto assocs = associations();
+    assocs.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
+                                        ACTIVATION_REV_ASSOCIATION,
+                                        currentUpdatingPsu));
+    currentUpdatingPsu.clear();
+    associations(assocs);
 
     psuQueue.pop();
     doUpdate(); // Update the next psu
@@ -179,8 +188,11 @@ void Activation::finishActivation()
     activationProgress.reset();
 
     // TODO: delete the old software object
-    // TODO: create related associations
     deleteImageManagerObject();
+
+    associationInterface->createActiveAssociation(path);
+    associationInterface->addFunctionalAssociation(path);
+
     activation(Status::Active);
 }
 
