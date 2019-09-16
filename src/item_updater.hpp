@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include "activation.hpp"
+#include "association_interface.hpp"
 #include "types.hpp"
 #include "utils.hpp"
 #include "version.hpp"
@@ -31,7 +32,7 @@ namespace MatchRules = sdbusplus::bus::match::rules;
 /** @class ItemUpdater
  *  @brief Manages the activation of the PSU version items.
  */
-class ItemUpdater : public ItemUpdaterInherit
+class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
 {
     friend class ::TestItemUpdater;
 
@@ -63,27 +64,27 @@ class ItemUpdater : public ItemUpdaterInherit
      */
     void deleteAll();
 
-  private:
     /** @brief Creates an active association to the
      *  newly active software image
      *
      * @param[in]  path - The path to create the association to.
      */
-    void createActiveAssociation(const std::string& path);
+    void createActiveAssociation(const std::string& path) override;
 
     /** @brief Add the functional association to the
      *  new "running" PSU images
      *
      * @param[in]  path - The path to add the association to.
      */
-    void addFunctionalAssociation(const std::string& path);
+    void addFunctionalAssociation(const std::string& path) override;
 
     /** @brief Removes the associations from the provided software image path
      *
      * @param[in]  path - The path to remove the association from.
      */
-    void removeAssociation(const std::string& path);
+    void removeAssociation(const std::string& path) override;
 
+  private:
     /** @brief Callback function for Software.Version match.
      *  @details Creates an Activation D-Bus object.
      *
