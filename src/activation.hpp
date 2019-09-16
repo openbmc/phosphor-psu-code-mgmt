@@ -2,6 +2,7 @@
 
 #include "config.h"
 
+#include "association_interface.hpp"
 #include "types.hpp"
 
 #include <queue>
@@ -109,7 +110,8 @@ class Activation : public ActivationInherit
      */
     Activation(sdbusplus::bus::bus& bus, const std::string& path,
                const std::string& versionId, const std::string& extVersion,
-               Status activationStatus, const AssociationList& assocs) :
+               Status activationStatus, const AssociationList& assocs,
+               AssociationInterface* associationInterface) :
         ActivationInherit(bus, path.c_str(), true),
         versionId(versionId), bus(bus), path(path),
         systemdSignals(
@@ -118,7 +120,8 @@ class Activation : public ActivationInherit
                 sdbusRule::path("/org/freedesktop/systemd1") +
                 sdbusRule::interface("org.freedesktop.systemd1.Manager"),
             std::bind(&Activation::unitStateChange, this,
-                      std::placeholders::_1))
+                      std::placeholders::_1)),
+        associationInterface(associationInterface)
     {
         // Set Properties.
         extendedVersion(extVersion);
@@ -205,11 +208,17 @@ class Activation : public ActivationInherit
     /** @brief The PSU update systemd unit */
     std::string psuUpdateUnit;
 
+    /** @brief The PSU Inventory path of the current updating PSU */
+    std::string currentUpdatingPsu;
+
     /** @brief Persistent ActivationBlocksTransition dbus object */
     std::unique_ptr<ActivationBlocksTransition> activationBlocksTransition;
 
     /** @brief Persistent ActivationProgress dbus object */
     std::unique_ptr<ActivationProgress> activationProgress;
+
+    /** @brief The AssociationInterface pointer */
+    AssociationInterface* associationInterface;
 };
 
 } // namespace updater
