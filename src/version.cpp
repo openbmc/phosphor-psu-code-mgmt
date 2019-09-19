@@ -53,6 +53,29 @@ std::map<std::string, std::string>
     return ret;
 }
 
+std::map<std::string, std::string>
+    Version::getExtVersionInfo(const std::string& extVersion)
+{
+    // The extVersion shall be key/value pairs separated by comma,
+    // e.g. key1=value1,key2=value2
+    std::map<std::string, std::string> result;
+    std::stringstream ss(extVersion);
+
+    while (ss.good())
+    {
+        std::string substr;
+        getline(ss, substr, ',');
+        auto pos = substr.find('=');
+        if (pos != std::string::npos)
+        {
+            std::string key = substr.substr(0, pos);
+            std::string value = substr.substr(pos + 1);
+            result.emplace(key, value);
+        }
+    }
+    return result;
+}
+
 void Delete::delete_()
 {
     if (version.eraseCallback)

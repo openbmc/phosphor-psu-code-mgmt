@@ -65,3 +65,16 @@ TEST_F(TestVersion, getValuesOK)
     EXPECT_EQ("psu-dummy-test.v0.1", version);
     EXPECT_EQ("model=dummy_model,manufacture=dummy_manufacture", extVersion);
 }
+
+TEST_F(TestVersion, getExtVersionInfo)
+{
+    std::string extVersion = "";
+    auto ret = Version::getExtVersionInfo(extVersion);
+    EXPECT_TRUE(ret.empty());
+
+    extVersion = "manufacturer=TestManu,model=TestModel";
+    ret = Version::getExtVersionInfo(extVersion);
+    EXPECT_EQ(2u, ret.size());
+    EXPECT_EQ("TestManu", ret["manufacturer"]);
+    EXPECT_EQ("TestModel", ret["model"]);
+}
