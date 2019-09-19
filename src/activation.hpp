@@ -4,6 +4,7 @@
 
 #include "association_interface.hpp"
 #include "types.hpp"
+#include "version.hpp"
 
 #include <queue>
 #include <sdbusplus/server.hpp>
@@ -142,6 +143,10 @@ class Activation : public ActivationInherit
         activation(activationStatus);
         associations(assocs);
 
+        auto info = Version::getExtVersionInfo(extVersion);
+        manufacturer = info["manufacturer"];
+        model = info["model"];
+
         // Emit deferred signal.
         emit_object_added();
     }
@@ -212,6 +217,9 @@ class Activation : public ActivationInherit
     /** @brief Finish PSU update */
     void finishActivation();
 
+    /** @brief Check if the PSU is comaptible with this software*/
+    bool isCompatible(const std::string& psuInventoryPath);
+
     /** @brief Persistent sdbusplus DBus bus connection */
     sdbusplus::bus::bus& bus;
 
@@ -241,6 +249,12 @@ class Activation : public ActivationInherit
 
     /** @brief The AssociationInterface pointer */
     AssociationInterface* associationInterface;
+
+    /** @brief The PSU manufacturer of the software */
+    std::string manufacturer;
+
+    /** @brief The PSU model of the software */
+    std::string model;
 };
 
 } // namespace updater

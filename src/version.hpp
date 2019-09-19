@@ -129,6 +129,16 @@ class Version : public VersionInherit
         getValues(const std::string& filePath,
                   const std::vector<std::string>& keys);
 
+    /** @brief Get information from extVersion
+     *
+     * @param[in] extVersion - The extended version string that contains
+     *                         key/value pairs separated by comma.
+     *
+     * @return The map of key/value pairs
+     */
+    static std::map<std::string, std::string>
+        getExtVersionInfo(const std::string& extVersion);
+
     /** @brief The temUpdater's erase callback. */
     eraseFunc eraseCallback;
 
