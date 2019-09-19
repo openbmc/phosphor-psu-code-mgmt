@@ -121,13 +121,13 @@ class Version : public VersionInherit
      *
      * @param[in] filePath - The path to the file which contains the value
      *                       of keys.
-     * @param[in] keys     - A map of keys with empty values.
+     * @param[in] keys     - A vector of keys.
      *
      * @return The map of keys with filled values.
      **/
     static std::map<std::string, std::string>
-        getValue(const std::string& filePath,
-                 std::map<std::string, std::string> keys);
+        getValues(const std::string& filePath,
+                  const std::vector<std::string>& keys);
 
     /** @brief The temUpdater's erase callback. */
     eraseFunc eraseCallback;

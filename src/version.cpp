@@ -23,8 +23,8 @@ using namespace phosphor::logging;
 using Argument = xyz::openbmc_project::Common::InvalidArgument;
 
 std::map<std::string, std::string>
-    Version::getValue(const std::string& filePath,
-                      std::map<std::string, std::string> keys)
+    Version::getValues(const std::string& filePath,
+                       const std::vector<std::string>& keys)
 {
     if (filePath.empty())
     {
@@ -33,39 +33,24 @@ std::map<std::string, std::string>
                               Argument::ARGUMENT_VALUE(filePath.c_str()));
     }
 
-    std::ifstream efile;
+    std::ifstream efile(filePath);
     std::string line;
-    efile.exceptions(std::ifstream::failbit | std::ifstream::badbit |
-                     std::ifstream::eofbit);
+    std::map<std::string, std::string> ret;
 
-    try
+    while (getline(efile, line))
     {
-        efile.open(filePath);
-        while (getline(efile, line))
+        for (const auto& key : keys)
         {
-            for (auto& key : keys)
+            auto value = key + "=";
+            auto keySize = value.length();
+            if (line.compare(0, keySize, value) == 0)
             {
-                auto value = key.first + "=";
-                auto keySize = value.length();
-                if (line.compare(0, keySize, value) == 0)
-                {
-                    key.second = line.substr(keySize);
-                    break;
-                }
+                ret.emplace(key, line.substr(keySize));
+                break;
             }
         }
-        efile.close();
     }
-    catch (const std::exception& e)
-    {
-        if (!efile.eof())
-        {
-            log<level::ERR>("Error in reading file");
-        }
-        efile.close();
-    }
-
-    return keys;
+    return ret;
 }
 
 void Delete::delete_()
