@@ -183,7 +183,21 @@ Activation::Status Activation::startActivation()
 
     for (const auto& p : psuPaths)
     {
-        psuQueue.push(p);
+        if (isCompatible(p))
+        {
+            psuQueue.push(p);
+        }
+        else
+        {
+            log<level::NOTICE>("PSU not compatible",
+                               entry("PSU=%s", p.c_str()));
+        }
+    }
+
+    if (psuQueue.empty())
+    {
+        log<level::ERR>("No PSU compatible with the software");
+        return Status::Failed;
     }
 
     // The progress to be increased for each successful update of PSU
@@ -255,6 +269,28 @@ void Activation::deleteImageManagerObject()
                         entry("ERROR=%s", e.what()),
                         entry("PATH=%s", path.c_str()));
     }
+}
+
+bool Activation::isCompatible(const std::string& psuInventoryPath)
+{
+    auto service =
+        utils::getService(bus, psuInventoryPath.c_str(), ASSET_IFACE);
+    auto psuManufacturer = utils::getProperty<std::string>(
+        bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE,
+        MANUFACTURER);
+    auto psuModel = utils::getProperty<std::string>(
+        bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE, MODEL);
+    if (psuModel != model)
+    {
+        // The model shall match
+        return false;
+    }
+    if (!psuManufacturer.empty())
+    {
+        // If PSU inventory has manufacturer property, it shall match
+        return psuManufacturer == manufacturer;
+    }
+    return true;
 }
 
 } // namespace updater
