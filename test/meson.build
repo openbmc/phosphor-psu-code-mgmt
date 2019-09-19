@@ -44,6 +44,7 @@ test_phosphor_psu_manager = executable(
   '../src/version.cpp',
   'test_item_updater.cpp',
   'test_activation.cpp',
+  'test_version.cpp',
   include_directories: [psu_inc, test_inc],
   link_args: dynamic_linker,
   build_rpath: oe_sdk.enabled() ? rpath : '',

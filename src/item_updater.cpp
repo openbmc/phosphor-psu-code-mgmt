@@ -9,6 +9,11 @@
 #include <phosphor-logging/log.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
+namespace
+{
+constexpr auto EXTENDED_VERSION = "extended_version";
+}
+
 namespace phosphor
 {
 namespace software
@@ -98,12 +103,14 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
 
         fs::path manifestPath(filePath);
         manifestPath /= MANIFEST_FILE;
-        std::string extendedVersion =
-            (Version::getValue(
-                 manifestPath.string(),
-                 std::map<std::string, std::string>{{"extended_version", ""}}))
-                .begin()
-                ->second;
+        std::string extendedVersion;
+        auto values =
+            Version::getValues(manifestPath.string(), {EXTENDED_VERSION});
+        const auto it = values.find(EXTENDED_VERSION);
+        if (it != values.end())
+        {
+            extendedVersion = it->second;
+        }
 
         auto activation = createActivationObject(
             path, versionId, extendedVersion, activationState, associations);
