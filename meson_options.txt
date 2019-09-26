@@ -38,3 +38,13 @@ option('PSU_UPDATE_SERVICE',
        type: 'string',
        value: 'psu-update@.service',
        description: 'The PSU update service')
+
+option('IMG_DIR_PERSIST',
+       type: 'string',
+       value: '/var/lib/obmc/psu',
+       description: 'The writable directory to store updated PSU images persistently')
+
+option('IMG_DIR_BUILTIN',
+       type: 'string',
+       value: '/usr/local/obmc/psu',
+       description: 'The read-only directory where the built-in PSU images are stored')

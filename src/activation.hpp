@@ -228,6 +228,9 @@ class Activation : public ActivationInherit
     /** @brief Check if the PSU is comaptible with this software*/
     bool isCompatible(const std::string& psuInventoryPath);
 
+    /** @brief Store the updated PSU image to persistent dir */
+    void storeImage();
+
     /** @brief Persistent sdbusplus DBus bus connection */
     sdbusplus::bus::bus& bus;
 
