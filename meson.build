@@ -40,6 +40,8 @@ cdata.set_quoted('PSU_INVENTORY_PATH_BASE', get_option('PSU_INVENTORY_PATH_BASE'
 cdata.set_quoted('PSU_VERSION_UTIL', get_option('PSU_VERSION_UTIL'))
 cdata.set_quoted('PSU_UPDATE_SERVICE', get_option('PSU_UPDATE_SERVICE'))
 cdata.set_quoted('IMG_DIR', get_option('IMG_DIR'))
+cdata.set_quoted('IMG_DIR_PERSIST', get_option('IMG_DIR_PERSIST'))
+cdata.set_quoted('IMG_DIR_BUILTIN', get_option('IMG_DIR_BUILTIN'))
 
 phosphor_dbus_interfaces = dependency('phosphor-dbus-interfaces')
 phosphor_logging = dependency('phosphor-logging')

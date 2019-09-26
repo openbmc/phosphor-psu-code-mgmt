@@ -221,6 +221,7 @@ Activation::Status Activation::startActivation()
 
 void Activation::finishActivation()
 {
+    storeImage();
     activationProgress->progress(100);
 
     // TODO: delete the old software object
@@ -291,6 +292,27 @@ bool Activation::isCompatible(const std::string& psuInventoryPath)
         return psuManufacturer == manufacturer;
     }
     return true;
+}
+
+void Activation::storeImage()
+{
+    // Store image in persistent dir separated by model
+    // and only store the latest one by removing old ones
+    auto src = fs::path(IMG_DIR) / versionId;
+    auto dst = fs::path(IMG_DIR_PERSIST) / model;
+    try
+    {
+        fs::remove_all(dst);
+        fs::create_directories(dst);
+        fs::copy(src, dst);
+        path(dst.string()); // Update the FilePath interface
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        log<level::ERR>("Error storing PSU image", entry("ERROR=%s", e.what()),
+                        entry("SRC=%s", src.c_str()),
+                        entry("DST=%s", dst.c_str()));
+    }
 }
 
 } // namespace updater
