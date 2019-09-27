@@ -112,7 +112,7 @@ class Version : public VersionInherit
     }
 
     /**
-     * @brief Read the manifest file to get the value of the key.
+     * @brief Read the manifest file to get the values of the keys.
      *
      * @param[in] filePath - The path to the file which contains the value
      *                       of keys.
@@ -123,6 +123,18 @@ class Version : public VersionInherit
     static std::map<std::string, std::string>
         getValues(const std::string& filePath,
                   const std::vector<std::string>& keys);
+
+    /**
+     * @brief Read the manifest file to get the value of the key.
+     *
+     * @param[in] filePath - The path to the file which contains the value
+     *                       of keys.
+     * @param[in] key      - The string of the key.
+     *
+     * @return The string of the value.
+     **/
+    static std::string getValue(const std::string& filePath,
+                                const std::string& key);
 
     /** @brief Get information from extVersion
      *
