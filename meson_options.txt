@@ -46,5 +46,5 @@ option('IMG_DIR_PERSIST',
 
 option('IMG_DIR_BUILTIN',
        type: 'string',
-       value: '/usr/local/obmc/psu',
+       value: '/usr/share/obmc/psu',
        description: 'The read-only directory where the built-in PSU images are stored')

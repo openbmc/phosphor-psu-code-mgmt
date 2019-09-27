@@ -58,4 +58,5 @@ test_phosphor_psu_manager = executable(
   ])
 
 test('util', test_util)
-test('phosphor_psu_manager', test_phosphor_psu_manager)
+#test('phosphor_psu_manager', test_phosphor_psu_manager)
+test('phosphor_psu_manager', test_phosphor_psu_manager, workdir: meson.current_source_dir())

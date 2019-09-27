@@ -8,6 +8,7 @@
 #include "utils.hpp"
 #include "version.hpp"
 
+#include <filesystem>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/server.hpp>
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
@@ -28,6 +29,8 @@ using ItemUpdaterInherit = sdbusplus::server::object::object<
     sdbusplus::xyz::openbmc_project::Association::server::Definitions>;
 
 namespace MatchRules = sdbusplus::bus::match::rules;
+
+namespace fs = std::filesystem;
 
 /** @class ItemUpdater
  *  @brief Manages the activation of the PSU version items.
@@ -51,6 +54,7 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
                                this, std::placeholders::_1))
     {
         processPSUImage();
+        processStoredImage();
     }
 
     /** @brief Deletes version
@@ -109,9 +113,7 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
     /** @brief Create Activation object */
     std::unique_ptr<Activation> createActivationObject(
         const std::string& path, const std::string& versionId,
-        const std::string& extVersion,
-        sdbusplus::xyz::openbmc_project::Software::server::Activation::
-            Activations activationStatus,
+        const std::string& extVersion, Activation::Status activationStatus,
         const AssociationList& assocs, const std::string& filePath);
 
     /** @brief Create Version object */
@@ -141,6 +143,12 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
      * @brief Create and populate the active PSU Version.
      */
     void processPSUImage();
+
+    /** @brief Create PSU Version from stored images */
+    void processStoredImage();
+
+    /** @brief Scan a directory and create PSU Version from stored images */
+    void scanDirectory(const fs::path& p);
 
     /** @brief Persistent sdbusplus D-Bus bus connection. */
     sdbusplus::bus::bus& bus;
