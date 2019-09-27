@@ -11,8 +11,9 @@
 
 namespace
 {
-constexpr auto EXTENDED_VERSION = "extended_version";
-}
+constexpr auto MANIFEST_VERSION = "version";
+constexpr auto MANIFEST_EXTENDED_VERSION = "extended_version";
+} // namespace
 
 namespace phosphor
 {
@@ -21,7 +22,6 @@ namespace software
 namespace updater
 {
 namespace server = sdbusplus::xyz::openbmc_project::Software::server;
-namespace fs = std::filesystem;
 
 using namespace sdbusplus::xyz::openbmc_project::Common::Error;
 using namespace phosphor::logging;
@@ -95,7 +95,7 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
     {
         // Determine the Activation state by processing the given image dir.
         AssociationList associations;
-        auto activationState = server::Activation::Activations::Ready;
+        auto activationState = Activation::Status::Ready;
 
         associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
                                                   ACTIVATION_REV_ASSOCIATION,
@@ -103,14 +103,8 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
 
         fs::path manifestPath(filePath);
         manifestPath /= MANIFEST_FILE;
-        std::string extendedVersion;
-        auto values =
-            Version::getValues(manifestPath.string(), {EXTENDED_VERSION});
-        const auto it = values.find(EXTENDED_VERSION);
-        if (it != values.end())
-        {
-            extendedVersion = it->second;
-        }
+        std::string extendedVersion =
+            Version::getValue(manifestPath, {MANIFEST_EXTENDED_VERSION});
 
         auto activation =
             createActivationObject(path, versionId, extendedVersion,
@@ -186,9 +180,7 @@ void ItemUpdater::removeAssociation(const std::string& path)
 
 std::unique_ptr<Activation> ItemUpdater::createActivationObject(
     const std::string& path, const std::string& versionId,
-    const std::string& extVersion,
-    sdbusplus::xyz::openbmc_project::Software::server::Activation::Activations
-        activationStatus,
+    const std::string& extVersion, Activation::Status activationStatus,
     const AssociationList& assocs, const std::string& filePath)
 {
     return std::make_unique<Activation>(bus, path, versionId, extVersion,
@@ -217,7 +209,7 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
     {
         // Create a new object for running PSU inventory
         AssociationList associations;
-        auto activationState = server::Activation::Activations::Active;
+        auto activationState = Activation::Status::Active;
 
         associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
                                                   ACTIVATION_REV_ASSOCIATION,
@@ -343,6 +335,80 @@ void ItemUpdater::processPSUImage()
             bus, MatchRules::propertiesChanged(p, ITEM_IFACE),
             std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
                       std::placeholders::_1));
+    }
+}
+
+void ItemUpdater::processStoredImage()
+{
+    scanDirectory(IMG_DIR_BUILTIN);
+    scanDirectory(IMG_DIR_PERSIST);
+}
+
+void ItemUpdater::scanDirectory(const fs::path& dir)
+{
+    // The directory shall put PSU images in directories named with model
+    if (!fs::exists(dir))
+    {
+        // Skip
+        return;
+    }
+    if (!fs::is_directory(dir))
+    {
+        log<level::ERR>("The path is not a directory",
+                        entry("PATH=%s", dir.c_str()));
+        return;
+    }
+    for (const auto& d : fs::directory_iterator(dir))
+    {
+        // If the model in manifest does not match the dir name
+        // Log a warning and skip it
+        auto path = d.path();
+        auto manifest = path / MANIFEST_FILE;
+        if (fs::exists(manifest))
+        {
+            auto ret = Version::getValues(
+                manifest.string(),
+                {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
+            auto version = ret[MANIFEST_VERSION];
+            auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
+            auto info = Version::getExtVersionInfo(extVersion);
+            auto model = info["model"];
+            if (path.stem() != model)
+            {
+                log<level::ERR>("Unmatched model",
+                                entry("PATH=%s", path.c_str()),
+                                entry("MODEL=%s", model.c_str()));
+                continue;
+            }
+            auto versionId = utils::getVersionId(version);
+            auto it = activations.find(versionId);
+            if (it == activations.end())
+            {
+                // This is a version that is different than the running PSUs
+                auto activationState = Activation::Status::Ready;
+                auto purpose = VersionPurpose::PSU;
+                auto objPath = std::string(SOFTWARE_OBJPATH) + "/" + versionId;
+
+                auto activation = createActivationObject(
+                    objPath, versionId, extVersion, activationState, {}, path);
+                activations.emplace(versionId, std::move(activation));
+
+                auto versionPtr =
+                    createVersionObject(objPath, versionId, version, purpose);
+                versions.emplace(versionId, std::move(versionPtr));
+            }
+            else
+            {
+                // This is a version that a running PSU is using, set the path
+                // on the version object
+                it->second->path(path);
+            }
+        }
+        else
+        {
+            log<level::ERR>("No MANIFEST found",
+                            entry("PATH=%s", path.c_str()));
+        }
     }
 }
 

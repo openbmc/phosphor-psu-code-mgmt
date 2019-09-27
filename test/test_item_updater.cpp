@@ -8,6 +8,7 @@
 
 using namespace phosphor::software::updater;
 using ::testing::_;
+using ::testing::Pointee;
 using ::testing::Return;
 using ::testing::ReturnArg;
 using ::testing::StrEq;
@@ -47,6 +48,11 @@ class TestItemUpdater : public ::testing::Test
                                const Properties& properties)
     {
         itemUpdater->onPsuInventoryChanged(psuPath, properties);
+    }
+
+    void scanDirectory(const fs::path& p)
+    {
+        itemUpdater->scanDirectory(p);
     }
 
     static constexpr auto dBusPath = SOFTWARE_OBJPATH;
@@ -407,4 +413,78 @@ TEST_F(TestItemUpdater,
         .Times(2);
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_removed(_, StrEq(dBusPath)))
         .Times(1);
+}
+
+TEST_F(TestItemUpdater, scanDirOnNoPSU)
+{
+    constexpr auto psuPath = "/com/example/inventory/psu0";
+    constexpr auto service = "com.example.Software.Psu";
+    constexpr auto version = "version0";
+    std::string objPath = getObjPath(version);
+    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+        .WillOnce(Return(std::vector<std::string>({psuPath})));
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
+        .WillOnce(Return(service));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(false)))); // not present
+
+    // The item updater itself
+    EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
+        .Times(1);
+
+    // No activation/version objects are created
+    EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath)))
+        .Times(0);
+    itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
+
+    // The valid image in test/psu-images-one-valid-one-invalid/model-1/
+    auto objPathValid = getObjPath("psu-test.v0.4");
+    auto objPathInvalid = getObjPath("psu-test.v0.5");
+    // activation and version object will be added on scan dir
+    EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPathValid)))
+        .Times(2);
+    EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPathInvalid)))
+        .Times(0);
+    scanDirectory("./psu-images-one-valid-one-invalid");
+}
+
+TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
+{
+    constexpr auto psuPath = "/com/example/inventory/psu0";
+    constexpr auto service = "com.example.Software.Psu";
+    constexpr auto version = "version0";
+    std::string objPath = getObjPath(version);
+    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+        .WillOnce(Return(std::vector<std::string>({psuPath})));
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
+        .WillOnce(Return(service));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
+        .WillOnce(Return(std::string(version)));
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(true)))); // present
+
+    // The item updater itself
+    EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
+        .Times(1);
+
+    // activation and version object will be added
+    EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath)))
+        .Times(2);
+    itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
+
+    // The valid image in test/psu-images-valid-version0/model-3/ has the same
+    // version as the running PSU, so no objects will be created, but only the
+    // path will be set to the version object
+    EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath)))
+        .Times(0);
+    EXPECT_CALL(sdbusMock, sd_bus_emit_properties_changed_strv(
+                               _, StrEq(objPath),
+                               StrEq("xyz.openbmc_project.Common.FilePath"),
+                               Pointee(StrEq("Path"))))
+        .Times(1);
+    scanDirectory("./psu-images-valid-version0");
 }

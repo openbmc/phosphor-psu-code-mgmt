@@ -33,6 +33,9 @@ namespace internal
 std::string getUpdateService(const std::string& psuInventoryPath,
                              const std::string& versionId)
 {
+    // TODO: get image path from the related version
+    // because it could be in either IMG_DIR, or IMG_DIR_PERSIST, or
+    // IMG_DIR_BUILTIN
     fs::path imagePath(IMG_DIR);
     imagePath /= versionId;
 

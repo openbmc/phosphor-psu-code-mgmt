@@ -72,6 +72,14 @@ TEST_F(TestActivation, ctordtor)
         &mockedAssociationInterface, filePath);
 }
 
+TEST_F(TestActivation, ctorWithInvalidExtVersion)
+{
+    extVersion = "invalid text";
+    activation = std::make_unique<Activation>(
+        mockedBus, dBusPath, versionId, extVersion, status, associations,
+        &mockedAssociationInterface, filePath);
+}
+
 namespace phosphor::software::updater::internal
 {
 extern std::string getUpdateService(const std::string& psuInventoryPath,

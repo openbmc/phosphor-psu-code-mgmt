@@ -53,6 +53,19 @@ std::map<std::string, std::string>
     return ret;
 }
 
+std::string Version::getValue(const std::string& filePath,
+                              const std::string& key)
+{
+    std::string ret;
+    auto values = Version::getValues(filePath, {key});
+    const auto it = values.find(key);
+    if (it != values.end())
+    {
+        ret = it->second;
+    }
+    return ret;
+}
+
 std::map<std::string, std::string>
     Version::getExtVersionInfo(const std::string& extVersion)
 {
