@@ -27,32 +27,6 @@ using namespace phosphor::logging;
 using sdbusplus::exception::SdBusError;
 using SoftwareActivation = softwareServer::Activation;
 
-namespace internal
-{
-/** Construct the systemd service name */
-std::string getUpdateService(const std::string& psuInventoryPath,
-                             const std::string& versionId)
-{
-    // TODO: get image path from the related version
-    // because it could be in either IMG_DIR, or IMG_DIR_PERSIST, or
-    // IMG_DIR_BUILTIN
-    fs::path imagePath(IMG_DIR);
-    imagePath /= versionId;
-
-    // The systemd unit shall be escaped
-    std::string args = psuInventoryPath;
-    args += "\\x20";
-    args += imagePath;
-    std::replace(args.begin(), args.end(), '/', '-');
-
-    std::string service = PSU_UPDATE_SERVICE;
-    auto p = service.find('@');
-    assert(p != std::string::npos);
-    service.insert(p + 1, args);
-    return service;
-}
-
-} // namespace internal
 auto Activation::activation(Activations value) -> Activations
 {
     if (value == Status::Activating)
@@ -109,7 +83,7 @@ void Activation::unitStateChange(sdbusplus::message::message& msg)
 bool Activation::doUpdate(const std::string& psuInventoryPath)
 {
     currentUpdatingPsu = psuInventoryPath;
-    psuUpdateUnit = internal::getUpdateService(currentUpdatingPsu, versionId);
+    psuUpdateUnit = getUpdateService(currentUpdatingPsu);
     try
     {
         auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
@@ -256,7 +230,8 @@ void Activation::deleteImageManagerObject()
     }
     if (versionService.empty())
     {
-        log<level::ERR>("Error finding version service");
+        // When updating a stored image, there is no version object created by
+        // "xyz.openbmc_project.Software.Version" service, so skip it.
         return;
     }
 
@@ -301,8 +276,13 @@ void Activation::storeImage()
 {
     // Store image in persistent dir separated by model
     // and only store the latest one by removing old ones
-    auto src = fs::path(IMG_DIR) / versionId;
+    auto src = path();
     auto dst = fs::path(IMG_DIR_PERSIST) / model;
+    if (src == dst)
+    {
+        // This happens when updating an stored image, no need to store it again
+        return;
+    }
     try
     {
         fs::remove_all(dst);
@@ -316,6 +296,23 @@ void Activation::storeImage()
                         entry("SRC=%s", src.c_str()),
                         entry("DST=%s", dst.c_str()));
     }
+}
+
+std::string Activation::getUpdateService(const std::string& psuInventoryPath)
+{
+    fs::path imagePath(path());
+
+    // The systemd unit shall be escaped
+    std::string args = psuInventoryPath;
+    args += "\\x20";
+    args += imagePath;
+    std::replace(args.begin(), args.end(), '/', '-');
+
+    std::string service = PSU_UPDATE_SERVICE;
+    auto p = service.find('@');
+    assert(p != std::string::npos);
+    service.insert(p + 1, args);
+    return service;
 }
 
 } // namespace updater
