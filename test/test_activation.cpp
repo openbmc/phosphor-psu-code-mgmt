@@ -51,6 +51,10 @@ class TestActivation : public ::testing::Test
     {
         return activation->psuQueue;
     }
+    std::string getUpdateService(const std::string& psuInventoryPath)
+    {
+        return activation->getUpdateService(psuInventoryPath);
+    }
 
     sdbusplus::SdBusMock sdbusMock;
     sdbusplus::bus::bus mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
@@ -80,21 +84,19 @@ TEST_F(TestActivation, ctorWithInvalidExtVersion)
         &mockedAssociationInterface, filePath);
 }
 
-namespace phosphor::software::updater::internal
-{
-extern std::string getUpdateService(const std::string& psuInventoryPath,
-                                    const std::string& versionId);
-}
-
 TEST_F(TestActivation, getUpdateService)
 {
     std::string psuInventoryPath = "/com/example/inventory/powersupply1";
-    std::string versionId = "12345678";
     std::string toCompare = "psu-update@-com-example-inventory-"
                             "powersupply1\\x20-tmp-images-12345678.service";
+    versionId = "12345678";
+    filePath = "/tmp/images/12345678";
 
-    auto service = phosphor::software::updater::internal::getUpdateService(
-        psuInventoryPath, versionId);
+    activation = std::make_unique<Activation>(
+        mockedBus, dBusPath, versionId, extVersion, status, associations,
+        &mockedAssociationInterface, filePath);
+
+    auto service = getUpdateService(psuInventoryPath);
     EXPECT_EQ(toCompare, service);
 }
 
