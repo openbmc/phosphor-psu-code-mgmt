@@ -123,7 +123,7 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
     return;
 }
 
-void ItemUpdater::erase(std::string versionId)
+void ItemUpdater::erase(const std::string& versionId)
 {
     auto it = versions.find(versionId);
     if (it == versions.end())
@@ -151,12 +151,6 @@ void ItemUpdater::erase(std::string versionId)
     {
         activations.erase(versionId);
     }
-}
-
-void ItemUpdater::deleteAll()
-{
-    // TODO: when PSU's running firmware is implemented, delete all versions
-    // that are not the running firmware.
 }
 
 void ItemUpdater::createActiveAssociation(const std::string& path)
@@ -268,7 +262,7 @@ void ItemUpdater::removePsuObject(const std::string& psuInventoryPath)
     if (associations.empty())
     {
         // Remove the activation
-        erase(activationPtr->versionId);
+        erase(activationPtr->getVersionId());
     }
     else
     {

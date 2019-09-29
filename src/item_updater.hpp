@@ -25,8 +25,8 @@ namespace updater
 class Version;
 
 using ItemUpdaterInherit = sdbusplus::server::object::object<
-    sdbusplus::xyz::openbmc_project::Association::server::Definitions,
-    sdbusplus::xyz::openbmc_project::Collection::server::DeleteAll>;
+    sdbusplus::xyz::openbmc_project::Association::server::Definitions>;
+
 namespace MatchRules = sdbusplus::bus::match::rules;
 
 /** @class ItemUpdater
@@ -57,12 +57,7 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
      *
      *  @param[in] versionId - Id of the version to delete
      */
-    void erase(std::string versionId);
-
-    /**
-     * @brief Erases any non-active versions.
-     */
-    void deleteAll();
+    void erase(const std::string& versionId);
 
     /** @brief Creates an active association to the
      *  newly active software image
