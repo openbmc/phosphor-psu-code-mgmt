@@ -3,7 +3,6 @@
 #include "config.h"
 
 #include <sdbusplus/bus.hpp>
-#include <xyz/openbmc_project/Common/FilePath/server.hpp>
 #include <xyz/openbmc_project/Object/Delete/server.hpp>
 #include <xyz/openbmc_project/Software/Version/server.hpp>
 
@@ -17,8 +16,7 @@ namespace updater
 using eraseFunc = std::function<void(std::string)>;
 
 using VersionInherit = sdbusplus::server::object::object<
-    sdbusplus::xyz::openbmc_project::Software::server::Version,
-    sdbusplus::xyz::openbmc_project::Common::server::FilePath>;
+    sdbusplus::xyz::openbmc_project::Software::server::Version>;
 using DeleteInherit = sdbusplus::server::object::object<
     sdbusplus::xyz::openbmc_project::Object::server::Delete>;
 
@@ -86,13 +84,11 @@ class Version : public VersionInherit
      * @param[in] versionId      - The version Id
      * @param[in] versionString  - The version string
      * @param[in] versionPurpose - The version purpose
-     * @param[in] filePath       - The image filesystem path
      * @param[in] callback       - The eraseFunc callback
      */
     Version(sdbusplus::bus::bus& bus, const std::string& objPath,
             const std::string& versionId, const std::string& versionString,
-            VersionPurpose versionPurpose, const std::string& filePath,
-            eraseFunc callback) :
+            VersionPurpose versionPurpose, eraseFunc callback) :
         VersionInherit(bus, (objPath).c_str(), true),
         eraseCallback(callback), bus(bus), objPath(objPath),
         versionId(versionId), versionStr(versionString)
@@ -100,7 +96,6 @@ class Version : public VersionInherit
         // Set properties.
         purpose(versionPurpose);
         version(versionString);
-        path(filePath);
 
         deleteObject = std::make_unique<Delete>(bus, objPath, *this);
 

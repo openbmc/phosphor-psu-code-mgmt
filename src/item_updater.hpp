@@ -112,7 +112,7 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
         const std::string& extVersion,
         sdbusplus::xyz::openbmc_project::Software::server::Activation::
             Activations activationStatus,
-        const AssociationList& assocs);
+        const AssociationList& assocs, const std::string& filePath);
 
     /** @brief Create Version object */
     std::unique_ptr<Version>
@@ -120,8 +120,7 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
                             const std::string& versionId,
                             const std::string& versionString,
                             sdbusplus::xyz::openbmc_project::Software::server::
-                                Version::VersionPurpose versionPurpose,
-                            const std::string& filePath);
+                                Version::VersionPurpose versionPurpose);
 
     /** @brief Create Activation and Version object for PSU inventory
      *  @details If the same version exists for multiple PSUs, just add

@@ -166,12 +166,12 @@ Activation::Status Activation::startActivation()
 {
     if (!activationProgress)
     {
-        activationProgress = std::make_unique<ActivationProgress>(bus, path);
+        activationProgress = std::make_unique<ActivationProgress>(bus, objPath);
     }
     if (!activationBlocksTransition)
     {
         activationBlocksTransition =
-            std::make_unique<ActivationBlocksTransition>(bus, path);
+            std::make_unique<ActivationBlocksTransition>(bus, objPath);
     }
 
     auto psuPaths = utils::getPSUInventoryPath(bus);
@@ -226,8 +226,8 @@ void Activation::finishActivation()
     // TODO: delete the old software object
     deleteImageManagerObject();
 
-    associationInterface->createActiveAssociation(path);
-    associationInterface->addFunctionalAssociation(path);
+    associationInterface->createActiveAssociation(objPath);
+    associationInterface->addFunctionalAssociation(objPath);
 
     activation(Status::Active);
 }
@@ -238,7 +238,7 @@ void Activation::deleteImageManagerObject()
     constexpr auto versionServiceStr = "xyz.openbmc_project.Software.Version";
     constexpr auto deleteInterface = "xyz.openbmc_project.Object.Delete";
     std::string versionService;
-    auto services = utils::getServices(bus, path.c_str(), deleteInterface);
+    auto services = utils::getServices(bus, objPath.c_str(), deleteInterface);
 
     // We need to find the phosphor-version-software-manager's version service
     // to invoke the delete interface
@@ -257,7 +257,7 @@ void Activation::deleteImageManagerObject()
     }
 
     // Call the Delete object for <versionID> inside image_manager
-    auto method = bus.new_method_call(versionService.c_str(), path.c_str(),
+    auto method = bus.new_method_call(versionService.c_str(), objPath.c_str(),
                                       deleteInterface, "Delete");
     try
     {
@@ -267,7 +267,7 @@ void Activation::deleteImageManagerObject()
     {
         log<level::ERR>("Error performing call to Delete object path",
                         entry("ERROR=%s", e.what()),
-                        entry("PATH=%s", path.c_str()));
+                        entry("PATH=%s", objPath.c_str()));
     }
 }
 
