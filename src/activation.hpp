@@ -128,7 +128,7 @@ class Activation : public ActivationInherit
                Status activationStatus, const AssociationList& assocs,
                AssociationInterface* associationInterface) :
         ActivationInherit(bus, path.c_str(), true),
-        versionId(versionId), bus(bus), path(path),
+        bus(bus), path(path), versionId(versionId),
         systemdSignals(
             bus,
             sdbusRule::type::signal() + sdbusRule::member("JobRemoved") +
@@ -171,8 +171,11 @@ class Activation : public ActivationInherit
     RequestedActivations
         requestedActivation(RequestedActivations value) override;
 
-    /** @brief Version id */
-    std::string versionId;
+    /** @brief Get the version ID */
+    const std::string& getVersionId() const
+    {
+        return versionId;
+    }
 
   private:
     /** @brief Check if systemd state change is relevant to this object
@@ -225,6 +228,9 @@ class Activation : public ActivationInherit
 
     /** @brief Persistent DBus object path */
     std::string path;
+
+    /** @brief Version id */
+    std::string versionId;
 
     /** @brief Used to subscribe to dbus systemd signals */
     sdbusplus::bus::match_t systemdSignals;
