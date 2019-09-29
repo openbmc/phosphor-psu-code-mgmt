@@ -9,6 +9,7 @@
 #include <queue>
 #include <sdbusplus/server.hpp>
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
+#include <xyz/openbmc_project/Common/FilePath/server.hpp>
 #include <xyz/openbmc_project/Software/Activation/server.hpp>
 #include <xyz/openbmc_project/Software/ActivationBlocksTransition/server.hpp>
 #include <xyz/openbmc_project/Software/ActivationProgress/server.hpp>
@@ -101,7 +102,8 @@ class ActivationProgress : public ActivationProgressInherit
 using ActivationInherit = sdbusplus::server::object::object<
     sdbusplus::xyz::openbmc_project::Software::server::ExtendedVersion,
     sdbusplus::xyz::openbmc_project::Software::server::Activation,
-    sdbusplus::xyz::openbmc_project::Association::server::Definitions>;
+    sdbusplus::xyz::openbmc_project::Association::server::Definitions,
+    sdbusplus::xyz::openbmc_project::Common::server::FilePath>;
 
 /** @class Activation
  *  @brief OpenBMC activation software management implementation.
@@ -122,13 +124,15 @@ class Activation : public ActivationInherit
      * @param[in] extVersion - The extended version
      * @param[in] activationStatus - The status of Activation
      * @param[in] assocs - Association objects
+     * @param[in] filePath - The image filesystem path
      */
-    Activation(sdbusplus::bus::bus& bus, const std::string& path,
+    Activation(sdbusplus::bus::bus& bus, const std::string& objPath,
                const std::string& versionId, const std::string& extVersion,
                Status activationStatus, const AssociationList& assocs,
-               AssociationInterface* associationInterface) :
-        ActivationInherit(bus, path.c_str(), true),
-        bus(bus), path(path), versionId(versionId),
+               AssociationInterface* associationInterface,
+               const std::string& filePath) :
+        ActivationInherit(bus, objPath.c_str(), true),
+        bus(bus), objPath(objPath), versionId(versionId),
         systemdSignals(
             bus,
             sdbusRule::type::signal() + sdbusRule::member("JobRemoved") +
@@ -142,6 +146,7 @@ class Activation : public ActivationInherit
         extendedVersion(extVersion);
         activation(activationStatus);
         associations(assocs);
+        path(filePath);
 
         auto info = Version::getExtVersionInfo(extVersion);
         manufacturer = info["manufacturer"];
@@ -227,7 +232,7 @@ class Activation : public ActivationInherit
     sdbusplus::bus::bus& bus;
 
     /** @brief Persistent DBus object path */
-    std::string path;
+    std::string objPath;
 
     /** @brief Version id */
     std::string versionId;

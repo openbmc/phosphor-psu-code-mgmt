@@ -112,12 +112,13 @@ void ItemUpdater::createActivation(sdbusplus::message::message& m)
             extendedVersion = it->second;
         }
 
-        auto activation = createActivationObject(
-            path, versionId, extendedVersion, activationState, associations);
+        auto activation =
+            createActivationObject(path, versionId, extendedVersion,
+                                   activationState, associations, filePath);
         activations.emplace(versionId, std::move(activation));
 
         auto versionPtr =
-            createVersionObject(path, versionId, version, purpose, filePath);
+            createVersionObject(path, versionId, version, purpose);
         versions.emplace(versionId, std::move(versionPtr));
     }
     return;
@@ -188,10 +189,11 @@ std::unique_ptr<Activation> ItemUpdater::createActivationObject(
     const std::string& extVersion,
     sdbusplus::xyz::openbmc_project::Software::server::Activation::Activations
         activationStatus,
-    const AssociationList& assocs)
+    const AssociationList& assocs, const std::string& filePath)
 {
     return std::make_unique<Activation>(bus, path, versionId, extVersion,
-                                        activationStatus, assocs, this);
+                                        activationStatus, assocs, this,
+                                        filePath);
 }
 
 void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
@@ -221,13 +223,13 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
                                                   ACTIVATION_REV_ASSOCIATION,
                                                   psuInventoryPath));
 
-        auto activation = createActivationObject(path, versionId, "",
-                                                 activationState, associations);
+        auto activation = createActivationObject(
+            path, versionId, "", activationState, associations, "");
         activations.emplace(versionId, std::move(activation));
         psuPathActivationMap.emplace(psuInventoryPath, activations[versionId]);
 
         auto versionPtr = createVersionObject(path, versionId, psuVersion,
-                                              VersionPurpose::PSU, "");
+                                              VersionPurpose::PSU);
         versions.emplace(versionId, std::move(versionPtr));
 
         createActiveAssociation(path);
@@ -275,11 +277,10 @@ std::unique_ptr<Version> ItemUpdater::createVersionObject(
     const std::string& objPath, const std::string& versionId,
     const std::string& versionString,
     sdbusplus::xyz::openbmc_project::Software::server::Version::VersionPurpose
-        versionPurpose,
-    const std::string& filePath)
+        versionPurpose)
 {
     auto version = std::make_unique<Version>(
-        bus, objPath, versionId, versionString, versionPurpose, filePath,
+        bus, objPath, versionId, versionString, versionPurpose,
         std::bind(&ItemUpdater::erase, this, std::placeholders::_1));
     return version;
 }
