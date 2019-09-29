@@ -231,6 +231,14 @@ class Activation : public ActivationInherit
     /** @brief Store the updated PSU image to persistent dir */
     void storeImage();
 
+    /** @brief Construct the systemd service name
+     *
+     * @param[in] psuInventoryPath - The PSU inventory to be updated.
+     *
+     * @return The escaped string of systemd unit to do the PSU update.
+     */
+    std::string getUpdateService(const std::string& psuInventoryPath);
+
     /** @brief Persistent sdbusplus DBus bus connection */
     sdbusplus::bus::bus& bus;
 
