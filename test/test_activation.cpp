@@ -33,6 +33,7 @@ class TestActivation : public ::testing::Test
     }
     ~TestActivation()
     {
+        utils::freeUtils();
     }
 
     void onUpdateDone()
