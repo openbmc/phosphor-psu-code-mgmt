@@ -65,6 +65,7 @@ class TestItemUpdater : public ::testing::Test
 
 TEST_F(TestItemUpdater, ctordtor)
 {
+    EXPECT_CALL(mockedUtils, getLatestVersion(_)).Times(1);
     itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
 }
 

@@ -15,6 +15,7 @@ endif
 
 examples = [
   'get_version',
+  'get_latest_version',
 ]
 
 foreach example : examples
