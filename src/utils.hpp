@@ -2,6 +2,7 @@
 
 #include <experimental/any>
 #include <sdbusplus/bus.hpp>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -82,6 +83,14 @@ std::string getVersionId(const std::string& version);
  */
 std::string getVersion(const std::string& inventoryPath);
 
+/** @brief Get latest version from the PSU versions
+ *
+ * @param[in] versions - The list of the versions
+ *
+ * @return The latest version string
+ */
+std::string getLatestVersion(const std::set<std::string>& versions);
+
 /**
  * @brief The interface for utils
  */
@@ -106,6 +115,9 @@ class UtilsInterface
     virtual std::string getVersionId(const std::string& version) const = 0;
 
     virtual std::string getVersion(const std::string& inventoryPath) const = 0;
+
+    virtual std::string
+        getLatestVersion(const std::set<std::string>& versions) const = 0;
 
     virtual any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                                 const char* path, const char* interface,
@@ -140,6 +152,9 @@ class Utils : public UtilsInterface
 
     std::string getVersion(const std::string& inventoryPath) const override;
 
+    std::string
+        getLatestVersion(const std::set<std::string>& versions) const override;
+
     any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                         const char* path, const char* interface,
                         const char* propertyName) const override;
@@ -171,6 +186,11 @@ inline std::string getVersionId(const std::string& version)
 inline std::string getVersion(const std::string& inventoryPath)
 {
     return getUtils().getVersion(inventoryPath);
+}
+
+inline std::string getLatestVersion(const std::set<std::string>& versions)
+{
+    return getUtils().getLatestVersion(versions);
 }
 
 template <typename T>
