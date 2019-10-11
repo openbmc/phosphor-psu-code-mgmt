@@ -32,6 +32,7 @@ class TestItemUpdater : public ::testing::Test
 
     ~TestItemUpdater()
     {
+        utils::freeUtils();
     }
 
     const auto& GetActivations()
