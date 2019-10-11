@@ -55,6 +55,7 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
     {
         processPSUImage();
         processStoredImage();
+        getLatestVersionId();
     }
 
     /** @brief Deletes version
@@ -150,6 +151,9 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
     /** @brief Scan a directory and create PSU Version from stored images */
     void scanDirectory(const fs::path& p);
 
+    /** @brief Get the versionId of the latest PSU version */
+    std::optional<std::string> getLatestVersionId();
+
     /** @brief Persistent sdbusplus D-Bus bus connection. */
     sdbusplus::bus::bus& bus;
 
@@ -174,6 +178,9 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
 
     /** @brief This entry's associations */
     AssociationList assocs;
+
+    /** @brief A collection of the version strings */
+    std::set<std::string> versionStrings;
 };
 
 } // namespace updater
