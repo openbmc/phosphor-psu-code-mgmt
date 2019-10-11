@@ -4,6 +4,7 @@
 
 #include "utils.hpp"
 
+#include <cassert>
 #include <filesystem>
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/log.hpp>
@@ -271,6 +272,7 @@ std::unique_ptr<Version> ItemUpdater::createVersionObject(
     sdbusplus::xyz::openbmc_project::Software::server::Version::VersionPurpose
         versionPurpose)
 {
+    versionStrings.insert(versionString);
     auto version = std::make_unique<Version>(
         bus, objPath, versionId, versionString, versionPurpose,
         std::bind(&ItemUpdater::erase, this, std::placeholders::_1));
@@ -410,6 +412,27 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                             entry("PATH=%s", path.c_str()));
         }
     }
+}
+
+std::optional<std::string> ItemUpdater::getLatestVersionId()
+{
+    auto latestVersion = utils::getLatestVersion(versionStrings);
+    if (latestVersion.empty())
+    {
+        return {};
+    }
+
+    std::optional<std::string> versionId;
+    for (const auto& v : versions)
+    {
+        if (v.second->version() == latestVersion)
+        {
+            versionId = v.first;
+            break;
+        }
+    }
+    assert(versionId.has_value());
+    return versionId;
 }
 
 } // namespace updater
