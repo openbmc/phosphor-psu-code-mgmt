@@ -33,10 +33,19 @@ class MockedUtils : public UtilsInterface
                            const char* propertyName));
 };
 
+static std::unique_ptr<MockedUtils> utils;
 inline const UtilsInterface& getUtils()
 {
-    static MockedUtils utils;
-    return utils;
+    if (!utils)
+    {
+        utils = std::make_unique<MockedUtils>();
+    }
+    return *utils;
+}
+
+inline void freeUtils()
+{
+    utils.reset();
 }
 
 } // namespace utils
