@@ -154,6 +154,21 @@ std::string Utils::getVersion(const std::string& inventoryPath) const
     return (rc == 0) ? r : "";
 }
 
+std::string Utils::getLatestVersion(const std::set<std::string>& versions) const
+{
+    if (versions.empty())
+    {
+        return {};
+    }
+    std::stringstream args;
+    for (const auto& s : versions)
+    {
+        args << s << " ";
+    }
+    auto [rc, r] = internal::exec(PSU_VERSION_COMPARE_UTIL, args.str());
+    return (rc == 0) ? r : "";
+}
+
 any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                            const char* path, const char* interface,
                            const char* propertyName) const
