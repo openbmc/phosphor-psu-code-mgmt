@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "utils.hpp"
 
 #include <sdbusplus/test/sdbus_mock.hpp>
@@ -63,10 +65,23 @@ TEST(Utils, GetPSUInventoryPath)
 
 TEST(Utils, GetVersionID)
 {
-
     auto ret = utils::getVersionId("");
     EXPECT_EQ("", ret);
 
     ret = utils::getVersionId("some version");
     EXPECT_EQ(8u, ret.size());
+}
+
+TEST(Utils, IsAssociated)
+{
+    std::string path = "/com/example/chassis/powersupply0";
+    utils::AssociationList assocs = {{ACTIVATION_FWD_ASSOCIATION,
+                                      ACTIVATION_REV_ASSOCIATION,
+                                      "a-different-path"}};
+
+    EXPECT_FALSE(utils::isAssociated(path, assocs));
+
+    assocs.emplace_back(ACTIVATION_FWD_ASSOCIATION, ACTIVATION_REV_ASSOCIATION,
+                        path);
+    EXPECT_TRUE(utils::isAssociated(path, assocs));
 }
