@@ -30,6 +30,9 @@ class MockedUtils : public UtilsInterface
     MOCK_CONST_METHOD1(getLatestVersion,
                        std::string(const std::set<std::string>& versions));
 
+    MOCK_CONST_METHOD2(isAssociated, bool(const std::string& psuInventoryPath,
+                                          const AssociationList& assocs));
+
     MOCK_CONST_METHOD5(getPropertyImpl,
                        any(sdbusplus::bus::bus& bus, const char* service,
                            const char* path, const char* interface,

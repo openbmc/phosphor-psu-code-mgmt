@@ -169,6 +169,19 @@ std::string Utils::getLatestVersion(const std::set<std::string>& versions) const
     return (rc == 0) ? r : "";
 }
 
+bool Utils::isAssociated(const std::string& psuInventoryPath,
+                         const AssociationList& assocs) const
+{
+    for (const auto& assoc : assocs)
+    {
+        if (psuInventoryPath == std::get<2>(assoc))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                            const char* path, const char* interface,
                            const char* propertyName) const
