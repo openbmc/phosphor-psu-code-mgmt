@@ -1,5 +1,7 @@
 #pragma once
 
+#include "types.hpp"
+
 #include <experimental/any>
 #include <sdbusplus/bus.hpp>
 #include <set>
@@ -11,6 +13,7 @@ namespace utils
 
 class UtilsInterface;
 
+using AssociationList = phosphor::software::updater::AssociationList;
 // Due to a libstdc++ bug, we got compile error using std::any with gmock.
 // A temporary workaround is to use std::experimental::any.
 // See details in https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90415
@@ -91,6 +94,16 @@ std::string getVersion(const std::string& inventoryPath);
  */
 std::string getLatestVersion(const std::set<std::string>& versions);
 
+/** @brief Check if the PSU is associated
+ *
+ * @param[in] psuInventoryPath - The PSU inventory path
+ * @param[in] assocs - The list of associations
+ *
+ * @return true if the psu is in the association list
+ */
+bool isAssociated(const std::string& psuInventoryPath,
+                  const AssociationList& assocs);
+
 /**
  * @brief The interface for utils
  */
@@ -118,6 +131,9 @@ class UtilsInterface
 
     virtual std::string
         getLatestVersion(const std::set<std::string>& versions) const = 0;
+
+    virtual bool isAssociated(const std::string& psuInventoryPath,
+                              const AssociationList& assocs) const = 0;
 
     virtual any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                                 const char* path, const char* interface,
@@ -155,6 +171,9 @@ class Utils : public UtilsInterface
     std::string
         getLatestVersion(const std::set<std::string>& versions) const override;
 
+    bool isAssociated(const std::string& psuInventoryPath,
+                      const AssociationList& assocs) const override;
+
     any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
                         const char* path, const char* interface,
                         const char* propertyName) const override;
@@ -191,6 +210,12 @@ inline std::string getVersion(const std::string& inventoryPath)
 inline std::string getLatestVersion(const std::set<std::string>& versions)
 {
     return getUtils().getLatestVersion(versions);
+}
+
+inline bool isAssociated(const std::string& psuInventoryPath,
+                         const AssociationList& assocs)
+{
+    return getUtils().isAssociated(psuInventoryPath, assocs);
 }
 
 template <typename T>
