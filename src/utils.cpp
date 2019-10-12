@@ -4,6 +4,7 @@
 
 #include <openssl/sha.h>
 
+#include <algorithm>
 #include <fstream>
 #include <phosphor-logging/log.hpp>
 #include <sstream>
@@ -167,6 +168,15 @@ std::string Utils::getLatestVersion(const std::set<std::string>& versions) const
     }
     auto [rc, r] = internal::exec(PSU_VERSION_COMPARE_UTIL, args.str());
     return (rc == 0) ? r : "";
+}
+
+bool Utils::isAssociated(const std::string& psuInventoryPath,
+                         const AssociationList& assocs) const
+{
+    return std::find_if(assocs.begin(), assocs.end(),
+                        [&psuInventoryPath](const auto& assoc) {
+                            return psuInventoryPath == std::get<2>(assoc);
+                        }) != assocs.end();
 }
 
 any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
