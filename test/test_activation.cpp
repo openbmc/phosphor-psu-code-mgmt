@@ -30,6 +30,7 @@ class TestActivation : public ::testing::Test
             .WillByDefault(Return(any(PropertyType(std::string("TestManu")))));
         ON_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(MODEL)))
             .WillByDefault(Return(any(PropertyType(std::string("TestModel")))));
+        ON_CALL(mockedUtils, isAssociated(_, _)).WillByDefault(Return(false));
     }
     ~TestActivation()
     {
@@ -64,7 +65,7 @@ class TestActivation : public ::testing::Test
     std::unique_ptr<Activation> activation;
     std::string versionId = "abcdefgh";
     std::string extVersion = "manufacturer=TestManu,model=TestModel";
-    std::string filePath = "";
+    std::string filePath = "/tmp/images/abcdefgh";
     std::string dBusPath = std::string(SOFTWARE_OBJPATH) + "/" + versionId;
     Status status = Status::Ready;
     AssociationList associations;
@@ -233,7 +234,7 @@ TEST_F(TestActivation, doUpdateOnePSUModelNotCompatible)
         .WillByDefault(Return(std::vector<std::string>({psu0})));
     activation->requestedActivation(RequestedStatus::Active);
 
-    EXPECT_EQ(Status::Failed, activation->activation());
+    EXPECT_EQ(Status::Ready, activation->activation());
 }
 
 TEST_F(TestActivation, doUpdateOnePSUManufactureNotCompatible)
@@ -247,7 +248,7 @@ TEST_F(TestActivation, doUpdateOnePSUManufactureNotCompatible)
         .WillByDefault(Return(std::vector<std::string>({psu0})));
     activation->requestedActivation(RequestedStatus::Active);
 
-    EXPECT_EQ(Status::Failed, activation->activation());
+    EXPECT_EQ(Status::Ready, activation->activation());
 }
 
 TEST_F(TestActivation, doUpdateOnePSUSelfManufactureIsEmpty)
@@ -313,5 +314,75 @@ TEST_F(TestActivation, doUpdateFourPSUsSecondPSUNotCompatible)
         .Times(1);
 
     onUpdateDone();
+    EXPECT_EQ(Status::Active, activation->activation());
+}
+
+TEST_F(TestActivation, doUpdateWhenNoFilePathInActiveState)
+{
+    filePath = "";
+    status = Status::Active; // Typically, a running PSU software is active
+                             // without file path
+    constexpr auto psu0 = "/com/example/inventory/psu0";
+    activation = std::make_unique<Activation>(
+        mockedBus, dBusPath, versionId, extVersion, status, associations,
+        &mockedAssociationInterface, filePath);
+
+    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+        .WillByDefault(
+            Return(std::vector<std::string>({psu0}))); // One PSU inventory
+
+    // There shall be no DBus call to start update service
+    EXPECT_CALL(sdbusMock, sd_bus_message_new_method_call(_, _, _, _, _,
+                                                          StrEq("StartUnit")))
+        .Times(0);
+
+    activation->requestedActivation(RequestedStatus::Active);
+    EXPECT_EQ(Status::Active, activation->activation());
+}
+
+TEST_F(TestActivation, doUpdateWhenNoFilePathInReadyState)
+{
+    filePath = "";
+    status = Status::Ready; // Usually a Ready activation should have file path,
+                            // but we are testing this case as well
+    constexpr auto psu0 = "/com/example/inventory/psu0";
+    activation = std::make_unique<Activation>(
+        mockedBus, dBusPath, versionId, extVersion, status, associations,
+        &mockedAssociationInterface, filePath);
+
+    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+        .WillByDefault(
+            Return(std::vector<std::string>({psu0}))); // One PSU inventory
+
+    // There shall be no DBus call to start update service
+    EXPECT_CALL(sdbusMock, sd_bus_message_new_method_call(_, _, _, _, _,
+                                                          StrEq("StartUnit")))
+        .Times(0);
+
+    activation->requestedActivation(RequestedStatus::Active);
+    EXPECT_EQ(Status::Ready, activation->activation());
+}
+
+TEST_F(TestActivation, doUpdateWhenPSUIsAssociated)
+{
+    constexpr auto psu0 = "/com/example/inventory/psu0";
+    status = Status::Active; // Typically, a running PSU software is associated
+    activation = std::make_unique<Activation>(
+        mockedBus, dBusPath, versionId, extVersion, status, associations,
+        &mockedAssociationInterface, filePath);
+
+    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+        .WillByDefault(
+            Return(std::vector<std::string>({psu0}))); // One PSU inventory
+
+    // When PSU is already associated, there shall be no DBus call to start
+    // update service
+    EXPECT_CALL(mockedUtils, isAssociated(StrEq(psu0), _))
+        .WillOnce(Return(true));
+    EXPECT_CALL(sdbusMock, sd_bus_message_new_method_call(_, _, _, _, _,
+                                                          StrEq("StartUnit")))
+        .Times(0);
+
+    activation->requestedActivation(RequestedStatus::Active);
     EXPECT_EQ(Status::Active, activation->activation());
 }

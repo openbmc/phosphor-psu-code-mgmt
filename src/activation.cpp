@@ -49,7 +49,11 @@ auto Activation::requestedActivation(RequestedActivations value)
         (SoftwareActivation::requestedActivation() !=
          SoftwareActivation::RequestedActivations::Active))
     {
-        if ((activation() == Status::Ready) || (activation() == Status::Failed))
+        // PSU image could be activated even when it's in active,
+        // e.g. in case a PSU is replaced and has a older image, it will be
+        // updated with the running PSU image that is stored in BMC.
+        if ((activation() == Status::Ready) ||
+            (activation() == Status::Failed) || activation() == Status::Active)
         {
             activation(Status::Activating);
         }
@@ -141,6 +145,13 @@ void Activation::onUpdateFailed()
 
 Activation::Status Activation::startActivation()
 {
+    // Check if the activation has file path
+    if (path().empty())
+    {
+        log<level::WARNING>("No image for the activation, skipped",
+                            entry("VERSION_ID=%s", versionId.c_str()));
+        return activation(); // Return the previous activation status
+    }
     if (!activationProgress)
     {
         activationProgress = std::make_unique<ActivationProgress>(bus, objPath);
@@ -162,6 +173,12 @@ Activation::Status Activation::startActivation()
     {
         if (isCompatible(p))
         {
+            if (utils::isAssociated(p, associations()))
+            {
+                log<level::NOTICE>("PSU already running the image, skipping",
+                                   entry("PSU=%s", p.c_str()));
+                continue;
+            }
             psuQueue.push(p);
         }
         else
@@ -173,8 +190,8 @@ Activation::Status Activation::startActivation()
 
     if (psuQueue.empty())
     {
-        log<level::ERR>("No PSU compatible with the software");
-        return Status::Failed;
+        log<level::WARNING>("No PSU compatible with the software");
+        return activation(); // Return the previous activation status
     }
 
     // The progress to be increased for each successful update of PSU

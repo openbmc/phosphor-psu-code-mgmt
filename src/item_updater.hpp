@@ -55,7 +55,7 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
     {
         processPSUImage();
         processStoredImage();
-        getLatestVersionId();
+        syncToLatestImage();
     }
 
     /** @brief Deletes version
@@ -153,6 +153,12 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
 
     /** @brief Get the versionId of the latest PSU version */
     std::optional<std::string> getLatestVersionId();
+
+    /** @brief Update PSUs to the latest version */
+    void syncToLatestImage();
+
+    /** @brief Invoke the activation via DBus */
+    void invokeActivation(const std::unique_ptr<Activation>& activation);
 
     /** @brief Persistent sdbusplus D-Bus bus connection. */
     sdbusplus::bus::bus& bus;

@@ -176,6 +176,12 @@ class Activation : public ActivationInherit
     RequestedActivations
         requestedActivation(RequestedActivations value) override;
 
+    /** @brief Get the object path */
+    const std::string& getObjectPath() const
+    {
+        return objPath;
+    }
+
     /** @brief Get the version ID */
     const std::string& getVersionId() const
     {
