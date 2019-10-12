@@ -435,6 +435,40 @@ std::optional<std::string> ItemUpdater::getLatestVersionId()
     return versionId;
 }
 
+void ItemUpdater::syncToLatestImage()
+{
+    auto latestVersionId = getLatestVersionId();
+    if (!latestVersionId)
+    {
+        return;
+    }
+    const auto& it = activations.find(*latestVersionId);
+    assert(it != activations.end());
+    const auto& activation = it->second;
+    const auto& assocs = activation->associations();
+
+    auto paths = utils::getPSUInventoryPath(bus);
+    for (const auto& p : paths)
+    {
+        // As long as there is a PSU is not associated with the latest image,
+        // run the activation so that all PSUs are running the same latest
+        // image.
+        if (!utils::isAssociated(p, assocs))
+        {
+            log<level::INFO>("Automatically update PSU",
+                             entry("VERSION_ID=%s", latestVersionId->c_str()));
+            invokeActivation(activation);
+            break;
+        }
+    }
+}
+
+void ItemUpdater::invokeActivation(
+    const std::unique_ptr<Activation>& activation)
+{
+    activation->requestedActivation(Activation::RequestedActivations::Active);
+}
+
 } // namespace updater
 } // namespace software
 } // namespace phosphor
