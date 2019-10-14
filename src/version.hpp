@@ -149,6 +149,12 @@ class Version : public VersionInherit
     /** @brief The temUpdater's erase callback. */
     eraseFunc eraseCallback;
 
+    /** @brief Get the version string. */
+    const std::string& getVersionString() const
+    {
+        return versionStr;
+    }
+
   private:
     /** @brief Persistent sdbusplus DBus bus connection */
     sdbusplus::bus::bus& bus;
