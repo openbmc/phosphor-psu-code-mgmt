@@ -197,6 +197,19 @@ class ItemUpdater : public ItemUpdaterInherit,
 
     /** @brief A collection of the version strings */
     std::set<std::string> versionStrings;
+
+    /** @brief A struct to hold the PSU present status and model */
+    struct psuStatus
+    {
+        bool present;
+        std::string model;
+    };
+
+    /** @brief The map of PSU inventory path and the psuStatus
+     *
+     * It is used to handle psu inventory changed event, that only create psu
+     * software object when a PSU is present and the model is retrieved */
+    std::map<std::string, psuStatus> psuStatusMap;
 };
 
 } // namespace updater
