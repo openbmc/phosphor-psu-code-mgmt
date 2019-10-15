@@ -127,8 +127,10 @@ void Activation::onUpdateDone()
     auto assocs = associations();
     assocs.emplace_back(ACTIVATION_FWD_ASSOCIATION, ACTIVATION_REV_ASSOCIATION,
                         currentUpdatingPsu);
-    currentUpdatingPsu.clear();
     associations(assocs);
+
+    activationListener->onUpdateDone(versionId, currentUpdatingPsu);
+    currentUpdatingPsu.clear();
 
     psuQueue.pop();
     doUpdate(); // Update the next psu
@@ -218,7 +220,6 @@ void Activation::finishActivation()
     storeImage();
     activationProgress->progress(100);
 
-    // TODO: delete the old software object
     deleteImageManagerObject();
 
     associationInterface->createActiveAssociation(objPath);
