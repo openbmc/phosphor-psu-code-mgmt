@@ -490,3 +490,111 @@ TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
         .Times(1);
     scanDirectory("./psu-images-valid-version0");
 }
+
+TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithSameVersion)
+{
+    // Simulate there are two PSUs with same version, and updated to a new
+    // version
+    constexpr auto psu0 = "/com/example/inventory/psu0";
+    constexpr auto psu1 = "/com/example/inventory/psu1";
+    constexpr auto service = "com.example.Software.Psu";
+    auto version0 = std::string("version0");
+    auto version1 = std::string("version0");
+    auto objPath0 = getObjPath(version0);
+    auto objPath1 = getObjPath(version1);
+
+    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+        .WillOnce(Return(std::vector<std::string>({psu0, psu1})));
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psu0), _))
+        .WillOnce(Return(service));
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psu1), _))
+        .WillOnce(Return(service));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu0)))
+        .WillOnce(Return(std::string(version0)));
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
+                                             StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
+        .WillOnce(Return(std::string(version1)));
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
+                                             StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(true)))); // present
+
+    itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
+
+    // Now there is one activation and it has two associations
+    auto& activations = GetActivations();
+    auto& activation = activations.find(version0)->second;
+    auto assocs = activation->associations();
+    EXPECT_EQ(2u, assocs.size());
+    EXPECT_EQ(psu0, std::get<2>(assocs[0]));
+    EXPECT_EQ(psu1, std::get<2>(assocs[1]));
+
+    EXPECT_CALL(mockedUtils, isAssociated(StrEq(psu0), _))
+        .WillOnce(Return(true));
+    itemUpdater->onUpdateDone("A new version", psu0);
+
+    // Now the activation should have one assoiation
+    assocs = activation->associations();
+    EXPECT_EQ(1u, assocs.size());
+    EXPECT_EQ(psu1, std::get<2>(assocs[0]));
+
+    EXPECT_CALL(mockedUtils, isAssociated(StrEq(psu1), _))
+        .WillOnce(Return(true));
+    itemUpdater->onUpdateDone("A new version", psu1);
+
+    // Now the activation shall be erased
+    EXPECT_EQ(0u, activations.size());
+}
+
+TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithDifferentVersion)
+{
+    // Simulate there are two PSUs with different version, and updated to a new
+    // version
+    constexpr auto psu0 = "/com/example/inventory/psu0";
+    constexpr auto psu1 = "/com/example/inventory/psu1";
+    constexpr auto service = "com.example.Software.Psu";
+    auto version0 = std::string("version0");
+    auto version1 = std::string("version1");
+    auto objPath0 = getObjPath(version0);
+    auto objPath1 = getObjPath(version1);
+
+    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+        .WillOnce(Return(std::vector<std::string>({psu0, psu1})));
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psu0), _))
+        .WillOnce(Return(service));
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psu1), _))
+        .WillOnce(Return(service));
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu0)))
+        .WillOnce(Return(std::string(version0)));
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
+                                             StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
+        .WillOnce(Return(std::string(version1)));
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
+                                             StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(true)))); // present
+
+    itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
+
+    // There are two activations and each with one association
+    const auto& activations = GetActivations();
+    EXPECT_EQ(2u, activations.size());
+
+    EXPECT_CALL(mockedUtils, isAssociated(StrEq(psu0), _))
+        .WillOnce(Return(true));
+    // After psu0 is done, only one activation should be left
+    itemUpdater->onUpdateDone("A new version", psu0);
+    EXPECT_EQ(1u, activations.size());
+    const auto& activation1 = activations.find(version1)->second;
+    const auto& assocs1 = activation1->associations();
+    EXPECT_EQ(1u, assocs1.size());
+    EXPECT_EQ(psu1, std::get<2>(assocs1[0]));
+
+    EXPECT_CALL(mockedUtils, isAssociated(StrEq(psu1), _))
+        .WillOnce(Return(true));
+    // After psu1 is done, no activation should be left
+    itemUpdater->onUpdateDone("A new version", psu1);
+    EXPECT_EQ(0u, activations.size());
+}
