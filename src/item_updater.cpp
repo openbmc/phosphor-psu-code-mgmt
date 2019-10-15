@@ -179,14 +179,29 @@ void ItemUpdater::removeAssociation(const std::string& path)
     }
 }
 
+void ItemUpdater::onUpdateDone(const std::string& versionId,
+                               const std::string& psuInventoryPath)
+{
+    // After update is done, remove old activation objects
+    for (auto it = activations.begin(); it != activations.end(); ++it)
+    {
+        if (it->second->getVersionId() != versionId &&
+            utils::isAssociated(psuInventoryPath, it->second->associations()))
+        {
+            removePsuObject(psuInventoryPath);
+            break;
+        }
+    }
+}
+
 std::unique_ptr<Activation> ItemUpdater::createActivationObject(
     const std::string& path, const std::string& versionId,
     const std::string& extVersion, Activation::Status activationStatus,
     const AssociationList& assocs, const std::string& filePath)
 {
     return std::make_unique<Activation>(bus, path, versionId, extVersion,
-                                        activationStatus, assocs, this,
-                                        filePath);
+                                        activationStatus, assocs, filePath,
+                                        this, this);
 }
 
 void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,

@@ -35,7 +35,9 @@ namespace fs = std::filesystem;
 /** @class ItemUpdater
  *  @brief Manages the activation of the PSU version items.
  */
-class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
+class ItemUpdater : public ItemUpdaterInherit,
+                    public AssociationInterface,
+                    public ActivationListener
 {
     friend class ::TestItemUpdater;
 
@@ -83,6 +85,13 @@ class ItemUpdater : public ItemUpdaterInherit, public AssociationInterface
      * @param[in]  path - The path to remove the association from.
      */
     void removeAssociation(const std::string& path) override;
+
+    /** @brief Notify a PSU is updated
+     *
+     * @param[in]  psuInventoryPath - The PSU inventory path that is updated
+     */
+    void onUpdateDone(const std::string& versionId,
+                      const std::string& psuInventoryPath) override;
 
   private:
     /** @brief Callback function for Software.Version match.
