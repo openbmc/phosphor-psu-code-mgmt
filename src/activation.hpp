@@ -2,6 +2,7 @@
 
 #include "config.h"
 
+#include "activation_listener.hpp"
 #include "association_interface.hpp"
 #include "types.hpp"
 #include "version.hpp"
@@ -129,8 +130,9 @@ class Activation : public ActivationInherit
     Activation(sdbusplus::bus::bus& bus, const std::string& objPath,
                const std::string& versionId, const std::string& extVersion,
                Status activationStatus, const AssociationList& assocs,
+               const std::string& filePath,
                AssociationInterface* associationInterface,
-               const std::string& filePath) :
+               ActivationListener* activationListner) :
         ActivationInherit(bus, objPath.c_str(), true),
         bus(bus), objPath(objPath), versionId(versionId),
         systemdSignals(
@@ -140,7 +142,8 @@ class Activation : public ActivationInherit
                 sdbusRule::interface("org.freedesktop.systemd1.Manager"),
             std::bind(&Activation::unitStateChange, this,
                       std::placeholders::_1)),
-        associationInterface(associationInterface)
+        associationInterface(associationInterface),
+        activationListner(activationListner)
     {
         // Set Properties.
         extendedVersion(extVersion);
@@ -277,6 +280,9 @@ class Activation : public ActivationInherit
 
     /** @brief The AssociationInterface pointer */
     AssociationInterface* associationInterface;
+
+    /** @brief The activationListner pointer */
+    ActivationListener* activationListner;
 
     /** @brief The PSU manufacturer of the software */
     std::string manufacturer;
