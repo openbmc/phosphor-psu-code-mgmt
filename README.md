@@ -24,5 +24,5 @@ meson build/ && ninja -C build
    for t in `find build/test/ -maxdepth 1 -name "test_*"`; do ./$t || break ; done
    ```
 
-[1]: https://github.com/openbmc/docs/blob/master/local-ci-build.md
+[1]: https://github.com/openbmc/docs/blob/master/testing/local-ci-build.md
 [2]: https://github.com/openbmc/docs/blob/master/cheatsheet.md#building-the-openbmc-sdk
