@@ -39,6 +39,11 @@ std::map<std::string, std::string>
 
     while (getline(efile, line))
     {
+        if (!line.empty() && line.back() == '\r')
+        {
+            // Remove \r from the end of line
+            line.pop_back();
+        }
         for (const auto& key : keys)
         {
             auto value = key + "=";
