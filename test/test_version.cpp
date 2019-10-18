@@ -17,6 +17,11 @@ version=psu-dummy-test.v0.1
 extended_version=model=dummy_model,manufacture=dummy_manufacture)";
 }
 
+constexpr auto validManifestWithCRLF = "\r\n"
+"purpose=xyz.openbmc_project.Software.Version.VersionPurpose.PSU\r\n"
+"version=psu-dummy-test.v0.1\r\n"
+"extended_version=model=dummy_model,manufacture=dummy_manufacture\r\n";
+
 class TestVersion : public ::testing::Test
 {
   public:
@@ -77,4 +82,21 @@ TEST_F(TestVersion, getExtVersionInfo)
     EXPECT_EQ(2u, ret.size());
     EXPECT_EQ("TestManu", ret["manufacturer"]);
     EXPECT_EQ("TestModel", ret["model"]);
+}
+
+TEST_F(TestVersion, getValuesOKonCRLFFormat)
+{
+    auto manifestFilePath = fs::path(tmpDir) / "MANIFEST";
+    writeFile(manifestFilePath, validManifestWithCRLF);
+    auto ret = Version::getValues(manifestFilePath.string(),
+                                  {"purpose", "version", "extended_version"});
+    EXPECT_EQ(3u, ret.size());
+    auto purpose = ret["purpose"];
+    auto version = ret["version"];
+    auto extVersion = ret["extended_version"];
+
+    EXPECT_EQ("xyz.openbmc_project.Software.Version.VersionPurpose.PSU",
+              purpose);
+    EXPECT_EQ("psu-dummy-test.v0.1", version);
+    EXPECT_EQ("model=dummy_model,manufacture=dummy_manufacture", extVersion);
 }
