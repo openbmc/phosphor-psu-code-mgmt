@@ -115,10 +115,9 @@ std::vector<std::string> Utils::getServices(sdbusplus::bus::bus& bus,
     }
     catch (const sdbusplus::exception::SdBusError& ex)
     {
-        log<level::ERR>("Mapper call failed", entry("METHOD=%d", "GetObject"),
-                        entry("PATH=%s", path),
+        log<level::ERR>("GetObject call failed", entry("PATH=%s", path),
                         entry("INTERFACE=%s", interface));
-        throw std::runtime_error("Mapper call failed");
+        throw std::runtime_error("GetObject call failed");
     }
 }
 
