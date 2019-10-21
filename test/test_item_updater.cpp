@@ -677,7 +677,8 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithOldVersion)
         .WillByDefault(Return(false));
     EXPECT_CALL(sdbusMock, sd_bus_message_new_method_call(_, _, _, _, _,
                                                           StrEq("StartUnit")))
-        .Times(1);
+        .Times(3); // There are 3 systemd units are started, enable bmc reboot
+                   // guard, start activation, and disable bmc reboot guard
     onPsuInventoryChanged(psuPath, propAdded);
     onPsuInventoryChanged(psuPath, propModel);
 }
