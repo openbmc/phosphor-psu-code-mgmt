@@ -154,15 +154,6 @@ Activation::Status Activation::startActivation()
                             entry("VERSION_ID=%s", versionId.c_str()));
         return activation(); // Return the previous activation status
     }
-    if (!activationProgress)
-    {
-        activationProgress = std::make_unique<ActivationProgress>(bus, objPath);
-    }
-    if (!activationBlocksTransition)
-    {
-        activationBlocksTransition =
-            std::make_unique<ActivationBlocksTransition>(bus, objPath);
-    }
 
     auto psuPaths = utils::getPSUInventoryPath(bus);
     if (psuPaths.empty())
@@ -194,6 +185,16 @@ Activation::Status Activation::startActivation()
     {
         log<level::WARNING>("No PSU compatible with the software");
         return activation(); // Return the previous activation status
+    }
+
+    if (!activationProgress)
+    {
+        activationProgress = std::make_unique<ActivationProgress>(bus, objPath);
+    }
+    if (!activationBlocksTransition)
+    {
+        activationBlocksTransition =
+            std::make_unique<ActivationBlocksTransition>(bus, objPath);
     }
 
     // The progress to be increased for each successful update of PSU
@@ -334,6 +335,26 @@ std::string Activation::getUpdateService(const std::string& psuInventoryPath)
     assert(p != std::string::npos);
     service.insert(p + 1, args);
     return service;
+}
+
+void ActivationBlocksTransition::enableRebootGuard()
+{
+    log<level::INFO>("PSU image activating - BMC reboots are disabled.");
+
+    auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
+                                      SYSTEMD_INTERFACE, "StartUnit");
+    method.append("reboot-guard-enable.service", "replace");
+    bus.call_noreply_noerror(method);
+}
+
+void ActivationBlocksTransition::disableRebootGuard()
+{
+    log<level::INFO>("PSU activation has ended - BMC reboots are re-enabled.");
+
+    auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
+                                      SYSTEMD_INTERFACE, "StartUnit");
+    method.append("reboot-guard-disable.service", "replace");
+    bus.call_noreply_noerror(method);
 }
 
 } // namespace updater
