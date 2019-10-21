@@ -51,12 +51,14 @@ class ActivationBlocksTransition : public ActivationBlocksTransitionInherit
     {
         std::vector<std::string> interfaces({interface});
         bus.emit_interfaces_added(path.c_str(), interfaces);
+        enableRebootGuard();
     }
 
     ~ActivationBlocksTransition()
     {
         std::vector<std::string> interfaces({interface});
         bus.emit_interfaces_removed(path.c_str(), interfaces);
+        disableRebootGuard();
     }
 
   private:
@@ -65,6 +67,12 @@ class ActivationBlocksTransition : public ActivationBlocksTransitionInherit
         "xyz.openbmc_project.Software.ActivationBlocksTransition";
     sdbusplus::bus::bus& bus;
     std::string path;
+
+    /** @brief Enables a Guard that blocks any BMC reboot commands */
+    void enableRebootGuard();
+
+    /** @brief Disables any guard that was blocking the BMC reboot */
+    void disableRebootGuard();
 };
 
 using ActivationProgressInherit = sdbusplus::server::object::object<
