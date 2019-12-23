@@ -29,7 +29,7 @@ option('IMG_DIR',
 #   get_version <some-psu-path>
 option('PSU_VERSION_UTIL',
        type: 'string',
-       value: '/usr/bin/psutils --getversion',
+       value: '/usr/bin/psutils --raw --get-version',
        description: 'The command and arguments to get PSU version')
 
 # The PSU_VERSION_COMPARE_UTIL specifies an executable that accepts the PSU
@@ -39,7 +39,7 @@ option('PSU_VERSION_UTIL',
 #   get_latest_version 0001 0002 0003 # output 0003
 option('PSU_VERSION_COMPARE_UTIL',
        type: 'string',
-       value: '/usr/bin/psutils --compare',
+       value: '/usr/bin/psutils --raw --compare',
        description: 'The command and arguments to compare PSU versions')
 
 # The PSU update service
