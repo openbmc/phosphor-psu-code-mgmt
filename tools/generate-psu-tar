@@ -4,19 +4,20 @@ set -eo pipefail
 help=$'Generate Tarball with PSU image and MANIFEST Script
 usage: generate-psu-tar [OPTION] <parameter>...
 Options:
-   -i,     --image        <file>      PSU FW image
-   -v,     --version      <version>   PSU FW version
-   -model, --model        <model>     PSU FW model
-   -mf,    --manufacture  <version>   PSU FW manufacture
-   -o,     --outfile      <filename>  Outfile name
-			              For example : -o psufw.tar
-                                      The default outfile name is image.tar,and
-                                      "image" is what you input.
-   -s,     --sign         <path>      Sign the image. The optional path argument specifies
-                                      the private key file. Defaults to the bash variable
-                                      PRIVATE_KEY_PATH if available, or else uses the
-                                      open-source private key in this script.
-   -h,     --help                     Display this help text and exit.
+   --image        <file>          PSU FW image
+   --version      <version>       PSU FW version
+   --model        <model>         PSU FW model
+   --manufacture  <version>       PSU FW manufacture
+   --machineName  <machineName>   Optionally specify the target machine name of this image.
+   --outfile      <filename>      Outfile name
+		                  For example : -o psufw.tar
+                                  The default outfile name is image.tar,and
+                                  "image" is what you input.
+   --sign         <path>          Sign the image. The optional path argument specifies
+                                  the private key file. Defaults to the bash variable
+                                  PRIVATE_KEY_PATH if available, or else uses the
+                                  open-source private key in this script.
+   --help                         Display this help text and exit.
 '
 
 private_key=$'-----BEGIN PRIVATE KEY-----
@@ -44,33 +45,38 @@ outfile=""
 version=""
 model=""
 manufacture=""
+machineName=""
 declare -a partitions=()
 
 
 while [[ $# -gt 0 ]]; do
   key="$1"
   case $key in
-    -i|--image)
+    --image)
       image="$2"
       shift 2
       ;;
-    -v|--version)
+    --version)
       version="$2"
       shift 2
       ;;
-    -model|--model)
+    --model)
       model="$2"
       shift 2
       ;;
-    -mf|--manufacture)
+    --manufacture)
       manufacture="$2"
       shift 2
       ;;
-    -o|--outfile)
+    --machineName)
+      machineName="$2"
+      shift 2
+      ;;
+    --outfile)
       outfile="$2"
       shift 2
       ;;
-    -s|--sign)
+    --sign)
       do_sign=true
       if [[ ! -z "${2}"  && "${2}" != -* ]]; then
         private_key_path="$2"
@@ -79,7 +85,7 @@ while [[ $# -gt 0 ]]; do
         shift 1
       fi
       ;;
-    -h|--help)
+    --help)
       echo "$help"
       exit
       ;;
@@ -156,6 +162,10 @@ cd "${scratch_dir}"
 echo "Creating MANIFEST for the image"
 echo -e "purpose=xyz.openbmc_project.Software.Version.VersionPurpose.PSU\nversion=$version\n\
 extended_version=model=$model,manufacture=$manufacture" > $manifest_location
+
+if [[ ! -z "${machineName}" ]]; then
+    echo -e "MachineName=${machineName}" >> $manifest_location
+fi
 
 if [[ "${do_sign}" == true ]]; then
   private_key_name=$(basename "${private_key_path}")
