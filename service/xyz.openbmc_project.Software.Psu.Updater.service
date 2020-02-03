@@ -9,7 +9,7 @@ After=obmc-mapper.target
 ExecStart=/usr/bin/phosphor-psu-code-manager
 Restart=always
 Type=dbus
-BusName={BUSNAME}
+BusName=xyz.openbmc_project.Software.Psu.Updater
 
 [Install]
 WantedBy=multi-user.target
