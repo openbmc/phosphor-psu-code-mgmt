@@ -1,0 +1,11 @@
+Ok-To-Test+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Verified+1: Jenkins <openbmc-ci-admin@ozlabs.org>
+Code-Review+1: Carol Wang <wangkair@cn.ibm.com>
+Code-Review+1: Matt Spinler <spinler@us.ibm.com>
+Code-Review+1: Chicago Duan <duanzhijia01@inspur.com>
+Code-Review+2: Lei YU <mine260309@gmail.com>
+Submitted-by: Lei YU <mine260309@gmail.com>
+Submitted-at: Tue, 04 Feb 2020 06:07:44 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-psu-code-mgmt/+/28977
+Project: openbmc/phosphor-psu-code-mgmt
+Branch: refs/heads/master
