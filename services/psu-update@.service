@@ -4,7 +4,7 @@
 # E.g.
 #  "psu-update@-xyz-openbmc_project-inventory-system-chassis-motherboard-powersupply0\x20-tmp-image-abcdefg.service"
 # expands to
-#  /usr/bin/psutils --update /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0 /tmp/image/abcdefg
+#  /bin/echo To update /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0 /tmp/image/abcdefg
 
 [Unit]
 Description=Update PSU %I
@@ -13,5 +13,5 @@ Description=Update PSU %I
 Type=oneshot
 RemainAfterExit=no
 Environment="ARGS=%I"
-ExecStart=/usr/bin/psutils --update $ARGS
-SyslogIdentifier=psutils
+ExecStart=/bin/echo To update $ARGS
+ExecStart=/bin/false

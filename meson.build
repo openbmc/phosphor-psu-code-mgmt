@@ -9,11 +9,7 @@ project('phosphor-psu-code-mgmt', 'cpp',
 
 systemd = dependency('systemd')
 servicedir = systemd.get_pkgconfig_variable('systemdsystemunitdir')
-
-configure_file(input: 'service/xyz.openbmc_project.Software.Psu.Updater.service',
-               output: 'xyz.openbmc_project.Software.Psu.Updater.service',
-               copy: true,
-               install_dir: servicedir)
+subdir('services')
 
 # Common configurations for src and test
 cdata = configuration_data()
