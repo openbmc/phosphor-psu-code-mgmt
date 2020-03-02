@@ -40,17 +40,9 @@ class Delete : public DeleteInherit
      */
     Delete(sdbusplus::bus::bus& bus, const std::string& path,
            Version& version) :
-        DeleteInherit(bus, path.c_str(), true),
-        version(version), bus(bus), path(path)
+        DeleteInherit(bus, path.c_str(),action::emit_interface_added) ,
+        version(version)
     {
-        std::vector<std::string> interfaces({interface});
-        bus.emit_interfaces_added(path.c_str(), interfaces);
-    }
-
-    ~Delete()
-    {
-        std::vector<std::string> interfaces({interface});
-        bus.emit_interfaces_removed(path.c_str(), interfaces);
     }
 
     /**
@@ -63,10 +55,6 @@ class Delete : public DeleteInherit
   private:
     /** @brief The Version Object. */
     Version& version;
-
-    static constexpr auto interface = "xyz.openbmc_project.Object.Delete";
-    sdbusplus::bus::bus& bus;
-    std::string path;
 };
 
 /** @class Version
