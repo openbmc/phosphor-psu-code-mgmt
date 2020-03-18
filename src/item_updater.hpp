@@ -80,6 +80,13 @@ class ItemUpdater : public ItemUpdaterInherit,
      */
     void addFunctionalAssociation(const std::string& path) override;
 
+    /** @brief Add the updateable association to the
+     *  "running" PSU software image
+     *
+     * @param[in]  path - The path to create the association.
+     */
+    void addUpdateableAssociation(const std::string& path) override;
+
     /** @brief Removes the associations from the provided software image path
      *
      * @param[in]  path - The path to remove the association from.
