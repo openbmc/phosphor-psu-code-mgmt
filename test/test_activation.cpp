@@ -118,6 +118,8 @@ TEST_F(TestActivation, doUpdateWhenNoPSU)
         .Times(0);
     EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
         .Times(0);
+    EXPECT_CALL(mockedAssociationInterface, addUpdateableAssociation(dBusPath))
+        .Times(0);
     EXPECT_CALL(mockedActivationListener, onUpdateDone(_, _)).Times(0);
     EXPECT_EQ(Status::Failed, activation->activation());
 }
@@ -138,6 +140,8 @@ TEST_F(TestActivation, doUpdateOnePSUOK)
     EXPECT_CALL(mockedAssociationInterface, createActiveAssociation(dBusPath))
         .Times(1);
     EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
+        .Times(1);
+    EXPECT_CALL(mockedAssociationInterface, addUpdateableAssociation(dBusPath))
         .Times(1);
     EXPECT_CALL(mockedActivationListener,
                 onUpdateDone(StrEq(versionId), StrEq(psu0)))
@@ -188,6 +192,8 @@ TEST_F(TestActivation, doUpdateFourPSUsOK)
         .Times(1);
     EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
         .Times(1);
+    EXPECT_CALL(mockedAssociationInterface, addUpdateableAssociation(dBusPath))
+        .Times(1);
 
     EXPECT_CALL(mockedActivationListener,
                 onUpdateDone(StrEq(versionId), StrEq(psu3)))
@@ -223,6 +229,8 @@ TEST_F(TestActivation, doUpdateFourPSUsFailonSecond)
     EXPECT_CALL(mockedAssociationInterface, createActiveAssociation(dBusPath))
         .Times(0);
     EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
+        .Times(0);
+    EXPECT_CALL(mockedAssociationInterface, addUpdateableAssociation(dBusPath))
         .Times(0);
     EXPECT_CALL(mockedActivationListener, onUpdateDone(_, _)).Times(0);
     onUpdateFailed();
@@ -294,6 +302,8 @@ TEST_F(TestActivation, doUpdateOnePSUSelfManufactureIsEmpty)
         .Times(1);
     EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
         .Times(1);
+    EXPECT_CALL(mockedAssociationInterface, addUpdateableAssociation(dBusPath))
+        .Times(1);
     onUpdateDone();
     EXPECT_EQ(Status::Active, activation->activation());
 }
@@ -333,6 +343,8 @@ TEST_F(TestActivation, doUpdateFourPSUsSecondPSUNotCompatible)
     EXPECT_CALL(mockedAssociationInterface, createActiveAssociation(dBusPath))
         .Times(1);
     EXPECT_CALL(mockedAssociationInterface, addFunctionalAssociation(dBusPath))
+        .Times(1);
+    EXPECT_CALL(mockedAssociationInterface, addUpdateableAssociation(dBusPath))
         .Times(1);
 
     onUpdateDone();

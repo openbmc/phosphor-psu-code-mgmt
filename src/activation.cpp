@@ -225,6 +225,7 @@ void Activation::finishActivation()
 
     associationInterface->createActiveAssociation(objPath);
     associationInterface->addFunctionalAssociation(objPath);
+    associationInterface->addUpdateableAssociation(objPath);
 
     // Reset RequestedActivations to none so that it could be activated in
     // future

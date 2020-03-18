@@ -21,6 +21,13 @@ class AssociationInterface
      */
     virtual void addFunctionalAssociation(const std::string& path) = 0;
 
+    /** @brief Add the updateable association to the
+     *  "running" PSU software image
+     *
+     * @param[in]  path - The path to create the association.
+     */
+    virtual void addUpdateableAssociation(const std::string& path) = 0;
+
     /** @brief Remove the associations from the provided software image path
      *
      * @param[in]  path - The path to remove the association from.

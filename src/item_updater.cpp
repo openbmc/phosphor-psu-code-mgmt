@@ -163,6 +163,13 @@ void ItemUpdater::addFunctionalAssociation(const std::string& path)
     associations(assocs);
 }
 
+void ItemUpdater::addUpdateableAssociation(const std::string& path)
+{
+    assocs.emplace_back(std::make_tuple(UPDATEABLE_FWD_ASSOCIATION,
+                                        UPDATEABLE_REV_ASSOCIATION, path));
+    associations(assocs);
+}
+
 void ItemUpdater::removeAssociation(const std::string& path)
 {
     for (auto iter = assocs.begin(); iter != assocs.end();)
@@ -246,6 +253,7 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
 
         createActiveAssociation(path);
         addFunctionalAssociation(path);
+        addUpdateableAssociation(path);
     }
 }
 
