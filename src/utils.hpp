@@ -147,7 +147,7 @@ class UtilsInterface
         any result =
             getPropertyImpl(bus, service, path, interface, propertyName);
         auto value = any_cast<PropertyType>(result);
-        return sdbusplus::message::variant_ns::get<T>(value);
+        return std::get<T>(value);
     }
 };
 
