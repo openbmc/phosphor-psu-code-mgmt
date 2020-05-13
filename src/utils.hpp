@@ -111,7 +111,7 @@ class UtilsInterface
 {
   public:
     // For now the code needs to get property for Present and Version
-    using PropertyType = sdbusplus::message::variant<std::string, bool>;
+    using PropertyType = std::variant<std::string, bool>;
 
     virtual ~UtilsInterface() = default;
 
