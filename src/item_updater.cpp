@@ -31,10 +31,8 @@ using VersionPurpose = SVersion::VersionPurpose;
 
 void ItemUpdater::createActivation(sdbusplus::message::message& m)
 {
-    namespace msg = sdbusplus::message;
-
     sdbusplus::message::object_path objPath;
-    std::map<std::string, std::map<std::string, msg::variant<std::string>>>
+    std::map<std::string, std::map<std::string, std::variant<std::string>>>
         interfaces;
     m.read(objPath, interfaces);
 
