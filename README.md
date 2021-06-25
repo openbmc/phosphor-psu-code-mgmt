@@ -157,4 +157,4 @@ E.g.
 [2]: https://github.com/openbmc/docs/blob/master/cheatsheet.md#building-the-openbmc-sdk
 [3]: https://github.com/openbmc/phosphor-power/tree/master/tools/power-utils
 [4]: https://github.com/openbmc/phosphor-psu-code-mgmt/blob/master/tools/generate-psu-tar
-[5]: https://github.com/openbmc/docs/blob/master/code-update/code-update.md
+[5]: https://github.com/openbmc/docs/blob/master/architecture/code-update/code-update.md
