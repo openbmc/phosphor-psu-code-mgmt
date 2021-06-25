@@ -41,7 +41,7 @@ string to stdout.
 tool that accepts one or more PSU version strings, and outputs the
 latest version string to stdout.
 * `PSU_UPDATE_SERVICE`: It shall be defined as a systemd service that
-accepts two arguments:
+  accepts two arguments:
    * The PSU inventory DBus object;
    * The path of the PSU image(s).
 
@@ -136,15 +136,19 @@ E.g.
    ./generate-psu-tar --image <psu-image> --version <version> --model <model> --manufacture \
    <manufacture> --machineName <machineName> --outfile <psu.tar> --sign
    ```
+   
 2. To update the PSU firmware, follow the same steps as described in
-   [code-update.md][5]:
+   [code-update.md][5]: 
+   
    * Upload a PSU image tarball and get the version ID;
    * Set the RequestedActivation state of the uploaded image's version ID.
    * Check the state and wait for the activation to be completed.
+   
 3. After a successful update, the PSU image and the manifest is stored
    in BMC's persistent storage defined by `IMG_DIR_PERSIST`. When a PSU
    is replaced, the PSU's firmware version will be checked and updated if
    it's older than the one stored in BMC.
+   
 4. It is possible to put a PSU image and MANIFEST in the built-bin
    OpenBMC image in BMC's read-only filesystem defined by
    `IMG_DIR_BUILTIN`. When the service starts, it will compare the
@@ -157,4 +161,5 @@ E.g.
 [2]: https://github.com/openbmc/docs/blob/master/cheatsheet.md#building-the-openbmc-sdk
 [3]: https://github.com/openbmc/phosphor-power/tree/master/tools/power-utils
 [4]: https://github.com/openbmc/phosphor-psu-code-mgmt/blob/master/tools/generate-psu-tar
-[5]: https://github.com/openbmc/docs/blob/master/code-update/code-update.md
+[5]: https://github.com/openbmc/docs/blob/master/architecture/code-update/code-update.md
+
