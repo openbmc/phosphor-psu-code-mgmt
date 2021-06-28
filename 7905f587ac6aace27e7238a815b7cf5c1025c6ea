@@ -1,0 +1,9 @@
+Ok-To-Test+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+1: Matt Spinler <spinler@us.ibm.com>
+Code-Review+2: Lei YU <yulei.sh@bytedance.com>
+Submitted-by: Chicago Duan <duanzhijia01@inspur.com>
+Submitted-at: Mon, 28 Jun 2021 01:56:45 +0000
+Reviewed-on: https://gerrit.openbmc-project.xyz/c/openbmc/phosphor-psu-code-mgmt/+/44469
+Project: openbmc/phosphor-psu-code-mgmt
+Branch: refs/heads/master
