@@ -24,7 +24,6 @@ namespace fs = std::filesystem;
 namespace softwareServer = sdbusplus::xyz::openbmc_project::Software::server;
 
 using namespace phosphor::logging;
-using sdbusplus::exception::SdBusError;
 using SoftwareActivation = softwareServer::Activation;
 
 auto Activation::activation(Activations value) -> Activations
@@ -96,7 +95,7 @@ bool Activation::doUpdate(const std::string& psuInventoryPath)
         bus.call_noreply(method);
         return true;
     }
-    catch (const SdBusError& e)
+    catch (const sdbusplus::exception::exception& e)
     {
         log<level::ERR>("Error staring service", entry("ERROR=%s", e.what()));
         onUpdateFailed();
@@ -265,7 +264,7 @@ void Activation::deleteImageManagerObject()
     {
         bus.call(method);
     }
-    catch (const SdBusError& e)
+    catch (const sdbusplus::exception::exception& e)
     {
         log<level::ERR>("Error performing call to Delete object path",
                         entry("ERROR=%s", e.what()),

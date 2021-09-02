@@ -113,7 +113,7 @@ std::vector<std::string> Utils::getServices(sdbusplus::bus::bus& bus,
         }
         return ret;
     }
-    catch (const sdbusplus::exception::SdBusError& ex)
+    catch (const sdbusplus::exception::exception& ex)
     {
         log<level::ERR>("GetObject call failed", entry("PATH=%s", path),
                         entry("INTERFACE=%s", interface));
@@ -192,7 +192,7 @@ any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
         reply.read(value);
         return any(value);
     }
-    catch (const sdbusplus::exception::SdBusError& ex)
+    catch (const sdbusplus::exception::exception& ex)
     {
         log<level::ERR>("GetProperty call failed", entry("PATH=%s", path),
                         entry("INTERFACE=%s", interface),
