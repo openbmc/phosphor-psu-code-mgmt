@@ -3,9 +3,11 @@ project('phosphor-psu-code-mgmt', 'cpp',
         default_options: [
           'warning_level=3',
           'werror=true',
-          'cpp_std=c++17',
+          'cpp_std=c++20',
           'b_lto=true',
-        ])
+        ],
+        meson_version: '>=0.57.0',
+       )
 
 systemd = dependency('systemd')
 servicedir = systemd.get_pkgconfig_variable('systemdsystemunitdir')
