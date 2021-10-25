@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "b9102bc6_8a42d32d",
+        "filename": "OWNERS",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000400
+      },
+      "writtenOn": "2021-10-25T09:04:10Z",
+      "side": 1,
+      "message": "Of course I can",
+      "parentUuid": "50b23141_f0c36052",
+      "revId": "a5fc26690124de9d89e6ae7337b6bd46a8dc841d",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2898e4e9_a9d139da",
         "filename": "OWNERS",
         "patchSetId": 1
