@@ -33,18 +33,12 @@
 
 owners:
 - mine260309@gmail.com
-- wangkair@cn.ibm.com
-
-reviewers:
 - duanzhijia01@inspur.com
 - spinler@us.ibm.com
 
 matches:
 
 openbmc:
-- name: Carol Wang
-  email: wangkair@cn.ibm.com
-  discord: NA
 - name: Chicago Duan
   email: duanzhijia01@inspur.com
   discord: Chicago Duan
