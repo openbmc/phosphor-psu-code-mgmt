@@ -2,6 +2,7 @@
 
 #include "utils.hpp"
 
+#include <openssl/evp.h>
 #include <openssl/sha.h>
 
 #include <algorithm>
@@ -129,20 +130,23 @@ std::string Utils::getVersionId(const std::string& version) const
         return {};
     }
 
-    unsigned char digest[SHA512_DIGEST_LENGTH];
-    SHA512_CTX ctx;
-    SHA512_Init(&ctx);
-    SHA512_Update(&ctx, version.c_str(), strlen(version.c_str()));
-    SHA512_Final(digest, &ctx);
-    char mdString[SHA512_DIGEST_LENGTH * 2 + 1];
-    for (int i = 0; i < SHA512_DIGEST_LENGTH; i++)
-    {
-        snprintf(&mdString[i * 2], 3, "%02x", (unsigned int)digest[i]);
-    }
+    using EVP_MD_CTX_Ptr =
+        std::unique_ptr<EVP_MD_CTX, decltype(&::EVP_MD_CTX_free)>;
+
+    std::array<unsigned char, EVP_MAX_MD_SIZE> digest{};
+    EVP_MD_CTX_Ptr ctx(EVP_MD_CTX_new(), &::EVP_MD_CTX_free);
+
+    EVP_DigestInit(ctx.get(), EVP_sha512());
+    EVP_DigestUpdate(ctx.get(), version.c_str(), strlen(version.c_str()));
+    EVP_DigestFinal(ctx.get(), digest.data(), nullptr);
 
     // Only need 8 hex digits.
-    std::string hexId = std::string(mdString);
-    return (hexId.substr(0, 8));
+    char mdString[9];
+    snprintf(mdString, sizeof(mdString), "%02x%02x%02x%02x",
+             (unsigned int)digest[0], (unsigned int)digest[1],
+             (unsigned int)digest[2], (unsigned int)digest[3]);
+
+    return mdString;
 }
 
 std::string Utils::getVersion(const std::string& inventoryPath) const
