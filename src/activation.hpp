@@ -120,7 +120,8 @@ class Activation : public ActivationInherit
                const std::string& filePath,
                AssociationInterface* associationInterface,
                ActivationListener* activationListener) :
-        ActivationInherit(bus, objPath.c_str(), true),
+        ActivationInherit(bus, objPath.c_str(),
+                          ActivationInherit::action::defer_emit),
         bus(bus), objPath(objPath), versionId(versionId),
         systemdSignals(
             bus,
