@@ -14,7 +14,7 @@ using ::testing::_;
 using ::testing::Return;
 using ::testing::StrEq;
 
-using std::experimental::any;
+using std::any;
 
 class TestActivation : public ::testing::Test
 {

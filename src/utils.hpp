@@ -2,7 +2,7 @@
 
 #include "types.hpp"
 
-#include <experimental/any>
+#include <any>
 #include <sdbusplus/bus.hpp>
 #include <set>
 #include <string>
@@ -14,11 +14,8 @@ namespace utils
 class UtilsInterface;
 
 using AssociationList = phosphor::software::updater::AssociationList;
-// Due to a libstdc++ bug, we got compile error using std::any with gmock.
-// A temporary workaround is to use std::experimental::any.
-// See details in https://gcc.gnu.org/bugzilla/show_bug.cgi?id=90415
-using std::experimental::any;
-using std::experimental::any_cast;
+using std::any;
+using std::any_cast;
 
 /**
  * @brief Get the implementation of UtilsInterface
