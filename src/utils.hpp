@@ -25,7 +25,7 @@ const UtilsInterface& getUtils();
 /**
  * @brief Get PSU inventory object path from DBus
  */
-std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus);
+std::vector<std::string> getPSUInventoryPath(sdbusplus::bus_t& bus);
 
 /** @brief Get service name from object path and interface
  *
@@ -35,7 +35,7 @@ std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus);
  *
  * @return The name of the service
  */
-std::string getService(sdbusplus::bus::bus& bus, const char* path,
+std::string getService(sdbusplus::bus_t& bus, const char* path,
                        const char* interface);
 
 /** @brief Get all the service names from object path and interface
@@ -46,7 +46,7 @@ std::string getService(sdbusplus::bus::bus& bus, const char* path,
  *
  * @return The name of the services
  */
-std::vector<std::string> getServices(sdbusplus::bus::bus& bus, const char* path,
+std::vector<std::string> getServices(sdbusplus::bus_t& bus, const char* path,
                                      const char* interface);
 
 /** @brief The template function to get property from the requested dbus path
@@ -60,7 +60,7 @@ std::vector<std::string> getServices(sdbusplus::bus::bus& bus, const char* path,
  * @return The value of the property
  */
 template <typename T>
-T getProperty(sdbusplus::bus::bus& bus, const char* service, const char* path,
+T getProperty(sdbusplus::bus_t& bus, const char* service, const char* path,
               const char* interface, const char* propertyName);
 
 /**
@@ -113,13 +113,13 @@ class UtilsInterface
     virtual ~UtilsInterface() = default;
 
     virtual std::vector<std::string>
-        getPSUInventoryPath(sdbusplus::bus::bus& bus) const = 0;
+        getPSUInventoryPath(sdbusplus::bus_t& bus) const = 0;
 
-    virtual std::string getService(sdbusplus::bus::bus& bus, const char* path,
+    virtual std::string getService(sdbusplus::bus_t& bus, const char* path,
                                    const char* interface) const = 0;
 
     virtual std::vector<std::string>
-        getServices(sdbusplus::bus::bus& bus, const char* path,
+        getServices(sdbusplus::bus_t& bus, const char* path,
                     const char* interface) const = 0;
 
     virtual std::string getVersionId(const std::string& version) const = 0;
@@ -132,14 +132,13 @@ class UtilsInterface
     virtual bool isAssociated(const std::string& psuInventoryPath,
                               const AssociationList& assocs) const = 0;
 
-    virtual any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
+    virtual any getPropertyImpl(sdbusplus::bus_t& bus, const char* service,
                                 const char* path, const char* interface,
                                 const char* propertyName) const = 0;
 
     template <typename T>
-    T getProperty(sdbusplus::bus::bus& bus, const char* service,
-                  const char* path, const char* interface,
-                  const char* propertyName) const
+    T getProperty(sdbusplus::bus_t& bus, const char* service, const char* path,
+                  const char* interface, const char* propertyName) const
     {
         any result =
             getPropertyImpl(bus, service, path, interface, propertyName);
@@ -152,12 +151,12 @@ class Utils : public UtilsInterface
 {
   public:
     std::vector<std::string>
-        getPSUInventoryPath(sdbusplus::bus::bus& bus) const override;
+        getPSUInventoryPath(sdbusplus::bus_t& bus) const override;
 
-    std::string getService(sdbusplus::bus::bus& bus, const char* path,
+    std::string getService(sdbusplus::bus_t& bus, const char* path,
                            const char* interface) const override;
 
-    std::vector<std::string> getServices(sdbusplus::bus::bus& bus,
+    std::vector<std::string> getServices(sdbusplus::bus_t& bus,
                                          const char* path,
                                          const char* interface) const override;
 
@@ -171,25 +170,24 @@ class Utils : public UtilsInterface
     bool isAssociated(const std::string& psuInventoryPath,
                       const AssociationList& assocs) const override;
 
-    any getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
+    any getPropertyImpl(sdbusplus::bus_t& bus, const char* service,
                         const char* path, const char* interface,
                         const char* propertyName) const override;
 };
 
-inline std::string getService(sdbusplus::bus::bus& bus, const char* path,
+inline std::string getService(sdbusplus::bus_t& bus, const char* path,
                               const char* interface)
 {
     return getUtils().getService(bus, path, interface);
 }
 
-inline std::vector<std::string> getServices(sdbusplus::bus::bus& bus,
-                                            const char* path,
-                                            const char* interface)
+inline std::vector<std::string>
+    getServices(sdbusplus::bus_t& bus, const char* path, const char* interface)
 {
     return getUtils().getServices(bus, path, interface);
 }
 
-inline std::vector<std::string> getPSUInventoryPath(sdbusplus::bus::bus& bus)
+inline std::vector<std::string> getPSUInventoryPath(sdbusplus::bus_t& bus)
 {
     return getUtils().getPSUInventoryPath(bus);
 }
@@ -216,7 +214,7 @@ inline bool isAssociated(const std::string& psuInventoryPath,
 }
 
 template <typename T>
-T getProperty(sdbusplus::bus::bus& bus, const char* service, const char* path,
+T getProperty(sdbusplus::bus_t& bus, const char* service, const char* path,
               const char* interface, const char* propertyName)
 {
     return getUtils().getProperty<T>(bus, service, path, interface,

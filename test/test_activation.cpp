@@ -60,7 +60,7 @@ class TestActivation : public ::testing::Test
     }
 
     sdbusplus::SdBusMock sdbusMock;
-    sdbusplus::bus::bus mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
+    sdbusplus::bus_t mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
     const utils::MockedUtils& mockedUtils;
     MockedAssociationInterface mockedAssociationInterface;
     MockedActivationListener mockedActivationListener;

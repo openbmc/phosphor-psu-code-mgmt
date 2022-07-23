@@ -23,7 +23,7 @@ TEST(Utils, GetPSUInventoryPath)
 
     EXPECT_CALL(sdbusMock, sd_bus_message_ref(IsNull()))
         .WillOnce(Return(nullptr));
-    sdbusplus::message::message msg(nullptr, &sdbusMock);
+    sdbusplus::message_t msg(nullptr, &sdbusMock);
 
     const char* path0 = "/com/example/chassis/powersupply0";
     const char* path1 = "/com/example/chassis/powersupply1";

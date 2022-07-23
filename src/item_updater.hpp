@@ -25,7 +25,7 @@ namespace updater
 
 class Version;
 
-using ItemUpdaterInherit = sdbusplus::server::object::object<
+using ItemUpdaterInherit = sdbusplus::server::object_t<
     sdbusplus::xyz::openbmc_project::Association::server::Definitions>;
 
 namespace MatchRules = sdbusplus::bus::match::rules;
@@ -47,7 +47,7 @@ class ItemUpdater : public ItemUpdaterInherit,
      * @param[in] bus    - The D-Bus bus object
      * @param[in] path   - The D-Bus path
      */
-    ItemUpdater(sdbusplus::bus::bus& bus, const std::string& path) :
+    ItemUpdater(sdbusplus::bus_t& bus, const std::string& path) :
         ItemUpdaterInherit(bus, path.c_str()), bus(bus),
         versionMatch(bus,
                      MatchRules::interfacesAdded() +
@@ -107,7 +107,7 @@ class ItemUpdater : public ItemUpdaterInherit,
      *
      * @param[in]  msg       - Data associated with subscribed signal
      */
-    void createActivation(sdbusplus::message::message& msg);
+    void createActivation(sdbusplus::message_t& msg);
 
     using Properties =
         std::map<std::string, utils::UtilsInterface::PropertyType>;
@@ -117,7 +117,7 @@ class ItemUpdater : public ItemUpdaterInherit,
      *
      * @param[in]  msg       - Data associated with subscribed signal
      */
-    void onPsuInventoryChangedMsg(sdbusplus::message::message& msg);
+    void onPsuInventoryChangedMsg(sdbusplus::message_t& msg);
 
     /** @brief Callback function for PSU inventory match.
      *  @details Update an Activation D-Bus object for PSU inventory.
@@ -178,7 +178,7 @@ class ItemUpdater : public ItemUpdaterInherit,
     void invokeActivation(const std::unique_ptr<Activation>& activation);
 
     /** @brief Persistent sdbusplus D-Bus bus connection. */
-    sdbusplus::bus::bus& bus;
+    sdbusplus::bus_t& bus;
 
     /** @brief Persistent map of Activation D-Bus objects and their
      * version id */
