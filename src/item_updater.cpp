@@ -29,7 +29,7 @@ using namespace phosphor::logging;
 using SVersion = server::Version;
 using VersionPurpose = SVersion::VersionPurpose;
 
-void ItemUpdater::createActivation(sdbusplus::message::message& m)
+void ItemUpdater::createActivation(sdbusplus::message_t& m)
 {
     sdbusplus::message::object_path objPath;
     std::map<std::string, std::map<std::string, std::variant<std::string>>>
@@ -306,7 +306,7 @@ std::unique_ptr<Version> ItemUpdater::createVersionObject(
     return version;
 }
 
-void ItemUpdater::onPsuInventoryChangedMsg(sdbusplus::message::message& msg)
+void ItemUpdater::onPsuInventoryChangedMsg(sdbusplus::message_t& msg)
 {
     using Interface = std::string;
     Interface interface;

@@ -15,9 +15,9 @@ namespace updater
 
 using eraseFunc = std::function<void(std::string)>;
 
-using VersionInherit = sdbusplus::server::object::object<
+using VersionInherit = sdbusplus::server::object_t<
     sdbusplus::xyz::openbmc_project::Software::server::Version>;
-using DeleteInherit = sdbusplus::server::object::object<
+using DeleteInherit = sdbusplus::server::object_t<
     sdbusplus::xyz::openbmc_project::Object::server::Delete>;
 
 namespace sdbusRule = sdbusplus::bus::match::rules;
@@ -38,8 +38,7 @@ class Delete : public DeleteInherit
      *  @param[in] path   - The D-Bus object path
      *  @param[in] version - The Version object.
      */
-    Delete(sdbusplus::bus::bus& bus, const std::string& path,
-           Version& version) :
+    Delete(sdbusplus::bus_t& bus, const std::string& path, Version& version) :
         DeleteInherit(bus, path.c_str(), action::emit_interface_added),
         version(version)
     {
@@ -74,7 +73,7 @@ class Version : public VersionInherit
      * @param[in] versionPurpose - The version purpose
      * @param[in] callback       - The eraseFunc callback
      */
-    Version(sdbusplus::bus::bus& bus, const std::string& objPath,
+    Version(sdbusplus::bus_t& bus, const std::string& objPath,
             const std::string& versionId, const std::string& versionString,
             VersionPurpose versionPurpose, eraseFunc callback) :
         VersionInherit(bus, (objPath).c_str(),
@@ -146,7 +145,7 @@ class Version : public VersionInherit
 
   private:
     /** @brief Persistent sdbusplus DBus bus connection */
-    sdbusplus::bus::bus& bus;
+    sdbusplus::bus_t& bus;
 
     /** @brief Persistent DBus object path */
     std::string objPath;

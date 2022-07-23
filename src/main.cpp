@@ -12,7 +12,7 @@ int main(int /* argc */, char* /* argv */[])
     auto bus = sdbusplus::bus::new_default();
 
     // Add sdbusplus ObjectManager.
-    sdbusplus::server::manager::manager objManager(bus, SOFTWARE_OBJPATH);
+    sdbusplus::server::manager_t objManager(bus, SOFTWARE_OBJPATH);
 
     phosphor::software::updater::ItemUpdater updater(bus, SOFTWARE_OBJPATH);
 

@@ -60,7 +60,7 @@ auto Activation::requestedActivation(RequestedActivations value)
     return SoftwareActivation::requestedActivation(value);
 }
 
-void Activation::unitStateChange(sdbusplus::message::message& msg)
+void Activation::unitStateChange(sdbusplus::message_t& msg)
 {
     uint32_t newStateID{};
     sdbusplus::message::object_path newStateObjPath;
@@ -95,7 +95,7 @@ bool Activation::doUpdate(const std::string& psuInventoryPath)
         bus.call_noreply(method);
         return true;
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         log<level::ERR>("Error staring service", entry("ERROR=%s", e.what()));
         onUpdateFailed();
@@ -264,7 +264,7 @@ void Activation::deleteImageManagerObject()
     {
         bus.call(method);
     }
-    catch (const sdbusplus::exception::exception& e)
+    catch (const sdbusplus::exception_t& e)
     {
         log<level::ERR>("Error performing call to Delete object path",
                         entry("ERROR=%s", e.what()),

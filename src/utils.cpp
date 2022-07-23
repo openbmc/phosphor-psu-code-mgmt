@@ -60,8 +60,7 @@ const UtilsInterface& getUtils()
     return utils;
 }
 
-std::vector<std::string>
-    Utils::getPSUInventoryPath(sdbusplus::bus::bus& bus) const
+std::vector<std::string> Utils::getPSUInventoryPath(sdbusplus::bus_t& bus) const
 {
     std::vector<std::string> paths;
     auto method = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
@@ -75,7 +74,7 @@ std::vector<std::string>
     return paths;
 }
 
-std::string Utils::getService(sdbusplus::bus::bus& bus, const char* path,
+std::string Utils::getService(sdbusplus::bus_t& bus, const char* path,
                               const char* interface) const
 {
     auto services = getServices(bus, path, interface);
@@ -86,7 +85,7 @@ std::string Utils::getService(sdbusplus::bus::bus& bus, const char* path,
     return services[0];
 }
 
-std::vector<std::string> Utils::getServices(sdbusplus::bus::bus& bus,
+std::vector<std::string> Utils::getServices(sdbusplus::bus_t& bus,
                                             const char* path,
                                             const char* interface) const
 {
@@ -113,7 +112,7 @@ std::vector<std::string> Utils::getServices(sdbusplus::bus::bus& bus,
         }
         return ret;
     }
-    catch (const sdbusplus::exception::exception& ex)
+    catch (const sdbusplus::exception_t& ex)
     {
         log<level::ERR>("GetObject call failed", entry("PATH=%s", path),
                         entry("INTERFACE=%s", interface));
@@ -181,7 +180,7 @@ bool Utils::isAssociated(const std::string& psuInventoryPath,
                         }) != assocs.end();
 }
 
-any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
+any Utils::getPropertyImpl(sdbusplus::bus_t& bus, const char* service,
                            const char* path, const char* interface,
                            const char* propertyName) const
 {
@@ -195,7 +194,7 @@ any Utils::getPropertyImpl(sdbusplus::bus::bus& bus, const char* service,
         reply.read(value);
         return any(value);
     }
-    catch (const sdbusplus::exception::exception& ex)
+    catch (const sdbusplus::exception_t& ex)
     {
         log<level::ERR>("GetProperty call failed", entry("PATH=%s", path),
                         entry("INTERFACE=%s", interface),

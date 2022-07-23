@@ -59,7 +59,7 @@ class TestItemUpdater : public ::testing::Test
 
     static constexpr auto dBusPath = SOFTWARE_OBJPATH;
     sdbusplus::SdBusMock sdbusMock;
-    sdbusplus::bus::bus mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
+    sdbusplus::bus_t mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
     const utils::MockedUtils& mockedUtils;
     std::unique_ptr<ItemUpdater> itemUpdater;
     Properties propAdded{{PRESENT, PropertyType(true)}};

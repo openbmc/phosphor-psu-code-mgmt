@@ -11,14 +11,14 @@ class MockedUtils : public UtilsInterface
     virtual ~MockedUtils() = default;
 
     MOCK_CONST_METHOD1(getPSUInventoryPath,
-                       std::vector<std::string>(sdbusplus::bus::bus& bus));
+                       std::vector<std::string>(sdbusplus::bus_t& bus));
 
     MOCK_CONST_METHOD3(getService,
-                       std::string(sdbusplus::bus::bus& bus, const char* path,
+                       std::string(sdbusplus::bus_t& bus, const char* path,
                                    const char* interface));
 
     MOCK_CONST_METHOD3(getServices,
-                       std::vector<std::string>(sdbusplus::bus::bus& bus,
+                       std::vector<std::string>(sdbusplus::bus_t& bus,
                                                 const char* path,
                                                 const char* interface));
 
@@ -34,7 +34,7 @@ class MockedUtils : public UtilsInterface
                                           const AssociationList& assocs));
 
     MOCK_CONST_METHOD5(getPropertyImpl,
-                       any(sdbusplus::bus::bus& bus, const char* service,
+                       any(sdbusplus::bus_t& bus, const char* service,
                            const char* path, const char* interface,
                            const char* propertyName));
 };
