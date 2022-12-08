@@ -1,7 +1,8 @@
 #!/bin/bash
 set -eo pipefail
 
-help=$'Generate Tarball with PSU image and MANIFEST Script
+help=$(cat <<EOF
+Generate Tarball with PSU image and MANIFEST Script
 usage: generate-psu-tar [OPTION] <parameter>...
 Options:
    --image        <file>          PSU FW image
@@ -18,7 +19,8 @@ Options:
                                   PRIVATE_KEY_PATH if available, or else uses the
                                   open-source private key in this script.
    --help                         Display this help text and exit.
-'
+EOF
+)
 
 private_key=$'-----BEGIN PRIVATE KEY-----
 MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAPvSDLu6slkP1gri
