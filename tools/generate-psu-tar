@@ -4,20 +4,20 @@ set -eo pipefail
 help=$'Generate Tarball with PSU image and MANIFEST Script
 usage: generate-psu-tar [OPTION] <parameter>...
 Options:
-   --image        <file>          PSU FW image
-   --version      <version>       PSU FW version
-   --model        <model>         PSU FW model
-   --manufacture  <version>       PSU FW manufacture
-   --machineName  <machineName>   Optionally specify the target machine name of this image.
-   --outfile      <filename>      Outfile name
-		                  For example : -o psufw.tar
-                                  The default outfile name is image.tar,and
-                                  "image" is what you input.
-   --sign         <path>          Sign the image. The optional path argument specifies
-                                  the private key file. Defaults to the bash variable
-                                  PRIVATE_KEY_PATH if available, or else uses the
-                                  open-source private key in this script.
-   --help                         Display this help text and exit.
+--image        <file>          PSU FW image
+--version      <version>       PSU FW version
+--model        <model>         PSU FW model
+--manufacture  <version>       PSU FW manufacture
+--machineName  <machineName>   Optionally specify the target machine name of this image.
+--outfile      <filename>      Outfile name
+For example : -o psufw.tar
+The default outfile name is image.tar,and
+"image" is what you input.
+--sign         <path>          Sign the image. The optional path argument specifies
+the private key file. Defaults to the bash variable
+PRIVATE_KEY_PATH if available, or else uses the
+open-source private key in this script.
+--help                         Display this help text and exit.
 '
 
 private_key=$'-----BEGIN PRIVATE KEY-----
