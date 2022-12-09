@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "add3a52f_c9d2c1fd",
+        "filename": "tools/generate-psu-tar",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1000044
+      },
+      "writtenOn": "2022-12-09T02:22:39Z",
+      "side": 1,
+      "message": "In https://gerrit.openbmc.org/c/openbmc/phosphor-bmc-code-mgmt/+/59417/2/gen-bios-tar#4 it changes the help string to use `$(cat \u003c\u003cEOF`, but here it does not change the behavior.\n\nAnd this format breaks the help string.",
+      "revId": "14a34290a94b227c40ed641c005d814e3493bd4e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
