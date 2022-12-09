@@ -16,6 +16,24 @@
       "message": "Does this change the link behavior?",
       "revId": "594af86cccad133a1ee617d7dba95ac3228539ac",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "12ef8f6f_e3f01905",
+        "filename": "README.md",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2022-12-09T04:24:12Z",
+      "side": 1,
+      "message": "No. You can see the rendered output here:\n\nhttps://gerrit.openbmc.org/plugins/gitiles/openbmc/phosphor-psu-code-mgmt/+/594af86cccad133a1ee617d7dba95ac3228539ac\n\nSeems that the link to “building the SDK” still works fine.",
+      "parentUuid": "c19cde4f_f99e499e",
+      "revId": "594af86cccad133a1ee617d7dba95ac3228539ac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
