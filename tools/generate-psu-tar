@@ -183,6 +183,7 @@ if [[ "${do_sign}" == true ]]; then
   additional_files="*.sig"
 fi
 
-tar -cvf "$outfile" "$files_to_sign" "$additional_files"
+# shellcheck disable=SC2086
+tar -cvf "$outfile" $files_to_sign $additional_files
 echo "PSU FW tarball at $outfile"
 exit
