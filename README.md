@@ -133,8 +133,8 @@ E.g.
 
 1. Generate a tarball of PSU firmware image by [generate-psu-tar tool][4].
    ```
-   ./generate-psu-tar --image <psu-image> --version <version> --model <model> --manufacture \
-   <manufacture> --machineName <machineName> --outfile <psu.tar> --sign
+   ./generate-psu-tar --image <psu-image> --version <version> --model <model> --manufacturer \
+   <manufacturer> --machineName <machineName> --outfile <psu.tar> --sign
    ```
 2. To update the PSU firmware, follow the same steps as described in
    [code-update.md][5]:

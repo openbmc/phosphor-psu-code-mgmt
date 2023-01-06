@@ -8,7 +8,7 @@ Options:
    --image        <file>          PSU FW image
    --version      <version>       PSU FW version
    --model        <model>         PSU FW model
-   --manufacture  <version>       PSU FW manufacture
+   --manufacturer <version>       PSU FW manufacturer
    --machineName  <machineName>   Optionally specify the target machine name of this image.
    --outfile      <filename>      Outfile name
 		                  For example : -o psufw.tar
@@ -47,7 +47,7 @@ image=""
 outfile=""
 version=""
 model=""
-manufacture=""
+manufacturer=""
 machineName=""
 
 
@@ -66,8 +66,8 @@ while [[ $# -gt 0 ]]; do
       model="$2"
       shift 2
       ;;
-    --manufacture)
-      manufacture="$2"
+    --manufacturer)
+      manufacturer="$2"
       shift 2
       ;;
     --machineName)
@@ -118,8 +118,8 @@ if [  -z "${model}" ]; then
   exit 1
 fi
 
-if [  -z "${manufacture}" ]; then
-  echo "Please enter a valid PSU FW image manufacture."
+if [  -z "${manufacturer}" ]; then
+  echo "Please enter a valid PSU FW image manufacturer."
   echo "$help"
   exit 1
 fi
@@ -164,7 +164,7 @@ cd "${scratch_dir}"
 
 echo "Creating MANIFEST for the image"
 echo -e "purpose=xyz.openbmc_project.Software.Version.VersionPurpose.PSU\nversion=$version\n\
-extended_version=model=$model,manufacture=$manufacture" > $manifest_location
+extended_version=model=$model,manufacturer=$manufacturer" > $manifest_location
 
 if [[ -n "${machineName}" ]]; then
     echo -e "MachineName=${machineName}" >> $manifest_location
