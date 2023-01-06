@@ -14,14 +14,14 @@ namespace
 constexpr auto validManifest = R"(
 purpose=xyz.openbmc_project.Software.Version.VersionPurpose.PSU
 version=psu-dummy-test.v0.1
-extended_version=model=dummy_model,manufacture=dummy_manufacture)";
+extended_version=model=dummy_model,manufacturer=dummy_manufacturer)";
 }
 
 constexpr auto validManifestWithCRLF =
     "\r\n"
     "purpose=xyz.openbmc_project.Software.Version.VersionPurpose.PSU\r\n"
     "version=psu-dummy-test.v0.1\r\n"
-    "extended_version=model=dummy_model,manufacture=dummy_manufacture\r\n";
+    "extended_version=model=dummy_model,manufacturer=dummy_manufacturer\r\n";
 
 class TestVersion : public ::testing::Test
 {
@@ -69,7 +69,7 @@ TEST_F(TestVersion, getValuesOK)
     EXPECT_EQ("xyz.openbmc_project.Software.Version.VersionPurpose.PSU",
               purpose);
     EXPECT_EQ("psu-dummy-test.v0.1", version);
-    EXPECT_EQ("model=dummy_model,manufacture=dummy_manufacture", extVersion);
+    EXPECT_EQ("model=dummy_model,manufacturer=dummy_manufacturer", extVersion);
 }
 
 TEST_F(TestVersion, getExtVersionInfo)
@@ -99,5 +99,5 @@ TEST_F(TestVersion, getValuesOKonCRLFFormat)
     EXPECT_EQ("xyz.openbmc_project.Software.Version.VersionPurpose.PSU",
               purpose);
     EXPECT_EQ("psu-dummy-test.v0.1", version);
-    EXPECT_EQ("model=dummy_model,manufacture=dummy_manufacture", extVersion);
+    EXPECT_EQ("model=dummy_model,manufacturer=dummy_manufacturer", extVersion);
 }
