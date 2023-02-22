@@ -1,0 +1,8 @@
+Code-Review+1: George Liu <liuxiwei@inspur.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Lei YU <mine260309@gmail.com>
+Submitted-by: George Liu <liuxiwei@inspur.com>
+Submitted-at: Wed, 22 Feb 2023 07:40:25 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-psu-code-mgmt/+/60078
+Project: openbmc/phosphor-psu-code-mgmt
+Branch: refs/heads/master
