@@ -6,11 +6,11 @@ project('phosphor-psu-code-mgmt', 'cpp',
           'cpp_std=c++20',
           'b_lto=true',
         ],
-        meson_version: '>=0.57.0',
+        meson_version: '>=0.58.0',
        )
 
 systemd = dependency('systemd')
-servicedir = systemd.get_pkgconfig_variable('systemdsystemunitdir')
+servicedir = systemd.get_variable('systemdsystemunitdir')
 subdir('services')
 
 # Common configurations for src and test
