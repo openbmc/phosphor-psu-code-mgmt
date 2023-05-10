@@ -7,7 +7,6 @@
 #include "types.hpp"
 #include "version.hpp"
 
-#include <queue>
 #include <sdbusplus/server.hpp>
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Common/FilePath/server.hpp>
@@ -15,6 +14,8 @@
 #include <xyz/openbmc_project/Software/ActivationBlocksTransition/server.hpp>
 #include <xyz/openbmc_project/Software/ActivationProgress/server.hpp>
 #include <xyz/openbmc_project/Software/ExtendedVersion/server.hpp>
+
+#include <queue>
 
 class TestActivation;
 

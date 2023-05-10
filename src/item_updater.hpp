@@ -8,11 +8,12 @@
 #include "utils.hpp"
 #include "version.hpp"
 
-#include <filesystem>
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/server.hpp>
 #include <xyz/openbmc_project/Association/Definitions/server.hpp>
 #include <xyz/openbmc_project/Collection/DeleteAll/server.hpp>
+
+#include <filesystem>
 
 class TestItemUpdater;
 
@@ -35,9 +36,10 @@ namespace fs = std::filesystem;
 /** @class ItemUpdater
  *  @brief Manages the activation of the PSU version items.
  */
-class ItemUpdater : public ItemUpdaterInherit,
-                    public AssociationInterface,
-                    public ActivationListener
+class ItemUpdater :
+    public ItemUpdaterInherit,
+    public AssociationInterface,
+    public ActivationListener
 {
     friend class ::TestItemUpdater;
 

@@ -2,14 +2,15 @@
 
 #include "item_updater.hpp"
 
-#include <fstream>
-#include <iostream>
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/log.hpp>
+#include <xyz/openbmc_project/Common/error.hpp>
+
+#include <fstream>
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <xyz/openbmc_project/Common/error.hpp>
 
 namespace phosphor
 {

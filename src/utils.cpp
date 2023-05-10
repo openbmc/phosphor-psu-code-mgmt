@@ -4,9 +4,10 @@
 
 #include <openssl/evp.h>
 
+#include <phosphor-logging/log.hpp>
+
 #include <algorithm>
 #include <fstream>
-#include <phosphor-logging/log.hpp>
 #include <sstream>
 
 using namespace phosphor::logging;
@@ -24,7 +25,7 @@ constexpr auto MAPPER_INTERFACE = "xyz.openbmc_project.ObjectMapper";
 namespace internal
 {
 template <typename... Ts>
-std::string concat_string(Ts const&... ts)
+std::string concat_string(const Ts&... ts)
 {
     std::stringstream s;
     ((s << ts << " "), ...) << std::endl;
@@ -34,7 +35,7 @@ std::string concat_string(Ts const&... ts)
 // Helper function to run command
 // Returns return code and the stdout
 template <typename... Ts>
-std::pair<int, std::string> exec(Ts const&... ts)
+std::pair<int, std::string> exec(const Ts&... ts)
 {
     std::array<char, 512> buffer;
     std::string cmd = concat_string(ts...);
@@ -176,8 +177,8 @@ bool Utils::isAssociated(const std::string& psuInventoryPath,
 {
     return std::find_if(assocs.begin(), assocs.end(),
                         [&psuInventoryPath](const auto& assoc) {
-                            return psuInventoryPath == std::get<2>(assoc);
-                        }) != assocs.end();
+        return psuInventoryPath == std::get<2>(assoc);
+           }) != assocs.end();
 }
 
 any Utils::getPropertyImpl(sdbusplus::bus_t& bus, const char* service,

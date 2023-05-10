@@ -2,8 +2,9 @@
 
 #include "types.hpp"
 
-#include <any>
 #include <sdbusplus/bus.hpp>
+
+#include <any>
 #include <set>
 #include <string>
 #include <vector>
@@ -140,8 +141,8 @@ class UtilsInterface
     T getProperty(sdbusplus::bus_t& bus, const char* service, const char* path,
                   const char* interface, const char* propertyName) const
     {
-        any result =
-            getPropertyImpl(bus, service, path, interface, propertyName);
+        any result = getPropertyImpl(bus, service, path, interface,
+                                     propertyName);
         auto value = any_cast<PropertyType>(result);
         return std::get<T>(value);
     }

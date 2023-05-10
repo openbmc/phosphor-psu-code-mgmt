@@ -4,10 +4,11 @@
 
 #include "utils.hpp"
 
-#include <cassert>
-#include <filesystem>
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/log.hpp>
+
+#include <cassert>
+#include <filesystem>
 
 namespace phosphor
 {
@@ -274,8 +275,8 @@ void Activation::deleteImageManagerObject()
 
 bool Activation::isCompatible(const std::string& psuInventoryPath)
 {
-    auto service =
-        utils::getService(bus, psuInventoryPath.c_str(), ASSET_IFACE);
+    auto service = utils::getService(bus, psuInventoryPath.c_str(),
+                                     ASSET_IFACE);
     auto psuManufacturer = utils::getProperty<std::string>(
         bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE,
         MANUFACTURER);

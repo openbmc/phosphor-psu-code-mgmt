@@ -4,11 +4,12 @@
 
 #include "utils.hpp"
 
-#include <cassert>
-#include <filesystem>
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/log.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
+
+#include <cassert>
+#include <filesystem>
 
 namespace
 {
@@ -109,8 +110,8 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
                                    activationState, associations, filePath);
         activations.emplace(versionId, std::move(activation));
 
-        auto versionPtr =
-            createVersionObject(path, versionId, version, purpose);
+        auto versionPtr = createVersionObject(path, versionId, version,
+                                              purpose);
         versions.emplace(versionId, std::move(versionPtr));
     }
     return;
@@ -462,8 +463,8 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                     objPath, versionId, extVersion, activationState, {}, path);
                 activations.emplace(versionId, std::move(activation));
 
-                auto versionPtr =
-                    createVersionObject(objPath, versionId, version, purpose);
+                auto versionPtr = createVersionObject(objPath, versionId,
+                                                      version, purpose);
                 versions.emplace(versionId, std::move(versionPtr));
             }
             else

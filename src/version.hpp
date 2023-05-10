@@ -41,8 +41,7 @@ class Delete : public DeleteInherit
     Delete(sdbusplus::bus_t& bus, const std::string& path, Version& version) :
         DeleteInherit(bus, path.c_str(), action::emit_interface_added),
         version(version)
-    {
-    }
+    {}
 
     /**
      * @brief Delete the D-Bus object.
