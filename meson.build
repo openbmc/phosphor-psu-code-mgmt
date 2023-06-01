@@ -49,8 +49,6 @@ phosphor_logging = dependency('phosphor-logging')
 sdbusplus = dependency('sdbusplus')
 ssl = dependency('openssl')
 
-add_project_link_arguments(['-lstdc++fs'], language: 'cpp')
-
 subdir('src')
 
 build_tests = get_option('tests')
