@@ -1,0 +1,7 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Lei YU <mine260309@gmail.com>
+Submitted-by: Patrick Williams <patrick@stwcx.xyz>
+Submitted-at: Fri, 02 Jun 2023 11:36:45 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-psu-code-mgmt/+/63881
+Project: openbmc/phosphor-psu-code-mgmt
+Branch: refs/heads/master
