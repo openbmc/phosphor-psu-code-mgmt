@@ -3,9 +3,11 @@ unit_files = [
     'psu-update@.service'
 ]
 
+fs = import('fs')
 foreach unit : unit_files
-configure_file(input: unit,
-               output: unit,
-               copy: true,
-               install_dir: servicedir)
+    fs.copyfile(
+        unit,
+        install: true,
+        install_dir: servicedir
+    )
 endforeach
