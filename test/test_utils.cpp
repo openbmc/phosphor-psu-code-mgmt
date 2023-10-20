@@ -42,17 +42,16 @@ TEST(Utils, GetPSUInventoryPath)
     // std::string
     EXPECT_CALL(sdbusMock, sd_bus_message_read_basic(IsNull(), 's', _))
         .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
-            const char** s = static_cast<const char**>(p);
-            // Read the first parameter, the string.
-            *s = path0;
-            return 0;
-        }))
-        .WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
-            const char** s = static_cast<const char**>(p);
-            // Read the first parameter, the string.
-            *s = path1;
-            return 0;
-        }));
+        const char** s = static_cast<const char**>(p);
+        // Read the first parameter, the string.
+        *s = path0;
+        return 0;
+    })).WillOnce(Invoke([&](sd_bus_message*, char, void* p) {
+        const char** s = static_cast<const char**>(p);
+        // Read the first parameter, the string.
+        *s = path1;
+        return 0;
+    }));
 
     EXPECT_CALL(sdbusMock, sd_bus_message_exit_container(IsNull()))
         .WillOnce(Return(0)); /* end of std::vector */

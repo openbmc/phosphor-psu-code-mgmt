@@ -178,7 +178,7 @@ bool Utils::isAssociated(const std::string& psuInventoryPath,
     return std::find_if(assocs.begin(), assocs.end(),
                         [&psuInventoryPath](const auto& assoc) {
         return psuInventoryPath == std::get<2>(assoc);
-           }) != assocs.end();
+    }) != assocs.end();
 }
 
 any Utils::getPropertyImpl(sdbusplus::bus_t& bus, const char* service,
