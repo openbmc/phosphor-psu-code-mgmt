@@ -1,5 +1,5 @@
 oe_sdk = get_option('oe-sdk')
-if oe_sdk.enabled()
+if oe_sdk.allowed()
   # Setup OE SYSROOT
   OECORE_TARGET_SYSROOT = run_command('sh', '-c', 'echo $OECORE_TARGET_SYSROOT').stdout().strip()
   if OECORE_TARGET_SYSROOT == ''
@@ -27,7 +27,7 @@ test_util = executable(
   'test_utils.cpp',
   include_directories: [psu_inc, test_inc],
   link_args: dynamic_linker,
-  build_rpath: oe_sdk.enabled() ? rpath : '',
+  build_rpath: oe_sdk.allowed() ? rpath : '',
   dependencies: [
     gtest,
     gmock,
@@ -47,7 +47,7 @@ test_phosphor_psu_manager = executable(
   'test_version.cpp',
   include_directories: [psu_inc, test_inc],
   link_args: dynamic_linker,
-  build_rpath: oe_sdk.enabled() ? rpath : '',
+  build_rpath: oe_sdk.allowed() ? rpath : '',
   dependencies: [
     gtest,
     gmock,
