@@ -1,5 +1,5 @@
 option('tests', type: 'feature', description: 'Build tests')
-option('oe-sdk', type: 'feature', description: 'Enable OE SDK')
+option('oe-sdk', type: 'feature', value: 'disabled', description: 'Enable OE SDK')
 option('examples', type: 'boolean', value: true, description: 'Build vendor-example')
 
 option('MANIFEST_FILE',
