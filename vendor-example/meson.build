@@ -1,5 +1,5 @@
 oe_sdk = get_option('oe-sdk')
-if oe_sdk.enabled()
+if oe_sdk.allowed()
   # Setup OE SYSROOT
   OECORE_TARGET_SYSROOT = run_command('sh', '-c', 'echo $OECORE_TARGET_SYSROOT').stdout().strip()
   if OECORE_TARGET_SYSROOT == ''
@@ -22,6 +22,6 @@ foreach example : examples
   executable(example, example + '.cpp',
              implicit_include_directories: false,
              link_args: dynamic_linker,
-             build_rpath: oe_sdk.enabled() ? rpath : '')
+             build_rpath: oe_sdk.allowed() ? rpath : '')
 endforeach
 
