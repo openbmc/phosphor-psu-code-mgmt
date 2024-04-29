@@ -64,14 +64,57 @@ const UtilsInterface& getUtils()
 std::vector<std::string> Utils::getPSUInventoryPath(sdbusplus::bus_t& bus) const
 {
     std::vector<std::string> paths;
-    auto method = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
-                                      MAPPER_INTERFACE, "GetSubTreePaths");
-    method.append(PSU_INVENTORY_PATH_BASE);
-    method.append(0); // Depth 0 to search all
-    method.append(std::vector<std::string>({PSU_INVENTORY_IFACE}));
-    auto reply = bus.call(method);
+    std::vector<std::string> previousPaths;
 
-    reply.read(paths);
+
+    auto startTime = std::chrono::steady_clock::now();
+
+    while (true)
+    {
+        auto method = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
+                                          MAPPER_INTERFACE, "GetSubTreePaths");
+        method.append(PSU_INVENTORY_PATH_BASE);
+        method.append(0); // Depth 0 to search all
+        method.append(std::vector<std::string>({PSU_INVENTORY_IFACE}));
+        try
+        {
+            auto reply = bus.call(method);
+            reply.read(paths);
+        }
+        catch (const std::exception& e)
+        {
+            log<level::ERR>(
+                std::format("Bus call execption e={}", e.what()).c_str());
+        }
+
+        for (const auto& newPath : paths)
+        {
+            if (std::find(previousPaths.begin(), previousPaths.end(),
+                          newPath) == previousPaths.end())
+            {
+                previousPaths.push_back(std ::move(newPath));
+                startTime = std::chrono::steady_clock::now(); // Reset timer
+            }
+        }
+
+        // Check if timer has expired
+        auto currentTime = std::chrono::steady_clock::now();
+        auto elapsedTime = std::chrono::duration_cast<std::chrono::seconds>(
+                               currentTime - startTime)
+                               .count();
+
+        if (elapsedTime >= 30)
+        {
+            // Timer expired
+            break;
+        }
+
+        paths.clear();
+
+        // Sleep for 1 second
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
     return paths;
 }
 

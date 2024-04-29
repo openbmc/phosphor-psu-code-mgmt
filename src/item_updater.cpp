@@ -391,6 +391,8 @@ void ItemUpdater::processPSUImage()
         auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
         auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
                                                 ITEM_IFACE, PRESENT);
+        psuStatusMap[p].model = utils::getProperty<std::string>(
+            bus, service.c_str(), p.c_str(), ASSET_IFACE, MODEL);
         auto version = utils::getVersion(p);
         if (present && !version.empty())
         {
@@ -416,6 +418,8 @@ void ItemUpdater::processStoredImage()
 
 void ItemUpdater::scanDirectory(const fs::path& dir)
 {
+    auto manifest = dir;
+    auto path = dir;
     // The directory shall put PSU images in directories named with model
     if (!fs::exists(dir))
     {
@@ -428,28 +432,48 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                         entry("PATH=%s", dir.c_str()));
         return;
     }
-    for (const auto& d : fs::directory_iterator(dir))
+    auto paths = utils::getPSUInventoryPath(bus);
+    // Search PSU inventory for PSU model and break when finding the 1st model
+    // assuming all PSUs in the system have same model.
+    for (const auto& p : paths)
     {
-        // If the model in manifest does not match the dir name
-        // Log a warning and skip it
-        auto path = d.path();
-        auto manifest = path / MANIFEST_FILE;
-        if (fs::exists(manifest))
+        if (!psuStatusMap[p].model.empty())
         {
-            auto ret = Version::getValues(
-                manifest.string(),
-                {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
-            auto version = ret[MANIFEST_VERSION];
-            auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
-            auto info = Version::getExtVersionInfo(extVersion);
-            auto model = info["model"];
-            if (path.stem() != model)
-            {
-                log<level::ERR>("Unmatched model",
-                                entry("PATH=%s", path.c_str()),
-                                entry("MODEL=%s", model.c_str()));
-                continue;
-            }
+            path = path / psuStatusMap[p].model;
+            manifest = path / MANIFEST_FILE;
+            break;
+        }
+    }
+    if (!fs::is_directory(path))
+    {
+        log<level::ERR>("The path is not a directory",
+                        entry("PATH=%s", path.c_str()));
+        return;
+    }
+
+    if (!fs::exists(manifest))
+    {
+        log<level::ERR>("No MANIFEST found",
+                        entry("PATH=%s", manifest.c_str()));
+        return;
+    }
+    // If the model in manifest does not match the dir name
+    // Log a warning
+    if (fs::is_regular_file(manifest))
+    {
+        auto ret = Version::getValues(
+            manifest.string(), {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
+        auto version = ret[MANIFEST_VERSION];
+        auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
+        auto info = Version::getExtVersionInfo(extVersion);
+        auto model = info["model"];
+        if (path.stem() != model)
+        {
+            log<level::ERR>("Unmatched model", entry("PATH=%s", path.c_str()),
+                            entry("MODEL=%s", model.c_str()));
+        }
+        else
+        {
             auto versionId = utils::getVersionId(version);
             auto it = activations.find(versionId);
             if (it == activations.end())
@@ -474,11 +498,11 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                 it->second->path(path);
             }
         }
-        else
-        {
-            log<level::ERR>("No MANIFEST found",
-                            entry("PATH=%s", path.c_str()));
-        }
+    }
+    else
+    {
+        log<level::ERR>("MANIFEST is not a file",
+                        entry("PATH=%s", manifest.c_str()));
     }
 }
 
