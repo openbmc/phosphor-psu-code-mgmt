@@ -15,6 +15,7 @@ namespace
 {
 constexpr auto MANIFEST_VERSION = "version";
 constexpr auto MANIFEST_EXTENDED_VERSION = "extended_version";
+constexpr auto TIMEOUT = 10;
 } // namespace
 
 namespace phosphor
@@ -358,7 +359,11 @@ void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
         auto version = utils::getVersion(psuPath);
         if (!version.empty())
         {
-            createPsuObject(psuPath, version);
+            if (psuPathActivationMap.find(psuPath) ==
+                psuPathActivationMap.end())
+            {
+                createPsuObject(psuPath, version);
+            }
             // Check if there is new PSU images to update
             syncToLatestImage();
         }
@@ -391,31 +396,37 @@ void ItemUpdater::processPSUImage()
         auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
         auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
                                                 ITEM_IFACE, PRESENT);
+        psuStatusMap[p].model = utils::getProperty<std::string>(
+            bus, service.c_str(), p.c_str(), ASSET_IFACE, MODEL);
         auto version = utils::getVersion(p);
-        if (present && !version.empty())
+        if ((psuPathActivationMap.find(p) == psuPathActivationMap.end()) &&
+            present && !version.empty())
         {
             createPsuObject(p, version);
+            // Add matches for PSU Inventory's property changes
+            psuMatches.emplace_back(
+                bus, MatchRules::propertiesChanged(p, ITEM_IFACE),
+                std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
+                          std::placeholders::_1)); // For present
+            psuMatches.emplace_back(
+                bus, MatchRules::propertiesChanged(p, ASSET_IFACE),
+                std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
+                          std::placeholders::_1)); // For model
         }
-        // Add matches for PSU Inventory's property changes
-        psuMatches.emplace_back(
-            bus, MatchRules::propertiesChanged(p, ITEM_IFACE),
-            std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
-                      std::placeholders::_1)); // For present
-        psuMatches.emplace_back(
-            bus, MatchRules::propertiesChanged(p, ASSET_IFACE),
-            std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
-                      std::placeholders::_1)); // For model
     }
 }
 
 void ItemUpdater::processStoredImage()
 {
     scanDirectory(IMG_DIR_BUILTIN);
+
     scanDirectory(IMG_DIR_PERSIST);
 }
 
 void ItemUpdater::scanDirectory(const fs::path& dir)
 {
+    auto manifest = dir;
+    auto path = dir;
     // The directory shall put PSU images in directories named with model
     if (!fs::exists(dir))
     {
@@ -428,28 +439,52 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                         entry("PATH=%s", dir.c_str()));
         return;
     }
-    for (const auto& d : fs::directory_iterator(dir))
+
+    for (const auto& [key, item] : psuStatusMap)
     {
-        // If the model in manifest does not match the dir name
-        // Log a warning and skip it
-        auto path = d.path();
-        auto manifest = path / MANIFEST_FILE;
-        if (fs::exists(manifest))
+        if (!item.model.empty())
         {
-            auto ret = Version::getValues(
-                manifest.string(),
-                {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
-            auto version = ret[MANIFEST_VERSION];
-            auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
-            auto info = Version::getExtVersionInfo(extVersion);
-            auto model = info["model"];
-            if (path.stem() != model)
-            {
-                log<level::ERR>("Unmatched model",
-                                entry("PATH=%s", path.c_str()),
-                                entry("MODEL=%s", model.c_str()));
-                continue;
-            }
+            path = path / item.model;
+            manifest = dir / item.model / MANIFEST_FILE;
+            break;
+        }
+    }
+    if (path == dir)
+    {
+        log<level::ERR>("Model directory not found");
+        return;
+    }
+
+    if (!fs::is_directory(path))
+    {
+        log<level::ERR>("The path is not a directory",
+                        entry("PATH=%s", path.c_str()));
+        return;
+    }
+
+    if (!fs::exists(manifest))
+    {
+        log<level::ERR>("No MANIFEST found",
+                        entry("PATH=%s", manifest.c_str()));
+        return;
+    }
+    // If the model in manifest does not match the dir name
+    // Log a warning
+    if (fs::is_regular_file(manifest))
+    {
+        auto ret = Version::getValues(
+            manifest.string(), {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
+        auto version = ret[MANIFEST_VERSION];
+        auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
+        auto info = Version::getExtVersionInfo(extVersion);
+        auto model = info["model"];
+        if (path.stem() != model)
+        {
+            log<level::ERR>("Unmatched model", entry("PATH=%s", path.c_str()),
+                            entry("MODEL=%s", model.c_str()));
+        }
+        else
+        {
             auto versionId = utils::getVersionId(version);
             auto it = activations.find(versionId);
             if (it == activations.end())
@@ -474,11 +509,11 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                 it->second->path(path);
             }
         }
-        else
-        {
-            log<level::ERR>("No MANIFEST found",
-                            entry("PATH=%s", path.c_str()));
-        }
+    }
+    else
+    {
+        log<level::ERR>("MANIFEST is not a file",
+                        entry("PATH=%s", manifest.c_str()));
     }
 }
 
@@ -518,9 +553,9 @@ void ItemUpdater::syncToLatestImage()
     auto paths = utils::getPSUInventoryPath(bus);
     for (const auto& p : paths)
     {
-        // As long as there is a PSU is not associated with the latest image,
-        // run the activation so that all PSUs are running the same latest
-        // image.
+        // As long as there is a PSU is not associated with the latest
+        // image, run the activation so that all PSUs are running the same
+        // latest image.
         if (!utils::isAssociated(p, assocs))
         {
             log<level::INFO>("Automatically update PSU",
@@ -535,6 +570,80 @@ void ItemUpdater::invokeActivation(
     const std::unique_ptr<Activation>& activation)
 {
     activation->requestedActivation(Activation::RequestedActivations::Active);
+}
+
+void ItemUpdater::onPSUInterfaceAdded(sdbusplus::message_t& msg)
+{
+    sdbusplus::message::object_path objPath;
+    std::map<std::string,
+             std::map<std::string, std::variant<bool, std::string>>>
+        interfaces;
+    msg.read(objPath, interfaces);
+    std::string path = objPath.str;
+
+    if (interfaces.find(PSU_INVENTORY_IFACE) == interfaces.end() ||
+        (psuStatusMap[path].present && !psuStatusMap[path].model.empty()))
+    {
+        return;
+    }
+
+    auto timeout = std::chrono::steady_clock::now() +
+                   std::chrono::seconds(TIMEOUT);
+
+    // Poll the inventory item until it becomes present or the timeout is
+    // reached
+    while (std::chrono::steady_clock::now() < timeout)
+    {
+        try
+        {
+            psuStatusMap[path].present = utils::getProperty<bool>(
+                bus, msg.get_sender(), path.c_str(), ITEM_IFACE, PRESENT);
+            break;
+        }
+        catch (const std::exception& e)
+        {
+            auto err = errno;
+            log<level::INFO>(
+                std::format("Failed to get Inventory Item Present. errno={}",
+                            err)
+                    .c_str());
+            sleep(1);
+        }
+    }
+
+    // Poll the inventory item until it retrieves model or the timeout is
+    // reached. The model is the path trail of the firmware's and manifest
+    // subdirectory. If the model not found the firmware and manifest
+    // cannot be located.
+    timeout = std::chrono::steady_clock::now() + std::chrono::seconds(TIMEOUT);
+    while (std::chrono::steady_clock::now() < timeout &&
+           psuStatusMap[path].present)
+    {
+        try
+        {
+            psuStatusMap[path].model = utils::getProperty<std::string>(
+                bus, msg.get_sender(), path.c_str(), ASSET_IFACE, MODEL);
+            processPSUImageAndSyncToLatest();
+            break;
+        }
+        catch (const std::exception& e)
+        {
+            auto err = errno;
+            log<level::INFO>(
+                std::format(
+                    "Failed to get Inventory Decorator Asset model. errno={}",
+                    err)
+                    .c_str());
+            sleep(1);
+        }
+    }
+}
+
+void ItemUpdater::processPSUImageAndSyncToLatest()
+{
+    processPSUImage();
+    processStoredImage();
+    syncToLatestImage();
 }
 
 } // namespace updater
