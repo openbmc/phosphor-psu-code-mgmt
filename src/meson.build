@@ -10,6 +10,7 @@ executable(
   'main.cpp',
   'version.cpp',
   'utils.cpp',
+  'psu_present.cpp',
   include_directories: psu_inc,
   dependencies: [
     phosphor_logging,
