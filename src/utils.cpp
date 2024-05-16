@@ -4,13 +4,11 @@
 
 #include <openssl/evp.h>
 
-#include <phosphor-logging/log.hpp>
+#include <phosphor-logging/lg2.hpp>
 
 #include <algorithm>
 #include <fstream>
 #include <sstream>
-
-using namespace phosphor::logging;
 
 namespace utils
 {
@@ -103,7 +101,7 @@ std::vector<std::string> Utils::getServices(sdbusplus::bus_t& bus,
         mapperResponseMsg.read(mapperResponse);
         if (mapperResponse.empty())
         {
-            log<level::ERR>("Error reading mapper response");
+            lg2::error("Error reading mapper response");
             throw std::runtime_error("Error reading mapper response");
         }
         std::vector<std::string> ret;
@@ -115,8 +113,8 @@ std::vector<std::string> Utils::getServices(sdbusplus::bus_t& bus,
     }
     catch (const sdbusplus::exception_t& ex)
     {
-        log<level::ERR>("GetObject call failed", entry("PATH=%s", path),
-                        entry("INTERFACE=%s", interface));
+        lg2::error("GetObject call failed {ERROR} {INTERFACE}", "ERROR", path,
+                   "INTERFACE", interface);
         throw std::runtime_error("GetObject call failed");
     }
 }
@@ -125,7 +123,7 @@ std::string Utils::getVersionId(const std::string& version) const
 {
     if (version.empty())
     {
-        log<level::ERR>("Error version is empty");
+        lg2::error("Error version is empty");
         return {};
     }
 
@@ -197,9 +195,9 @@ any Utils::getPropertyImpl(sdbusplus::bus_t& bus, const char* service,
     }
     catch (const sdbusplus::exception_t& ex)
     {
-        log<level::ERR>("GetProperty call failed", entry("PATH=%s", path),
-                        entry("INTERFACE=%s", interface),
-                        entry("PROPERTY=%s", propertyName));
+        lg2::error("GetProperty call failed {PATH} {INTERFACE} {PROPERTY}",
+                   "PATH", path, "INTERFACE", interface, "PROPERTY",
+                   propertyName);
         throw std::runtime_error("GetProperty call failed");
     }
 }

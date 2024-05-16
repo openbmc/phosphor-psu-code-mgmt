@@ -5,7 +5,7 @@
 #include "utils.hpp"
 
 #include <phosphor-logging/elog-errors.hpp>
-#include <phosphor-logging/log.hpp>
+#include <phosphor-logging/lg2.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
 #include <cassert>
@@ -26,7 +26,6 @@ namespace updater
 namespace server = sdbusplus::xyz::openbmc_project::Software::server;
 
 using namespace sdbusplus::xyz::openbmc_project::Common::Error;
-using namespace phosphor::logging;
 using SVersion = server::Version;
 using VersionPurpose = SVersion::VersionPurpose;
 
@@ -83,8 +82,8 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
     auto pos = path.rfind("/");
     if (pos == std::string::npos)
     {
-        log<level::ERR>("No version id found in object path",
-                        entry("OBJPATH=%s", path.c_str()));
+        lg2::error("No version id found in object path={OBJPATH}", "OBJPATH",
+                   path);
         return;
     }
 
@@ -122,10 +121,10 @@ void ItemUpdater::erase(const std::string& versionId)
     auto it = versions.find(versionId);
     if (it == versions.end())
     {
-        log<level::ERR>(("Error: Failed to find version " + versionId +
-                         " in item updater versions map."
-                         " Unable to remove.")
-                            .c_str());
+        lg2::error("Error: Failed to find version {VERSION_Id}"
+                   " in item updater versions map."
+                   "  Unable to remove.",
+                   "VERSION_ID", versionId);
     }
     else
     {
@@ -137,10 +136,10 @@ void ItemUpdater::erase(const std::string& versionId)
     auto ita = activations.find(versionId);
     if (ita == activations.end())
     {
-        log<level::ERR>(("Error: Failed to find version " + versionId +
-                         " in item updater activations map."
-                         " Unable to remove.")
-                            .c_str());
+        lg2::error("Error: Failed to find version {VERSION_Id}"
+                   " in item updater activations map."
+                   "  Unable to remove.",
+                   "VERSION_ID", versionId);
     }
     else
     {
@@ -263,8 +262,8 @@ void ItemUpdater::removePsuObject(const std::string& psuInventoryPath)
     auto it = psuPathActivationMap.find(psuInventoryPath);
     if (it == psuPathActivationMap.end())
     {
-        log<level::ERR>("No Activation found for PSU",
-                        entry("PSUPATH=%s", psuInventoryPath.c_str()));
+        lg2::error("No Activation found for PSU={PSUPATH}", "PSUPATH",
+                   psuInventoryPath);
         return;
     }
     const auto& activationPtr = it->second;
@@ -351,7 +350,7 @@ void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
         // If model is not updated, let's wait for it
         if (psuStatusMap[psuPath].model.empty())
         {
-            log<level::DEBUG>("Waiting for model to be updated");
+            lg2::debug("Waiting for model to be updated");
             return;
         }
 
@@ -365,8 +364,7 @@ void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
         else
         {
             // TODO: log an event
-            log<level::ERR>("Failed to get PSU version",
-                            entry("PSU=%s", psuPath.c_str()));
+            lg2::error("Failed to get PSU version {PSU}", "PSU", psuPath);
         }
     }
     else
@@ -391,6 +389,8 @@ void ItemUpdater::processPSUImage()
         auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
         auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
                                                 ITEM_IFACE, PRESENT);
+        psuStatusMap[p].model = utils::getProperty<std::string>(
+            bus, service.c_str(), p.c_str(), ASSET_IFACE, MODEL);
         auto version = utils::getVersion(p);
         if (present && !version.empty())
         {
@@ -411,11 +411,13 @@ void ItemUpdater::processPSUImage()
 void ItemUpdater::processStoredImage()
 {
     scanDirectory(IMG_DIR_BUILTIN);
+
     scanDirectory(IMG_DIR_PERSIST);
 }
-
 void ItemUpdater::scanDirectory(const fs::path& dir)
 {
+    auto manifest = dir;
+    auto path = dir;
     // The directory shall put PSU images in directories named with model
     if (!fs::exists(dir))
     {
@@ -424,32 +426,48 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
     }
     if (!fs::is_directory(dir))
     {
-        log<level::ERR>("The path is not a directory",
-                        entry("PATH=%s", dir.c_str()));
+        lg2::error("The path is not a directory {PATH}", "PATH", dir);
         return;
     }
-    for (const auto& d : fs::directory_iterator(dir))
+
+    for (const auto& [key, item] : psuStatusMap)
     {
-        // If the model in manifest does not match the dir name
-        // Log a warning and skip it
-        auto path = d.path();
-        auto manifest = path / MANIFEST_FILE;
-        if (fs::exists(manifest))
+        if (!item.model.empty())
         {
-            auto ret = Version::getValues(
-                manifest.string(),
-                {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
-            auto version = ret[MANIFEST_VERSION];
-            auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
-            auto info = Version::getExtVersionInfo(extVersion);
-            auto model = info["model"];
-            if (path.stem() != model)
-            {
-                log<level::ERR>("Unmatched model",
-                                entry("PATH=%s", path.c_str()),
-                                entry("MODEL=%s", model.c_str()));
-                continue;
-            }
+            path = path / item.model;
+            manifest = dir / item.model / MANIFEST_FILE;
+            break;
+        }
+    }
+
+    if (!fs::is_directory(path))
+    {
+        lg2::error("The path is not a directory {PATH}", "PATH", path);
+        return;
+    }
+
+    if (!fs::exists(manifest))
+    {
+        lg2::error("No MANIFEST found {FILE}", "FILE", manifest);
+        return;
+    }
+    // If the model in manifest does not match the dir name
+    // Log a warning
+    if (fs::is_regular_file(manifest))
+    {
+        auto ret = Version::getValues(
+            manifest.string(), {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
+        auto version = ret[MANIFEST_VERSION];
+        auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
+        auto info = Version::getExtVersionInfo(extVersion);
+        auto model = info["model"];
+        if (path.stem() != model)
+        {
+            lg2::error("Unmatched model {PATH}, {MODEL}", "PATH", path, "MODEL",
+                       model);
+        }
+        else
+        {
             auto versionId = utils::getVersionId(version);
             auto it = activations.find(versionId);
             if (it == activations.end())
@@ -474,11 +492,10 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                 it->second->path(path);
             }
         }
-        else
-        {
-            log<level::ERR>("No MANIFEST found",
-                            entry("PATH=%s", path.c_str()));
-        }
+    }
+    else
+    {
+        lg2::error("MANIFEST is not a file {FILE}", "FILE", manifest);
     }
 }
 
@@ -523,8 +540,8 @@ void ItemUpdater::syncToLatestImage()
         // image.
         if (!utils::isAssociated(p, assocs))
         {
-            log<level::INFO>("Automatically update PSU",
-                             entry("VERSION_ID=%s", latestVersionId->c_str()));
+            lg2::info("Automatically update PSU {VERSION_ID}", "VERSION_ID",
+                      latestVersionId->c_str());
             invokeActivation(activation);
             break;
         }
