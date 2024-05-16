@@ -55,7 +55,13 @@ class ItemUpdater :
                      MatchRules::interfacesAdded() +
                          MatchRules::path(SOFTWARE_OBJPATH),
                      std::bind(std::mem_fn(&ItemUpdater::createActivation),
-                               this, std::placeholders::_1))
+                               this, std::placeholders::_1)),
+        psuMatch(
+            bus,
+            MatchRules::interfacesAdded() +
+                MatchRules::path_namespace("/xyz/openbmc_project/inventory"),
+            std::bind(std::mem_fn(&ItemUpdater::onInterfacesAdded), this,
+                      std::placeholders::_1))
     {
         processPSUImage();
         processStoredImage();
@@ -219,6 +225,23 @@ class ItemUpdater :
      * It is used to handle psu inventory changed event, that only create psu
      * software object when a PSU is present and the model is retrieved */
     std::map<std::string, psuStatus> psuStatusMap;
+
+    /** @brief Signal match for PSU interfaces added.
+     *
+     * This match listens for D-Bus signals indicating new interface has been
+     * added. When such a signal received, it triggers thecw
+     * `onInterfacesAdded` imethod to handle the new PSU.
+     */
+    sdbusplus::bus::match_t psuMatch;
+
+    /** @brief Callback function for interfaces added signal.
+     *
+     * This method is called when a new interface is added. It updates the
+     * internal status map and process the new PSU if it's present.
+     *
+     *  @param[in] msg - Data associated with subscribed signal
+     */
+    void onInterfacesAdded(sdbusplus::message_t& msg);
 };
 
 } // namespace updater
