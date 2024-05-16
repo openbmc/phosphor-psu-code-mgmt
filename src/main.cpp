@@ -7,11 +7,9 @@
 #include <sdbusplus/server/manager.hpp>
 
 #include <system_error>
-
 int main(int /* argc */, char* /* argv */[])
 {
     auto bus = sdbusplus::bus::new_default();
-
     // Add sdbusplus ObjectManager.
     sdbusplus::server::manager_t objManager(bus, SOFTWARE_OBJPATH);
 
@@ -24,5 +22,6 @@ int main(int /* argc */, char* /* argv */[])
         bus.process_discard();
         bus.wait();
     }
+
     return 0;
 }
