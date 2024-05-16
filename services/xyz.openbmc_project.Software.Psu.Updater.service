@@ -1,7 +1,9 @@
 [Unit]
 Description=OpenBMC PSU Code Manager
 Wants=xyz.openbmc_project.Software.Version.service
+After=mapper-wait@-xyz-openbmc_project-inventory.service
 After=xyz.openbmc_project.Software.Version.service
+After=phosphor-psu-monitor.service
 
 [Service]
 ExecStart=/usr/bin/phosphor-psu-code-manager

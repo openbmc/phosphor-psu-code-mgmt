@@ -8,7 +8,9 @@
 
 #include <algorithm>
 #include <fstream>
+#include <iterator>
 #include <sstream>
+#include <string>
 
 using namespace phosphor::logging;
 
@@ -168,6 +170,19 @@ std::string Utils::getLatestVersion(const std::set<std::string>& versions) const
     {
         args << s << " ";
     }
+
+    std::string versionString;
+    int versionCount = 0;
+    while (args >> versionString)
+    {
+        versionCount++;
+    }
+    // Compare must have more than 1 version
+    if (versionCount < 2)
+    {
+        return "";
+    }
+
     auto [rc, r] = internal::exec(PSU_VERSION_COMPARE_UTIL, args.str());
     return (rc == 0) ? r : "";
 }
