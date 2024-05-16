@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include "item_updater.hpp"
+#include "psu_present.hpp"
 
 #include <phosphor-logging/log.hpp>
 #include <sdbusplus/bus.hpp>
@@ -12,6 +13,9 @@ int main(int /* argc */, char* /* argv */[])
 {
     auto bus = sdbusplus::bus::new_default();
 
+    WaitUtil waitUtil;
+
+    waitUtil.waitForPSUsPath(bus);
     // Add sdbusplus ObjectManager.
     sdbusplus::server::manager_t objManager(bus, SOFTWARE_OBJPATH);
 
