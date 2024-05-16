@@ -159,7 +159,7 @@ std::string Utils::getVersion(const std::string& inventoryPath) const
 
 std::string Utils::getLatestVersion(const std::set<std::string>& versions) const
 {
-    if (versions.empty())
+    if (versions.empty() || versions.size() < 2)
     {
         return {};
     }

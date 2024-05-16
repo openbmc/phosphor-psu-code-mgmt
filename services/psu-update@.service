@@ -13,5 +13,4 @@ Description=Update PSU %I
 Type=oneshot
 RemainAfterExit=no
 Environment="ARGS=%I"
-ExecStart=/bin/echo To update $ARGS
-ExecStart=/bin/false
+ExecStart=/usr/bin/psutils --update $ARGS
