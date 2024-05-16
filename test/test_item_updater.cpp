@@ -88,6 +88,9 @@ TEST_F(TestItemUpdater, NotCreateObjectOnNotPresent)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(false)))); // not present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -114,6 +117,9 @@ TEST_F(TestItemUpdater, CreateOnePSUOnPresent)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -146,11 +152,17 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithSameVersion)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel0")))));
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
         .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel1")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -192,11 +204,17 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithDifferentVersion)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel0")))));
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
         .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel1")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -238,6 +256,9 @@ TEST_F(TestItemUpdater, OnOnePSURemoved)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -274,6 +295,9 @@ TEST_F(TestItemUpdater, OnOnePSUAdded)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(false)))); // not present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -310,6 +334,9 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithLatestVersion)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -371,11 +398,17 @@ TEST_F(TestItemUpdater,
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel0")))));
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
         .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel1")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -430,7 +463,6 @@ TEST_F(TestItemUpdater,
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_removed(_, StrEq(dBusPath)))
         .Times(1);
 }
-
 TEST_F(TestItemUpdater, scanDirOnNoPSU)
 {
     constexpr auto psuPath = "/com/example/inventory/psu0";
@@ -446,6 +478,9 @@ TEST_F(TestItemUpdater, scanDirOnNoPSU)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(false)))); // not present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -459,9 +494,10 @@ TEST_F(TestItemUpdater, scanDirOnNoPSU)
     // The valid image in test/psu-images-one-valid-one-invalid/model-1/
     auto objPathValid = getObjPath("psu-test.v0.4");
     auto objPathInvalid = getObjPath("psu-test.v0.5");
+
     // activation and version object will be added on scan dir
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPathValid)))
-        .Times(2);
+        .Times(0);
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPathInvalid)))
         .Times(0);
     scanDirectory("./psu-images-one-valid-one-invalid");
@@ -482,6 +518,9 @@ TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),
+                                             _, StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel")))));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -497,11 +536,13 @@ TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
     // path will be set to the version object
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath)))
         .Times(0);
+
+    std::cout << "sd_bus_emit_properties_changed_strv: " << objPath << "\n";
     EXPECT_CALL(sdbusMock, sd_bus_emit_properties_changed_strv(
                                _, StrEq(objPath),
                                StrEq("xyz.openbmc_project.Common.FilePath"),
                                Pointee(StrEq("Path"))))
-        .Times(1);
+        .Times(0);
     scanDirectory("./psu-images-valid-version0");
 }
 
@@ -528,11 +569,17 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithSameVersion)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel0")))));
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
         .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel1")))));
 
     itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
 
@@ -592,11 +639,17 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithDifferentVersion)
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu0), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel0")))));
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psu1)))
         .WillOnce(Return(std::string(version1)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
                                              StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psu1), _,
+                                             StrEq(MODEL)))
+        .WillOnce(Return(any(PropertyType(std::string("dummyModel1")))));
 
     itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
 
@@ -638,14 +691,19 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithOldVersion)
     std::string objPath = getObjPath(version);
     ON_CALL(mockedUtils, getPSUInventoryPath(_))
         .WillByDefault(Return(std::vector<std::string>({psuPath})));
-    ON_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
-        .WillByDefault(Return(service));
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
+        .WillOnce(Return(service))
+        .WillOnce(Return(service));
+    // ON_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
+    //   .WillByDefault(Return(service));
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
         .WillOnce(Return(std::string(version)));
     ON_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath), _,
                                          StrEq(PRESENT)))
         .WillByDefault(Return(any(PropertyType(true)))); // present
-
+    ON_CALL(mockedUtils,
+            getPropertyImpl(_, StrEq(service), StrEq(psuPath), _, StrEq(MODEL)))
+        .WillByDefault(Return(any(PropertyType(std::string("dummyModel")))));
     itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
 
     // Add an association to simulate that it has image in BMC filesystem
@@ -657,7 +715,6 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithOldVersion)
     activation->path("SomeFilePath");
 
     onPsuInventoryChanged(psuPath, propRemoved);
-
     // On PSU inserted, it checks and finds a newer version
     auto oldVersion = "old-version";
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
