@@ -55,11 +55,16 @@ class ItemUpdater :
                      MatchRules::interfacesAdded() +
                          MatchRules::path(SOFTWARE_OBJPATH),
                      std::bind(std::mem_fn(&ItemUpdater::createActivation),
-                               this, std::placeholders::_1))
+                               this, std::placeholders::_1)),
+        psuInterfaceMatch(
+            bus,
+            MatchRules::interfacesAdded() +
+                MatchRules::path("/xyz/openbmc_project/inventory") +
+                MatchRules::sender("xyz.openbmc_project.Inventory.Manager"),
+            std::bind(std::mem_fn(&ItemUpdater::onPSUInterfaceAdded), this,
+                      std::placeholders::_1))
     {
-        processPSUImage();
-        processStoredImage();
-        syncToLatestImage();
+        processPSUImageAndSyncToLatest();
     }
 
     /** @brief Deletes version
@@ -179,6 +184,23 @@ class ItemUpdater :
     /** @brief Invoke the activation via DBus */
     void invokeActivation(const std::unique_ptr<Activation>& activation);
 
+    /** @brief Callback function for interfaces added signal.
+     *
+     * This method is called when a new interface is added. It updates the
+     * internal status map and process the new PSU if it's present.
+     *
+     *  @param[in] msg - Data associated with subscribed signal
+     */
+    void onPSUInterfaceAdded(sdbusplus::message_t& msg);
+    /**
+     * @brief Handles the processing of PSU images.
+     *
+     * This function responsible for invoking the sequence of processing PSU
+     * images, processing stored imanges, and syncing to the latest firmware
+     * image.
+     */
+    void processPSUImageAndSyncToLatest();
+
     /** @brief Persistent sdbusplus D-Bus bus connection. */
     sdbusplus::bus_t& bus;
 
@@ -212,6 +234,7 @@ class ItemUpdater :
     {
         bool present;
         std::string model;
+        bool objectCreated;
     };
 
     /** @brief The map of PSU inventory path and the psuStatus
@@ -219,6 +242,14 @@ class ItemUpdater :
      * It is used to handle psu inventory changed event, that only create psu
      * software object when a PSU is present and the model is retrieved */
     std::map<std::string, psuStatus> psuStatusMap;
+
+    /** @brief Signal match for PSU interfaces added.
+     *
+     * This match listens for D-Bus signals indicating new interface has been
+     * added. When such a signal received, it triggers the
+     * `onInterfacesAdded` method to handle the new PSU.
+     */
+    sdbusplus::bus::match_t psuInterfaceMatch;
 };
 
 } // namespace updater
