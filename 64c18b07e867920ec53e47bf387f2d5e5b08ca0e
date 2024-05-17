@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "49c0ed23_c3e33d41",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-17T20:24:40Z",
+      "side": 0,
+      "message": "Looks like you removed a blank line between methods.  I think you should put that back.  I\u0027m surprised clang-format didn\u0027t complain about it.",
+      "revId": "64c18b07e867920ec53e47bf387f2d5e5b08ca0e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}

@@ -79,6 +79,24 @@
       "message": "since this class doesn\u0027t own any data, it could probably just be a free standing function.  We can wait and see what others think.",
       "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "93db8fdc_7791846a",
+        "filename": "src/psu_present.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-17T20:24:40Z",
+      "side": 1,
+      "message": "Yes, I agree this is confusing.  The file name doesn\u0027t match the class name, and the class is really just a function.\n\nI\u0027d suggest changing this to a function.  It could probably just be in main.cpp right?",
+      "parentUuid": "2cf03e36_419a4e90",
+      "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }

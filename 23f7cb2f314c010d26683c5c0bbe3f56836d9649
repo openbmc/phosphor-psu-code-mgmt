@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e51ff8ef_064a0f29",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-17T20:24:40Z",
+      "side": 1,
+      "message": "This sentence is hard for me to understand.  It is pretty long.  Maybe split it into three like the following (not sure if this is what you are saying):\n\nUpdated ItemUpdater::scanDirectory to search for the installed PSU model directory.  For example, the PSU model 2B1E should have a\ndirectory named /usr/share/obmc/psu/2B1E.  The firmware file and the MANIFEST reside in this model directory.",
+      "range": {
+        "startLine": 10,
+        "startChar": 19,
+        "endLine": 14,
+        "endChar": 1
+      },
+      "revId": "23f7cb2f314c010d26683c5c0bbe3f56836d9649",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "613811f8_8ffe03fa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-17T20:24:40Z",
+      "side": 1,
+      "message": "Nit: within",
+      "range": {
+        "startLine": 15,
+        "startChar": 33,
+        "endLine": 15,
+        "endChar": 40
+      },
+      "revId": "23f7cb2f314c010d26683c5c0bbe3f56836d9649",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "dd869e1d_c7b447c2",
+        "filename": "src/psu_present.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-17T20:24:40Z",
+      "side": 1,
+      "message": "There is an unwanted space here right?",
+      "range": {
+        "startLine": 59,
+        "startChar": 40,
+        "endLine": 59,
+        "endChar": 44
+      },
+      "revId": "23f7cb2f314c010d26683c5c0bbe3f56836d9649",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
