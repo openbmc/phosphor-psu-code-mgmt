@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "213835e2_5f92a2d8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-20T13:44:21Z",
+      "side": 1,
+      "message": "Removed prefix",
+      "parentUuid": "78b3c049_a85c26a5",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "4a5ee054_696239ae",
@@ -47,6 +71,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2aa98b4f_4834df29",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-20T13:44:21Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "4a5ee054_696239ae",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 62
+      },
+      "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "465dba17_1b7b8aaa",
@@ -60,6 +108,24 @@
       "writtenOn": "2024-05-16T20:09:47Z",
       "side": 1,
       "message": "Since pretty much all of your traces have useful metadata, it would be great if you could switch to lg2 so that the data showed up in the trace, instead of just in the metadata.",
+      "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "1f8dacb5_bdf83018",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-20T13:44:21Z",
+      "side": 1,
+      "message": "Converted all log to lg2",
+      "parentUuid": "465dba17_1b7b8aaa",
       "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -94,6 +160,24 @@
       "writtenOn": "2024-05-17T20:24:40Z",
       "side": 1,
       "message": "Yes, I agree this is confusing.  The file name doesn\u0027t match the class name, and the class is really just a function.\n\nI\u0027d suggest changing this to a function.  It could probably just be in main.cpp right?",
+      "parentUuid": "2cf03e36_419a4e90",
+      "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9e51f492_ccb10ba9",
+        "filename": "src/psu_present.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-20T13:44:21Z",
+      "side": 1,
+      "message": "Added this function to main.cpp",
       "parentUuid": "2cf03e36_419a4e90",
       "revId": "72b32974ffdc7ceb43752a159e6319cfaa5a4a99",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
