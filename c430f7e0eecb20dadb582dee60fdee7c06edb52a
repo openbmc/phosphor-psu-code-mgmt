@@ -16,6 +16,24 @@
       "message": "I think you can make this match permanent, probably part of the ItemUpdater class.  And then when it fires, send it down basically the same path as onPsuInventoryChanged, which is made to update PSUs when an existing Present property changes to true (meaning PS was removed and then replaced).  That way, you can handle someone adding a power supply to a previously empty slot say 10 minutes in the future.  And then, it will also handle the genesis case where they come in after startup due to how EM works.\n\n\nWith those changes in place, I think there may still may a window where PIM starts and restores what was previously on D-Bus, but if a PS was removed when AC was off, or replaced with one of a new model, then the code won\u0027t get the right value from d-bus as psu-monitor may not have run yet....",
       "revId": "c430f7e0eecb20dadb582dee60fdee7c06edb52a",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d1412b7f_32a3bf1c",
+        "filename": "src/main.cpp",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-27T21:29:38Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "2630913e_10dbdeae",
+      "revId": "c430f7e0eecb20dadb582dee60fdee7c06edb52a",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
