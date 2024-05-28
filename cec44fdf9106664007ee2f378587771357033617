@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ae09a273_d3d5d2be",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 570,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-05-28T17:52:36Z",
+      "side": 1,
+      "message": "object_path is a struct with a str std::string member, so when you need the string you can just do path.str.",
+      "revId": "cec44fdf9106664007ee2f378587771357033617",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "198d297d_eb3dd457",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-05-28T17:52:36Z",
+      "side": 1,
+      "message": "Since the path of the newly added PSU is known from the signal, you wouldn\u0027t need to call this function anymore.",
+      "revId": "cec44fdf9106664007ee2f378587771357033617",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "59081035_c5f98a73",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-05-28T17:52:36Z",
+      "side": 1,
+      "message": "as I mentioned above, this function would just process 1 PSU.",
+      "range": {
+        "startLine": 580,
+        "startChar": 16,
+        "endLine": 580,
+        "endChar": 31
+      },
+      "revId": "cec44fdf9106664007ee2f378587771357033617",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
