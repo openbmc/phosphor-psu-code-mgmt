@@ -1,0 +1,181 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "daf6e927_d223a850",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "Nit: \u0027to extract\u0027 is here twice",
+      "range": {
+        "startLine": 18,
+        "startChar": 32,
+        "endLine": 18,
+        "endChar": 42
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1ee4d041_2a27e788",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "I\u0027m not sure the changes here are correct.\n\nThe original method loops through all of the sub-directories, handling their manifest files and creating other objects for PSU code update.\n\nThe modified version only looks for one sub-directory.  This implies it only supports one PSU model?  Not sure if that is a reduction of function over the current code.  Since the current code stores a PSU model in each PSU struct, it seems like maybe it supports multiple models?\n\nWhat was the reason for changing the current code?  I assume something was not working?",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "ebd995a4_b0f45260",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 232,
+        "startChar": 55,
+        "endLine": 232,
+        "endChar": 60
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "deab7001_9490e23e",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "typo",
+      "range": {
+        "startLine": 233,
+        "startChar": 27,
+        "endLine": 233,
+        "endChar": 35
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "23a79e0f_807d514f",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "It is confusing that there is also a psuMatches data member with a vector of match_t objects.  Could this match just be put in the same vector?  Otherwise maybe this variable name should have something added to explain the difference?",
+      "range": {
+        "startLine": 235,
+        "startChar": 28,
+        "endLine": 235,
+        "endChar": 36
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b1873d40_706eab70",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "This worries me a bit.  The previous implementation was creating D-Bus objects that probably need to be there?",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "f56a527c_e7cdfe00",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "Temporary debug should be removed?",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8ce5612c_af90a0a8",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 545,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "As noted above, it seems like some D-Bus activity that is probably supposed to be happening is not anymore?",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0a1a77cd_03db8a8f",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 694,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-05-29T17:08:01Z",
+      "side": 1,
+      "message": "Is there a reason to change this?  The previous code would return the service every time.  If this is needed, the old code that is commented out should be removed?",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
