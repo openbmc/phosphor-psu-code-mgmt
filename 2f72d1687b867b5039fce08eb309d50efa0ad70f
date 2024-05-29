@@ -26,6 +26,40 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "b7b26f4e_d7e728d7",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1000318
+      },
+      "writtenOn": "2024-05-29T19:28:48Z",
+      "side": 1,
+      "message": "Is this grabbing the present psu\u0027s model/ccin from inventory-manager?  In general we need to change it to get the ccin from sysfs instead, as PIM will cache the psu info. If a psu is replaced with a psu with a different ccin when AC is removed from the system, we can\u0027t use the cached (old) value from PIM, we should get the actual ccin from sysfs, that way we are guaranteed to get the correct ccin directly from the psu.\n\nI\u0027m not sure if it is also needed in item_updater.cpp onPsuInventoryChanged(), and/or in activation.cpp isCompatible().",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "56430dfb_5dc2eb2a",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1000318
+      },
+      "writtenOn": "2024-05-29T19:28:48Z",
+      "side": 1,
+      "message": "nit: probably don\u0027t want to delete blank lines between functions...",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "1ee4d041_2a27e788",
         "filename": "src/item_updater.cpp",
         "patchSetId": 10
