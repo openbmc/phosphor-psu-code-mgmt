@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6671e6e1_1b159203",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "daf6e927_d223a850",
+      "range": {
+        "startLine": 18,
+        "startChar": 32,
+        "endLine": 18,
+        "endChar": 42
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "b7b26f4e_d7e728d7",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-05-29T19:28:48Z",
       "side": 1,
       "message": "Is this grabbing the present psu\u0027s model/ccin from inventory-manager?  In general we need to change it to get the ccin from sysfs instead, as PIM will cache the psu info. If a psu is replaced with a psu with a different ccin when AC is removed from the system, we can\u0027t use the cached (old) value from PIM, we should get the actual ccin from sysfs, that way we are guaranteed to get the correct ccin directly from the psu.\n\nI\u0027m not sure if it is also needed in item_updater.cpp onPsuInventoryChanged(), and/or in activation.cpp isCompatible().",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "b70fba32_7827a8b2",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "b7b26f4e_d7e728d7",
       "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -58,6 +100,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "17581bb2_76a1375c",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "56430dfb_5dc2eb2a",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "1ee4d041_2a27e788",
@@ -75,6 +135,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "894abc2d_e542cbf5",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 419,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Yes, the original code loops through all sub-dirs. The implementation doesn\u0027t work for multiple PSUs model. Looping through dirs and collect all versions from each manifest file is wrong.\nOriginal code line 446 compare dir and model must match, so if the PSU model is 2B1E only 1 dir can be 2B1E.",
+      "parentUuid": "1ee4d041_2a27e788",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "ebd995a4_b0f45260",
@@ -88,6 +166,30 @@
       "writtenOn": "2024-05-29T17:08:01Z",
       "side": 1,
       "message": "typo",
+      "range": {
+        "startLine": 232,
+        "startChar": 55,
+        "endLine": 232,
+        "endChar": 60
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4052f890_8f9fa4a6",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ebd995a4_b0f45260",
       "range": {
         "startLine": 232,
         "startChar": 55,
@@ -121,6 +223,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "b29da376_0440faad",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "deab7001_9490e23e",
+      "range": {
+        "startLine": 233,
+        "startChar": 27,
+        "endLine": 233,
+        "endChar": 35
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "23a79e0f_807d514f",
@@ -134,6 +260,30 @@
       "writtenOn": "2024-05-29T17:08:01Z",
       "side": 1,
       "message": "It is confusing that there is also a psuMatches data member with a vector of match_t objects.  Could this match just be put in the same vector?  Otherwise maybe this variable name should have something added to explain the difference?",
+      "range": {
+        "startLine": 235,
+        "startChar": 28,
+        "endLine": 235,
+        "endChar": 36
+      },
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "cc9eaf88_34e6e6cb",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Renamed psuMatch to psuMatchInterface",
+      "parentUuid": "23a79e0f_807d514f",
       "range": {
         "startLine": 235,
         "startChar": 28,
@@ -161,6 +311,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "854eab8f_6514d494",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Code changed not needed",
+      "parentUuid": "b1873d40_706eab70",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "f56a527c_e7cdfe00",
@@ -174,6 +342,24 @@
       "writtenOn": "2024-05-29T17:08:01Z",
       "side": 1,
       "message": "Temporary debug should be removed?",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69b44a81_f3647294",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 539,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f56a527c_e7cdfe00",
       "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -195,6 +381,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8aac8ed9_ebf74174",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 545,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Changed function and this is correct",
+      "parentUuid": "8ce5612c_af90a0a8",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0a1a77cd_03db8a8f",
@@ -208,6 +412,24 @@
       "writtenOn": "2024-05-29T17:08:01Z",
       "side": 1,
       "message": "Is there a reason to change this?  The previous code would return the service every time.  If this is needed, the old code that is commented out should be removed?",
+      "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3fd4d0ff_37b89380",
+        "filename": "test/test_item_updater.cpp",
+        "patchSetId": 10
+      },
+      "lineNbr": 694,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a1a77cd_03db8a8f",
       "revId": "2f72d1687b867b5039fce08eb309d50efa0ad70f",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }

@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "d619f1d7_d6ebd6b1",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 570,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae09a273_d3d5d2be",
+      "revId": "cec44fdf9106664007ee2f378587771357033617",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "198d297d_eb3dd457",
@@ -35,6 +53,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a27ffff_e2183a57",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 577,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "198d297d_eb3dd457",
+      "revId": "cec44fdf9106664007ee2f378587771357033617",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "59081035_c5f98a73",
@@ -48,6 +84,30 @@
       "writtenOn": "2024-05-28T17:52:36Z",
       "side": 1,
       "message": "as I mentioned above, this function would just process 1 PSU.",
+      "range": {
+        "startLine": 580,
+        "startChar": 16,
+        "endLine": 580,
+        "endChar": 31
+      },
+      "revId": "cec44fdf9106664007ee2f378587771357033617",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "e77a41a4_63cc5f54",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 9
+      },
+      "lineNbr": 580,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-05-30T19:58:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "59081035_c5f98a73",
       "range": {
         "startLine": 580,
         "startChar": 16,
