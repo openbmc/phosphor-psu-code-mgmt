@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5a4a36ac_b7683ea5",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-05-30T20:25:11Z",
+      "side": 1,
+      "message": "I know you\u0027re doing this because the Asset interfaces comes in after the PSU one, but it still makes me nervous.\n\nSince it would be tricky to add an interfacesAdded watch on the Asset interface for the PSU since you\u0027d don\u0027t know its object path until you get it from this signal and it isn\u0027t a unique interface, I don\u0027t think we can go that route.\n\nWhat do you think Shawn?",
+      "range": {
+        "startLine": 578,
+        "startChar": 1,
+        "endLine": 578,
+        "endChar": 13
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "df090429_707efbf9",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-05-30T20:25:11Z",
+      "side": 1,
+      "message": "up above in processPSUImage() the code uses the same service for the Item and Asset interfaces, and I think that\u0027s OK to do here too.",
+      "range": {
+        "startLine": 583,
+        "startChar": 3,
+        "endLine": 583,
+        "endChar": 64
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "37eae15d_4fc2d138",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-05-30T20:25:11Z",
+      "side": 1,
+      "message": "how about psuInterfaceMatch.",
+      "range": {
+        "startLine": 235,
+        "startChar": 28,
+        "endLine": 235,
+        "endChar": 45
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
