@@ -3,6 +3,23 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "2e1a7bf3_eba1244e",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-06-03T20:52:05Z",
+      "side": 1,
+      "message": "If the loop above does not find a model, path and manifest will be set to dir (the root directory above the model directory).  This is confusing since line 447 and 454 will return true, but it is not checking what you want.\n\nIt would probably be better to set path and manifest to an empty path at the top of this method.  Then after the loop above exit if they are still empty.",
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "5a4a36ac_b7683ea5",
         "filename": "src/item_updater.cpp",
         "patchSetId": 12
@@ -14,6 +31,30 @@
       "writtenOn": "2024-05-30T20:25:11Z",
       "side": 1,
       "message": "I know you\u0027re doing this because the Asset interfaces comes in after the PSU one, but it still makes me nervous.\n\nSince it would be tricky to add an interfacesAdded watch on the Asset interface for the PSU since you\u0027d don\u0027t know its object path until you get it from this signal and it isn\u0027t a unique interface, I don\u0027t think we can go that route.\n\nWhat do you think Shawn?",
+      "range": {
+        "startLine": 578,
+        "startChar": 1,
+        "endLine": 578,
+        "endChar": 13
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "9c85fcdb_2ddc9d86",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-06-03T20:52:05Z",
+      "side": 1,
+      "message": "I agree this is risky and might not work when the BMC is slow, such as during a BMC reset while the host is running.  In general we have run into problems with hard-coded timeouts.  That is why we use listeners instead.\n\nprocessPSUImage() currently adds PropertiesChanged listeners for the PSU object paths so it can detect changes in the present and model properties.\n\nOne approach would be to make processPSUImage smarter so that it tries to get model/present.  If not found (because not ready yet), it adds interfacesAdded listeners for the PSU object path?  If found, it stores them.  Either way it also adds PropertiesChanged listeners.  That is necessary to support hot plug.",
+      "parentUuid": "5a4a36ac_b7683ea5",
       "range": {
         "startLine": 578,
         "startChar": 1,
@@ -49,6 +90,29 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "493b9304_f70858ed",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-06-03T20:52:05Z",
+      "side": 1,
+      "message": "This method assumes it is called only once when the app begins.  When called from here, it is going to create duplicate objects for any PSUs that were previously found.\n\nI agree with calling it here, as it has a bunch of logic you don\u0027t want to copy/paste.  It has the logic to get present and model and store them, so I don\u0027t think you need to duplicate that here.  You can probably just call the three methods below if you find the PSU interface.  However, those methods need to be updated to work when called a 2nd or 3rd time.",
+      "range": {
+        "startLine": 590,
+        "startChar": 8,
+        "endLine": 590,
+        "endChar": 23
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "37eae15d_4fc2d138",
         "filename": "src/item_updater.hpp",
         "patchSetId": 12
@@ -66,6 +130,23 @@
         "endLine": 235,
         "endChar": 45
       },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "41ebf0ad_643edc68",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-06-03T20:52:05Z",
+      "side": 1,
+      "message": "It seems like the methods are listed first within the private section, and then the data members follow.  So this new method should probably be added after invokeActivation().\n\nAlso, this class is already listening for interfacesAdded for version objects.  So maybe this should be onPSUInterfaceAdded() or something?",
       "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
