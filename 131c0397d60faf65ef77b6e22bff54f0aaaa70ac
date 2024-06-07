@@ -146,6 +146,30 @@
       },
       "revId": "131c0397d60faf65ef77b6e22bff54f0aaaa70ac",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "400b3345_6cdeb2a0",
+        "filename": "src/utils.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-07T20:40:51Z",
+      "side": 1,
+      "message": "This is string of versions which will be sent to psutil, if the current version only sent the reply will be same version and there is no dir or no fw in /usr/share/obmc/psu will cause an assert.",
+      "parentUuid": "0cf969d4_36431bc8",
+      "range": {
+        "startLine": 162,
+        "startChar": 27,
+        "endLine": 162,
+        "endChar": 47
+      },
+      "revId": "131c0397d60faf65ef77b6e22bff54f0aaaa70ac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
