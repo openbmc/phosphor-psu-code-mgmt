@@ -18,6 +18,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "f0b5ae9f_9ea45c47",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 447,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-07T16:24:36Z",
+      "side": 1,
+      "message": "If the loop above does not change the path and manifest,then will change to log an error \"Model directory not found\".\nIf the PSU model is 2B1A and there is a file in /usr/share/obmc/psu/2B1A then an error logged \"The path is not a directory\"",
+      "parentUuid": "2e1a7bf3_eba1244e",
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5a4a36ac_b7683ea5",
@@ -65,6 +83,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a6cac5a3_56072297",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-07T16:24:36Z",
+      "side": 1,
+      "message": "Removed getService call, added 5s timer in while loop to retrieve present state and model.",
+      "parentUuid": "5a4a36ac_b7683ea5",
+      "range": {
+        "startLine": 578,
+        "startChar": 1,
+        "endLine": 578,
+        "endChar": 13
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "df090429_707efbf9",
@@ -78,6 +120,30 @@
       "writtenOn": "2024-05-30T20:25:11Z",
       "side": 1,
       "message": "up above in processPSUImage() the code uses the same service for the Item and Asset interfaces, and I think that\u0027s OK to do here too.",
+      "range": {
+        "startLine": 583,
+        "startChar": 3,
+        "endLine": 583,
+        "endChar": 64
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "21820c34_32551f85",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 583,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-07T16:24:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df090429_707efbf9",
       "range": {
         "startLine": 583,
         "startChar": 3,
@@ -111,6 +177,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8e645684_6a7e93ae",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-07T16:24:36Z",
+      "side": 1,
+      "message": "Used flag to indicate when the psu object created.",
+      "parentUuid": "493b9304_f70858ed",
+      "range": {
+        "startLine": 590,
+        "startChar": 8,
+        "endLine": 590,
+        "endChar": 23
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "37eae15d_4fc2d138",
@@ -134,6 +224,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6578f06c_1334fa1d",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-07T16:24:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "37eae15d_4fc2d138",
+      "range": {
+        "startLine": 235,
+        "startChar": 28,
+        "endLine": 235,
+        "endChar": 45
+      },
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "41ebf0ad_643edc68",
@@ -147,6 +261,24 @@
       "writtenOn": "2024-06-03T20:52:05Z",
       "side": 1,
       "message": "It seems like the methods are listed first within the private section, and then the data members follow.  So this new method should probably be added after invokeActivation().\n\nAlso, this class is already listening for interfacesAdded for version objects.  So maybe this should be onPSUInterfaceAdded() or something?",
+      "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "4eb13271_c66219d0",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 12
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-07T16:24:36Z",
+      "side": 1,
+      "message": "Renamed to onPSUInterfaceAdded and moved to after invokeActivation",
+      "parentUuid": "41ebf0ad_643edc68",
       "revId": "190d70ade836b7d99c2ebade73a3d67b88586cae",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
