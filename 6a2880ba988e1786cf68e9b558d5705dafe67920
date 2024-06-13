@@ -1,0 +1,141 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "a3aa23a8_747b41b1",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-06-13T18:55:50Z",
+      "side": 1,
+      "message": "instead of adding the objectCreated member, can you just look for the object path in psuPathActivationMap?",
+      "range": {
+        "startLine": 363,
+        "startChar": 11,
+        "endLine": 363,
+        "endChar": 53
+      },
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "2a69a02d_2736f50c",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-06-13T18:55:50Z",
+      "side": 1,
+      "message": "Can just remove this comment",
+      "range": {
+        "startLine": 585,
+        "startChar": 4,
+        "endLine": 585,
+        "endChar": 68
+      },
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "5ba85b99_a21ae173",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 593,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-06-13T18:55:50Z",
+      "side": 1,
+      "message": "this while loop probably needs some comments on why retries are necessary",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "708ce93e_f356265f",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-06-13T18:55:50Z",
+      "side": 1,
+      "message": "if this path is expected, I don\u0027t think we\u0027d want to see an error trace.",
+      "range": {
+        "startLine": 604,
+        "startChar": 11,
+        "endLine": 607,
+        "endChar": 30
+      },
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d9cc204d_0a4937dc",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-06-13T18:55:50Z",
+      "side": 1,
+      "message": "same comment as above",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d5327882_d6f8c2c8",
+        "filename": "src/utils.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-06-13T18:55:50Z",
+      "side": 1,
+      "message": "instead of a new loop, can you just add this to the loop starting on line 169?",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "8dcc1ab6_135c22a6",
+        "filename": "src/utils.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-06-13T18:55:50Z",
+      "side": 1,
+      "message": "did you run into a case where it had one, or are you just protecting from a bad case?",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
