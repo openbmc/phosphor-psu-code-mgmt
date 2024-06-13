@@ -36,6 +36,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "e99005fc_0ab74548",
+        "filename": "services/psu-update@.service",
+        "patchSetId": 13
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-13T01:38:52Z",
+      "side": 1,
+      "message": "Service will have another push to meta-ibm.",
+      "parentUuid": "c9a2c978_577c3fd6",
+      "revId": "131c0397d60faf65ef77b6e22bff54f0aaaa70ac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "692bf29b_7ef6b3ee",
@@ -204,6 +222,30 @@
       "side": 1,
       "message": "Versions is a map of version object (string and value). To compare we need at least 2 strings.",
       "parentUuid": "400b3345_6cdeb2a0",
+      "range": {
+        "startLine": 162,
+        "startChar": 27,
+        "endLine": 162,
+        "endChar": 47
+      },
+      "revId": "131c0397d60faf65ef77b6e22bff54f0aaaa70ac",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "27429fe4_d7bfe559",
+        "filename": "src/utils.cpp",
+        "patchSetId": 13
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-13T01:38:52Z",
+      "side": 1,
+      "message": "Compare will require minimum of 2 strings version to compare.",
+      "parentUuid": "871eaa47_80944c8c",
       "range": {
         "startLine": 162,
         "startChar": 27,
