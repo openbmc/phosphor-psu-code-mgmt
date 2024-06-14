@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "5ad88ca6_5b2d0216",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Removed objectCreated and used psuPathActivationMap",
+      "parentUuid": "a3aa23a8_747b41b1",
+      "range": {
+        "startLine": 363,
+        "startChar": 11,
+        "endLine": 363,
+        "endChar": 53
+      },
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "87065336_9bc3a738",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-06-13T19:36:50Z",
       "side": 1,
       "message": "Aren\u0027t lines 407 and 411 going to create duplicate match objects/callbacks when this method is called multiple times.  I think it was previously only called once from the constructor, but now it can get called additional times from onPSUInterfaceAdded().",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "5a85950b_e3344155",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Yes, they should be part included in the condition above",
+      "parentUuid": "87065336_9bc3a738",
       "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -81,6 +123,48 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "07d6bc51_e68be0b3",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cac6c01b_142a911f",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c79503aa_79a65aca",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2a69a02d_2736f50c",
+      "range": {
+        "startLine": 585,
+        "startChar": 4,
+        "endLine": 585,
+        "endChar": 68
+      },
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "5ba85b99_a21ae173",
@@ -115,6 +199,42 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "79d7b67e_fb09b5fb",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 593,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Changed to break out of the loop when present property retrieved or timeout",
+      "parentUuid": "5907d6db_ebebb075",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c880cba5_412f20ca",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 593,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Added comments",
+      "parentUuid": "5ba85b99_a21ae173",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "708ce93e_f356265f",
@@ -128,6 +248,30 @@
       "writtenOn": "2024-06-13T18:55:50Z",
       "side": 1,
       "message": "if this path is expected, I don\u0027t think we\u0027d want to see an error trace.",
+      "range": {
+        "startLine": 604,
+        "startChar": 11,
+        "endLine": 607,
+        "endChar": 30
+      },
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "d172d9c5_329a5b5e",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 607,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Modified error to INFO",
+      "parentUuid": "708ce93e_f356265f",
       "range": {
         "startLine": 604,
         "startChar": 11,
@@ -155,6 +299,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4e845579_f210f122",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 621,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Modified after reading the property to break out. I the  model is \"\" then there is no firmware location. The model is the trail of the firmware path.",
+      "parentUuid": "fafff736_750b731c",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d9cc204d_0a4937dc",
@@ -168,6 +330,24 @@
       "writtenOn": "2024-06-13T18:55:50Z",
       "side": 1,
       "message": "same comment as above",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "caa3715f_a24b4650",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 626,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Added comment",
+      "parentUuid": "d9cc204d_0a4937dc",
       "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -195,6 +375,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "6883a048_f6ed26b1",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6283cacd_274f212e",
+      "range": {
+        "startLine": 199,
+        "startChar": 33,
+        "endLine": 199,
+        "endChar": 40
+      },
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "d839e393_7dcd842d",
@@ -208,6 +412,24 @@
       "writtenOn": "2024-06-13T19:36:50Z",
       "side": 1,
       "message": "Can\u0027t you just change line 164 to be `if (versions.size() \u003c 1)`.  Seems weird to build a string, and then parse the same string.\n\nAlso, if versions.size() \u003d\u003d 1, should it just return that one version instead of \"\"?  One likely scenario is there one image file in the file system, and all the PSUs are at that version.  So that latest version is that one version right?  We can just return it and not call the command line tool?",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "702f2734_8ae7dc6a",
+        "filename": "src/utils.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "In previous version I tried versions.size I was getting wrong number of version later found out HW issue. Restoring to original code",
+      "parentUuid": "d839e393_7dcd842d",
       "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -229,6 +451,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "8f8188d0_0cae4676",
+        "filename": "src/utils.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "I don\u0027t need to count number of args, restore to original code.",
+      "parentUuid": "d5327882_d6f8c2c8",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "8dcc1ab6_135c22a6",
@@ -242,6 +482,24 @@
       "writtenOn": "2024-06-13T18:55:50Z",
       "side": 1,
       "message": "did you run into a case where it had one, or are you just protecting from a bad case?",
+      "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "9681df55_2aebb0fb",
+        "filename": "src/utils.cpp",
+        "patchSetId": 15
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-14T17:01:47Z",
+      "side": 1,
+      "message": "Yes, I did see compare with one version. This happened on particular system due to HW issue. I will restore to original code.",
+      "parentUuid": "8dcc1ab6_135c22a6",
       "revId": "6a2880ba988e1786cf68e9b558d5705dafe67920",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
