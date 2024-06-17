@@ -152,7 +152,7 @@ class ItemUpdater :
                          const std::string& psuVersion);
 
     /** @brief Remove Activation and Version object for PSU inventory
-     *  @details If the same version exists for mutliple PSUs, just remove
+     *  @details If the same version exists for multiple PSUs, just remove
      *           related association.
      *           If the version has no association, the Activation and
      *           Version object will be removed

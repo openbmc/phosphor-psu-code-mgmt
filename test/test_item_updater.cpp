@@ -555,7 +555,7 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithSameVersion)
         .WillOnce(Return(true));
     itemUpdater->onUpdateDone(newVersionId, psu0);
 
-    // Now the activation should have one assoiation
+    // Now the activation should have one association
     assocs = activation->associations();
     EXPECT_EQ(1u, assocs.size());
     EXPECT_EQ(psu1, std::get<2>(assocs[0]));

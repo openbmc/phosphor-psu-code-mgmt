@@ -139,7 +139,7 @@ void Activation::onUpdateDone()
 void Activation::onUpdateFailed()
 {
     // TODO: report an event
-    log<level::ERR>("Failed to udpate PSU",
+    log<level::ERR>("Failed to update PSU",
                     entry("PSU=%s", psuQueue.front().c_str()));
     std::queue<std::string>().swap(psuQueue); // Clear the queue
     activation(Status::Failed);
@@ -199,7 +199,7 @@ Activation::Status Activation::startActivation()
 
     // The progress to be increased for each successful update of PSU
     // E.g. in case we have 4 PSUs:
-    //   1. Initial progrss is 10
+    //   1. Initial progress is 10
     //   2. Add 20 after each update is done, so we will see progress to be 30,
     //      50, 70, 90
     //   3. When all PSUs are updated, it will be 100 and the interface is
