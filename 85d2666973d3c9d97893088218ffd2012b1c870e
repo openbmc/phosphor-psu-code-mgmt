@@ -35,6 +35,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a61562b1_cb349f87",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-21T15:14:42Z",
+      "side": 1,
+      "message": "Shawn made comment to restore blank line.",
+      "parentUuid": "eea1c8ae_abd87af6",
+      "revId": "85d2666973d3c9d97893088218ffd2012b1c870e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7c9c2c9c_b84fa1f5",
@@ -48,6 +66,24 @@
       "writtenOn": "2024-06-21T09:22:01Z",
       "side": 1,
       "message": "Nit: Add blank line",
+      "revId": "85d2666973d3c9d97893088218ffd2012b1c870e",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "7bc9a51b_f08e26b2",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 18
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-06-21T15:14:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7c9c2c9c_b84fa1f5",
       "revId": "85d2666973d3c9d97893088218ffd2012b1c870e",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
