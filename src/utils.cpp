@@ -64,14 +64,21 @@ const UtilsInterface& getUtils()
 std::vector<std::string> Utils::getPSUInventoryPath(sdbusplus::bus_t& bus) const
 {
     std::vector<std::string> paths;
-    auto method = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
-                                      MAPPER_INTERFACE, "GetSubTreePaths");
-    method.append(PSU_INVENTORY_PATH_BASE);
-    method.append(0); // Depth 0 to search all
-    method.append(std::vector<std::string>({PSU_INVENTORY_IFACE}));
-    auto reply = bus.call(method);
+    try
+    {
+        auto method = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
+                                          MAPPER_INTERFACE, "GetSubTreePaths");
+        method.append(PSU_INVENTORY_PATH_BASE);
+        method.append(0); // Depth 0 to search all
+        method.append(std::vector<std::string>({PSU_INVENTORY_IFACE}));
+        auto reply = bus.call(method);
 
-    reply.read(paths);
+        reply.read(paths);
+    }
+    catch (const sdbusplus::exception_t&)
+    {
+        // Inventory base path not there yet.
+    }
     return paths;
 }
 
