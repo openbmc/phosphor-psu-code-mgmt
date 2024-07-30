@@ -8,7 +8,7 @@ including:
 
 ## Building
 
-```
+```text
 meson build/ && ninja -C build
 ```
 
@@ -16,7 +16,7 @@ meson build/ && ninja -C build
 
 - Run it in OpenBMC CI, refer to [local-ci-build.md][1]
 - Run it in [OE SDK][2], run below commands in a x86-64 SDK env:
-  ```
+  ```text
   meson -Doe-sdk=enabled -Dtests=enabled build/
   ninja -C build/ test  # Meson skips running the case due to it thinks it's cross compiling
   # Manually run the tests
@@ -47,7 +47,7 @@ It provides configure options for vendor-specific tools for the above functions:
 
 For example:
 
-```
+```text
 meson -Dtests=disabled \
     '-DPSU_VERSION_UTIL=/usr/bin/psutils --raw --get-version' \
     '-DPSU_VERSION_COMPARE_UTIL=/usr/bin/psutils --raw --compare' \
@@ -73,7 +73,7 @@ inventory paths are associated.
 E.g.
 
 - Example of system with two PSUs that have different versions:
-  ```
+  ```text
    "/xyz/openbmc_project/software/02572429": {
      "Activation": "xyz.openbmc_project.Software.Activation.Activations.Active",
      "Associations": [
@@ -106,7 +106,7 @@ E.g.
    },
   ```
 - Example of system with two PSUs that have the same version:
-  ```
+  ```text
    "/xyz/openbmc_project/software/9463c2ad": {
      "Activation": "xyz.openbmc_project.Software.Activation.Activations.Active",
      "Associations": [
@@ -132,7 +132,7 @@ E.g.
 ### PSU update
 
 1. Generate a tarball of PSU firmware image by [generate-psu-tar tool][4].
-   ```
+   ```text
    ./generate-psu-tar --image <psu-image> --version <version> --model <model> --manufacturer \
    <manufacturer> --machineName <machineName> --outfile <psu.tar> --sign
    ```
