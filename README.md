@@ -16,6 +16,7 @@ meson build/ && ninja -C build
 
 - Run it in OpenBMC CI, refer to [local-ci-build.md][1]
 - Run it in [OE SDK][2], run below commands in a x86-64 SDK env:
+
   ```text
   meson -Doe-sdk=enabled -Dtests=enabled build/
   ninja -C build/ test  # Meson skips running the case due to it thinks it's cross compiling
@@ -73,6 +74,7 @@ inventory paths are associated.
 E.g.
 
 - Example of system with two PSUs that have different versions:
+
   ```text
    "/xyz/openbmc_project/software/02572429": {
      "Activation": "xyz.openbmc_project.Software.Activation.Activations.Active",
@@ -105,7 +107,9 @@ E.g.
      "Version": "00000110"
    },
   ```
+
 - Example of system with two PSUs that have the same version:
+
   ```text
    "/xyz/openbmc_project/software/9463c2ad": {
      "Activation": "xyz.openbmc_project.Software.Activation.Activations.Active",
@@ -132,10 +136,12 @@ E.g.
 ### PSU update
 
 1. Generate a tarball of PSU firmware image by [generate-psu-tar tool][4].
+
    ```text
    ./generate-psu-tar --image <psu-image> --version <version> --model <model> --manufacturer \
    <manufacturer> --machineName <machineName> --outfile <psu.tar> --sign
    ```
+
 2. To update the PSU firmware, follow the same steps as described in
    [code-update.md][5]:
    - Upload a PSU image tarball and get the version ID;
