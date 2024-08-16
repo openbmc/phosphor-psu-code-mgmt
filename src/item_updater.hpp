@@ -51,11 +51,11 @@ class ItemUpdater :
      */
     ItemUpdater(sdbusplus::bus_t& bus, const std::string& path) :
         ItemUpdaterInherit(bus, path.c_str()), bus(bus),
-        versionMatch(bus,
-                     MatchRules::interfacesAdded() +
-                         MatchRules::path(SOFTWARE_OBJPATH),
-                     std::bind(std::mem_fn(&ItemUpdater::createActivation),
-                               this, std::placeholders::_1)),
+        versionMatch(
+            bus,
+            MatchRules::interfacesAdded() + MatchRules::path(SOFTWARE_OBJPATH),
+            std::bind(std::mem_fn(&ItemUpdater::createActivation), this,
+                      std::placeholders::_1)),
         psuInterfaceMatch(
             bus,
             MatchRules::interfacesAdded() +
@@ -142,12 +142,11 @@ class ItemUpdater :
         const AssociationList& assocs, const std::string& filePath);
 
     /** @brief Create Version object */
-    std::unique_ptr<Version>
-        createVersionObject(const std::string& objPath,
-                            const std::string& versionId,
-                            const std::string& versionString,
-                            sdbusplus::xyz::openbmc_project::Software::server::
-                                Version::VersionPurpose versionPurpose);
+    std::unique_ptr<Version> createVersionObject(
+        const std::string& objPath, const std::string& versionId,
+        const std::string& versionString,
+        sdbusplus::xyz::openbmc_project::Software::server::Version::
+            VersionPurpose versionPurpose);
 
     /** @brief Create Activation and Version object for PSU inventory
      *  @details If the same version exists for multiple PSUs, just add

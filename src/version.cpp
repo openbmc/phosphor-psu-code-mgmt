@@ -23,9 +23,8 @@ using namespace sdbusplus::xyz::openbmc_project::Common::Error;
 using namespace phosphor::logging;
 using Argument = xyz::openbmc_project::Common::InvalidArgument;
 
-std::map<std::string, std::string>
-    Version::getValues(const std::string& filePath,
-                       const std::vector<std::string>& keys)
+std::map<std::string, std::string> Version::getValues(
+    const std::string& filePath, const std::vector<std::string>& keys)
 {
     if (filePath.empty())
     {

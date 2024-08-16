@@ -107,9 +107,8 @@ class Version : public VersionInherit
      *
      * @return The map of keys with filled values.
      **/
-    static std::map<std::string, std::string>
-        getValues(const std::string& filePath,
-                  const std::vector<std::string>& keys);
+    static std::map<std::string, std::string> getValues(
+        const std::string& filePath, const std::vector<std::string>& keys);
 
     /**
      * @brief Read the manifest file to get the value of the key.

@@ -97,9 +97,9 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
         AssociationList associations;
         auto activationState = Activation::Status::Ready;
 
-        associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
-                                                  ACTIVATION_REV_ASSOCIATION,
-                                                  PSU_INVENTORY_PATH_BASE));
+        associations.emplace_back(std::make_tuple(
+            ACTIVATION_FWD_ASSOCIATION, ACTIVATION_REV_ASSOCIATION,
+            PSU_INVENTORY_PATH_BASE));
 
         fs::path manifestPath(filePath);
         manifestPath /= MANIFEST_FILE;
@@ -111,8 +111,8 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
                                    activationState, associations, filePath);
         activations.emplace(versionId, std::move(activation));
 
-        auto versionPtr = createVersionObject(path, versionId, version,
-                                              purpose);
+        auto versionPtr =
+            createVersionObject(path, versionId, version, purpose);
         versions.emplace(versionId, std::move(versionPtr));
     }
     return;
@@ -226,9 +226,9 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
     {
         // The versionId is already created, associate the path
         auto associations = it->second->associations();
-        associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
-                                                  ACTIVATION_REV_ASSOCIATION,
-                                                  psuInventoryPath));
+        associations.emplace_back(
+            std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
+                            ACTIVATION_REV_ASSOCIATION, psuInventoryPath));
         it->second->associations(associations);
         psuPathActivationMap.emplace(psuInventoryPath, it->second);
     }
@@ -238,9 +238,9 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
         AssociationList associations;
         auto activationState = Activation::Status::Active;
 
-        associations.emplace_back(std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
-                                                  ACTIVATION_REV_ASSOCIATION,
-                                                  psuInventoryPath));
+        associations.emplace_back(
+            std::make_tuple(ACTIVATION_FWD_ASSOCIATION,
+                            ACTIVATION_REV_ASSOCIATION, psuInventoryPath));
 
         auto activation = createActivationObject(
             path, versionId, "", activationState, associations, "");
@@ -498,8 +498,8 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
                     objPath, versionId, extVersion, activationState, {}, path);
                 activations.emplace(versionId, std::move(activation));
 
-                auto versionPtr = createVersionObject(objPath, versionId,
-                                                      version, purpose);
+                auto versionPtr =
+                    createVersionObject(objPath, versionId, version, purpose);
                 versions.emplace(versionId, std::move(versionPtr));
             }
             else

@@ -93,9 +93,8 @@ std::string Utils::getService(sdbusplus::bus_t& bus, const char* path,
     return services[0];
 }
 
-std::vector<std::string> Utils::getServices(sdbusplus::bus_t& bus,
-                                            const char* path,
-                                            const char* interface) const
+std::vector<std::string> Utils::getServices(
+    sdbusplus::bus_t& bus, const char* path, const char* interface) const
 {
     auto mapper = bus.new_method_call(MAPPER_BUSNAME, MAPPER_PATH,
                                       MAPPER_INTERFACE, "GetObject");
@@ -184,8 +183,8 @@ bool Utils::isAssociated(const std::string& psuInventoryPath,
 {
     return std::find_if(assocs.begin(), assocs.end(),
                         [&psuInventoryPath](const auto& assoc) {
-        return psuInventoryPath == std::get<2>(assoc);
-    }) != assocs.end();
+                            return psuInventoryPath == std::get<2>(assoc);
+                        }) != assocs.end();
 }
 
 any Utils::getPropertyImpl(sdbusplus::bus_t& bus, const char* service,

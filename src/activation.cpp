@@ -275,8 +275,8 @@ void Activation::deleteImageManagerObject()
 
 bool Activation::isCompatible(const std::string& psuInventoryPath)
 {
-    auto service = utils::getService(bus, psuInventoryPath.c_str(),
-                                     ASSET_IFACE);
+    auto service =
+        utils::getService(bus, psuInventoryPath.c_str(), ASSET_IFACE);
     auto psuManufacturer = utils::getProperty<std::string>(
         bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE,
         MANUFACTURER);
