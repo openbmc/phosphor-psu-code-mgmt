@@ -44,23 +44,23 @@ class TestActivation : public ::testing::Test
         utils::freeUtils();
     }
 
-    void onUpdateDone()
+    void onUpdateDone() const
     {
         activation->onUpdateDone();
     }
-    void onUpdateFailed()
+    void onUpdateFailed() const
     {
         activation->onUpdateFailed();
     }
-    int getProgress()
+    int getProgress() const
     {
         return activation->activationProgress->progress();
     }
-    const auto& getPsuQueue()
+    const auto& getPsuQueue() const
     {
         return activation->psuQueue;
     }
-    std::string getUpdateService(const std::string& psuInventoryPath)
+    std::string getUpdateService(const std::string& psuInventoryPath) const
     {
         return activation->getUpdateService(psuInventoryPath);
     }

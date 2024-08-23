@@ -41,7 +41,7 @@ class TestItemUpdater : public ::testing::Test
         utils::freeUtils();
     }
 
-    auto& GetActivations()
+    auto& GetActivations() const
     {
         return itemUpdater->activations;
     }
@@ -52,12 +52,12 @@ class TestItemUpdater : public ::testing::Test
     }
 
     void onPsuInventoryChanged(const std::string& psuPath,
-                               const Properties& properties)
+                               const Properties& properties) const
     {
         itemUpdater->onPsuInventoryChanged(psuPath, properties);
     }
 
-    void scanDirectory(const fs::path& p)
+    void scanDirectory(const fs::path& p) const
     {
         itemUpdater->scanDirectory(p);
     }
