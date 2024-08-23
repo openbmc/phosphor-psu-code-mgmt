@@ -40,6 +40,14 @@ using ActivationBlocksTransitionInherit =
 class ActivationBlocksTransition : public ActivationBlocksTransitionInherit
 {
   public:
+    ActivationBlocksTransition() = delete;
+    ActivationBlocksTransition(const ActivationBlocksTransition&) = delete;
+    ActivationBlocksTransition&
+        operator=(const ActivationBlocksTransition&) = delete;
+    ActivationBlocksTransition(ActivationBlocksTransition&&) = delete;
+    ActivationBlocksTransition&
+        operator=(ActivationBlocksTransition&&) = delete;
+
     /** @brief Constructs ActivationBlocksTransition.
      *
      * @param[in] bus    - The Dbus bus object

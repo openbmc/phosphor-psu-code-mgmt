@@ -22,6 +22,12 @@ class TestActivation : public ::testing::Test
     using PropertyType = utils::UtilsInterface::PropertyType;
     using Status = Activation::Status;
     using RequestedStatus = Activation::RequestedActivations;
+
+    TestActivation(const TestActivation&) = delete;
+    TestActivation& operator=(const TestActivation&) = delete;
+    TestActivation(TestActivation&&) = delete;
+    TestActivation& operator=(TestActivation&&) = delete;
+
     TestActivation() :
         mockedUtils(
             reinterpret_cast<const utils::MockedUtils&>(utils::getUtils()))

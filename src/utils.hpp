@@ -108,6 +108,12 @@ bool isAssociated(const std::string& psuInventoryPath,
 class UtilsInterface
 {
   public:
+    UtilsInterface() = default;
+    UtilsInterface(const UtilsInterface&) = delete;
+    UtilsInterface& operator=(const UtilsInterface&) = delete;
+    UtilsInterface(UtilsInterface&&) = delete;
+    UtilsInterface& operator=(UtilsInterface&&) = delete;
+
     // For now the code needs to get property for Present and Version
     using PropertyType = std::variant<std::string, bool>;
 

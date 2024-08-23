@@ -8,6 +8,12 @@ namespace utils
 class MockedUtils : public UtilsInterface
 {
   public:
+    MockedUtils() = default;
+    MockedUtils(const MockedUtils&) = delete;
+    MockedUtils& operator=(const MockedUtils&) = delete;
+    MockedUtils(MockedUtils&&) = delete;
+    MockedUtils& operator=(MockedUtils&&) = delete;
+
     ~MockedUtils() override = default;
 
     MOCK_CONST_METHOD1(getPSUInventoryPath,

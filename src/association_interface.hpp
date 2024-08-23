@@ -5,6 +5,12 @@
 class AssociationInterface
 {
   public:
+    AssociationInterface() = default;
+    AssociationInterface(const AssociationInterface&) = delete;
+    AssociationInterface& operator=(const AssociationInterface&) = delete;
+    AssociationInterface(AssociationInterface&&) = delete;
+    AssociationInterface& operator=(AssociationInterface&&) = delete;
+
     virtual ~AssociationInterface() = default;
 
     /** @brief Create an active association to the

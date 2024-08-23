@@ -26,6 +26,11 @@ constexpr auto validManifestWithCRLF =
 class TestVersion : public ::testing::Test
 {
   public:
+    TestVersion(const TestVersion&) = delete;
+    TestVersion& operator=(const TestVersion&) = delete;
+    TestVersion(TestVersion&&) = delete;
+    TestVersion& operator=(TestVersion&&) = delete;
+
     TestVersion()
     {
         auto tmpPath = fs::temp_directory_path();

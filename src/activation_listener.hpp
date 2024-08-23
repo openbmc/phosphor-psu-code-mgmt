@@ -5,6 +5,12 @@
 class ActivationListener
 {
   public:
+    ActivationListener() = default;
+    ActivationListener(const ActivationListener&) = delete;
+    ActivationListener& operator=(const ActivationListener&) = delete;
+    ActivationListener(ActivationListener&&) = delete;
+    ActivationListener& operator=(ActivationListener&&) = delete;
+
     virtual ~ActivationListener() = default;
 
     /** @brief Notify a PSU is updated

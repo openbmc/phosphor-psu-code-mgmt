@@ -22,6 +22,11 @@ class TestItemUpdater : public ::testing::Test
     using Properties = ItemUpdater::Properties;
     using PropertyType = utils::UtilsInterface::PropertyType;
 
+    TestItemUpdater(const TestItemUpdater&) = delete;
+    TestItemUpdater& operator=(const TestItemUpdater&) = delete;
+    TestItemUpdater(TestItemUpdater&&) = delete;
+    TestItemUpdater& operator=(TestItemUpdater&&) = delete;
+
     TestItemUpdater() :
         mockedUtils(
             reinterpret_cast<const utils::MockedUtils&>(utils::getUtils()))
