@@ -77,7 +77,7 @@ class Version : public VersionInherit
             VersionPurpose versionPurpose, eraseFunc callback) :
         VersionInherit(bus, (objPath).c_str(),
                        VersionInherit::action::defer_emit),
-        eraseCallback(callback), bus(bus), objPath(objPath),
+        eraseCallback(std::move(callback)), bus(bus), objPath(objPath),
         versionId(versionId), versionStr(versionString)
     {
         // Set properties.
