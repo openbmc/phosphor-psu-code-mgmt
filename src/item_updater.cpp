@@ -174,7 +174,7 @@ void ItemUpdater::removeAssociation(const std::string& path)
 {
     for (auto iter = assocs.begin(); iter != assocs.end();)
     {
-        if ((std::get<2>(*iter)).compare(path) == 0)
+        if ((std::get<2>(*iter)) == path)
         {
             iter = assocs.erase(iter);
             associations(assocs);
@@ -274,7 +274,7 @@ void ItemUpdater::removePsuObject(const std::string& psuInventoryPath)
     auto associations = activationPtr->associations();
     for (auto iter = associations.begin(); iter != associations.end();)
     {
-        if ((std::get<2>(*iter)).compare(psuInventoryPath) == 0)
+        if ((std::get<2>(*iter)) == psuInventoryPath)
         {
             iter = associations.erase(iter);
         }
