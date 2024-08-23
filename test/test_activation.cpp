@@ -33,7 +33,7 @@ class TestActivation : public ::testing::Test
             .WillByDefault(Return(any(PropertyType(std::string("TestModel")))));
         ON_CALL(mockedUtils, isAssociated(_, _)).WillByDefault(Return(false));
     }
-    ~TestActivation()
+    ~TestActivation() override
     {
         utils::freeUtils();
     }

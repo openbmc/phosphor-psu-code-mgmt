@@ -7,7 +7,7 @@
 class MockedAssociationInterface : public AssociationInterface
 {
   public:
-    virtual ~MockedAssociationInterface() = default;
+    ~MockedAssociationInterface() override = default;
 
     MOCK_METHOD1(createActiveAssociation, void(const std::string& path));
     MOCK_METHOD1(addFunctionalAssociation, void(const std::string& path));

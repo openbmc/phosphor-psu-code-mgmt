@@ -31,7 +31,7 @@ class TestItemUpdater : public ::testing::Test
             .WillByDefault(Return(any(PropertyType(true))));
     }
 
-    ~TestItemUpdater()
+    ~TestItemUpdater() override
     {
         utils::freeUtils();
     }

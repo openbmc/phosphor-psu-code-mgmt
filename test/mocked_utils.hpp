@@ -8,7 +8,7 @@ namespace utils
 class MockedUtils : public UtilsInterface
 {
   public:
-    virtual ~MockedUtils() = default;
+    ~MockedUtils() override = default;
 
     MOCK_CONST_METHOD1(getPSUInventoryPath,
                        std::vector<std::string>(sdbusplus::bus_t& bus));

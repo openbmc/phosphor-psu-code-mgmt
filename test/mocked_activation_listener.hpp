@@ -7,7 +7,7 @@
 class MockedActivationListener : public ActivationListener
 {
   public:
-    virtual ~MockedActivationListener() = default;
+    ~MockedActivationListener() override = default;
 
     MOCK_METHOD2(onUpdateDone, void(const std::string& versionId,
                                     const std::string& psuInventoryPath));

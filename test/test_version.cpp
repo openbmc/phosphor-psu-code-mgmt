@@ -35,7 +35,7 @@ class TestVersion : public ::testing::Test
             throw "Failed to create temp dir";
         }
     }
-    ~TestVersion()
+    ~TestVersion() override
     {
         fs::remove_all(tmpDir);
     }
