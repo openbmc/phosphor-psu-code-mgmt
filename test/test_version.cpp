@@ -45,7 +45,7 @@ class TestVersion : public ::testing::Test
         fs::remove_all(tmpDir);
     }
 
-    void writeFile(const fs::path& file, const char* data)
+    static void writeFile(const fs::path& file, const char* data)
     {
         std::ofstream f{file};
         f << data;

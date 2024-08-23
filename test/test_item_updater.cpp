@@ -46,7 +46,7 @@ class TestItemUpdater : public ::testing::Test
         return itemUpdater->activations;
     }
 
-    std::string getObjPath(const std::string& versionId)
+    static std::string getObjPath(const std::string& versionId)
     {
         return std::string(dBusPath) + "/" + versionId;
     }

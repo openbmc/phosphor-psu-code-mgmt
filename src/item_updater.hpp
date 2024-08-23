@@ -181,7 +181,7 @@ class ItemUpdater :
     void syncToLatestImage();
 
     /** @brief Invoke the activation via DBus */
-    void invokeActivation(const std::unique_ptr<Activation>& activation);
+    static void invokeActivation(const std::unique_ptr<Activation>& activation);
 
     /** @brief Callback function for interfaces added signal.
      *
