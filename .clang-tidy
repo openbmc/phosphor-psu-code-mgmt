@@ -251,7 +251,8 @@ readability-simplify-subscript-expr,
 readability-static-accessed-through-instance,
 readability-static-definition-in-anonymous-namespace,
 readability-suspicious-call-argument,
-readability-uniqueptr-delete-release'
+readability-uniqueptr-delete-release,
+readability-uppercase-literal-suffix'
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'

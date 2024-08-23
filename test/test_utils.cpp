@@ -58,7 +58,7 @@ TEST(Utils, GetPSUInventoryPath)
         .WillOnce(Return(0)); /* end of std::vector */
 
     auto ret = utils::getPSUInventoryPath(bus);
-    EXPECT_EQ(2u, ret.size());
+    EXPECT_EQ(2U, ret.size());
     EXPECT_EQ(path0, ret[0]);
     EXPECT_EQ(path1, ret[1]);
 }
@@ -69,7 +69,7 @@ TEST(Utils, GetVersionID)
     EXPECT_EQ("", ret);
 
     ret = utils::getVersionId("some version");
-    EXPECT_EQ(8u, ret.size());
+    EXPECT_EQ(8U, ret.size());
 }
 
 TEST(Utils, IsAssociated)

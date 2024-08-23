@@ -180,10 +180,10 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithSameVersion)
 
     // Verify there is only one activation and it has two associations
     const auto& activations = GetActivations();
-    EXPECT_EQ(1u, activations.size());
+    EXPECT_EQ(1U, activations.size());
     const auto& activation = activations.find(version0)->second;
     const auto& assocs = activation->associations();
-    EXPECT_EQ(2u, assocs.size());
+    EXPECT_EQ(2U, assocs.size());
     EXPECT_EQ(psu0, std::get<2>(assocs[0]));
     EXPECT_EQ(psu1, std::get<2>(assocs[1]));
 }
@@ -234,15 +234,15 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithDifferentVersion)
 
     // Verify there are two activations and each with one association
     const auto& activations = GetActivations();
-    EXPECT_EQ(2u, activations.size());
+    EXPECT_EQ(2U, activations.size());
     const auto& activation0 = activations.find(version0)->second;
     const auto& assocs0 = activation0->associations();
-    EXPECT_EQ(1u, assocs0.size());
+    EXPECT_EQ(1U, assocs0.size());
     EXPECT_EQ(psu0, std::get<2>(assocs0[0]));
 
     const auto& activation1 = activations.find(version1)->second;
     const auto& assocs1 = activation1->associations();
-    EXPECT_EQ(1u, assocs1.size());
+    EXPECT_EQ(1U, assocs1.size());
     EXPECT_EQ(psu1, std::get<2>(assocs1[0]));
 }
 
@@ -426,17 +426,17 @@ TEST_F(TestItemUpdater,
 
     // Verify there is only one activation and it has two associations
     const auto& activations = GetActivations();
-    EXPECT_EQ(1u, activations.size());
+    EXPECT_EQ(1U, activations.size());
     const auto& activation = activations.find(version0)->second;
     auto assocs = activation->associations();
-    EXPECT_EQ(2u, assocs.size());
+    EXPECT_EQ(2U, assocs.size());
     EXPECT_EQ(psu0, std::get<2>(assocs[0]));
     EXPECT_EQ(psu1, std::get<2>(assocs[1]));
 
     // PSU0 is removed, only associations shall be updated
     onPsuInventoryChanged(psu0, propRemoved);
     assocs = activation->associations();
-    EXPECT_EQ(1u, assocs.size());
+    EXPECT_EQ(1U, assocs.size());
     EXPECT_EQ(psu1, std::get<2>(assocs[0]));
 
     // PSU1 is removed, the activation and version object shall be removed
@@ -597,7 +597,7 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithSameVersion)
     activations.emplace(newVersionId, std::move(dummyActivation));
     auto& activation = activations.find(version0)->second;
     auto assocs = activation->associations();
-    EXPECT_EQ(2u, assocs.size());
+    EXPECT_EQ(2U, assocs.size());
     EXPECT_EQ(psu0, std::get<2>(assocs[0]));
     EXPECT_EQ(psu1, std::get<2>(assocs[1]));
 
@@ -607,7 +607,7 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithSameVersion)
 
     // Now the activation should have one association
     assocs = activation->associations();
-    EXPECT_EQ(1u, assocs.size());
+    EXPECT_EQ(1U, assocs.size());
     EXPECT_EQ(psu1, std::get<2>(assocs[0]));
 
     EXPECT_CALL(mockedUtils, isAssociated(StrEq(psu1), _))
@@ -615,7 +615,7 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithSameVersion)
     itemUpdater->onUpdateDone(newVersionId, psu1);
 
     // Now the activation shall be erased and only the dummy one is left
-    EXPECT_EQ(1u, activations.size());
+    EXPECT_EQ(1U, activations.size());
     EXPECT_NE(activations.find(newVersionId), activations.end());
 }
 
@@ -670,17 +670,17 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithDifferentVersion)
 
     // After psu0 is done, two activations should be left
     itemUpdater->onUpdateDone(newVersionId, psu0);
-    EXPECT_EQ(2u, activations.size());
+    EXPECT_EQ(2U, activations.size());
     const auto& activation1 = activations.find(version1)->second;
     const auto& assocs1 = activation1->associations();
-    EXPECT_EQ(1u, assocs1.size());
+    EXPECT_EQ(1U, assocs1.size());
     EXPECT_EQ(psu1, std::get<2>(assocs1[0]));
 
     EXPECT_CALL(mockedUtils, isAssociated(StrEq(psu1), _))
         .WillOnce(Return(true));
     // After psu1 is done, only the dummy activation should be left
     itemUpdater->onUpdateDone(newVersionId, psu1);
-    EXPECT_EQ(1u, activations.size());
+    EXPECT_EQ(1U, activations.size());
     EXPECT_NE(activations.find(newVersionId), activations.end());
 }
 

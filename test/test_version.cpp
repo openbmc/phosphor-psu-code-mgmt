@@ -66,7 +66,7 @@ TEST_F(TestVersion, getValuesOK)
     writeFile(manifestFilePath, validManifest);
     auto ret = Version::getValues(manifestFilePath.string(),
                                   {"purpose", "version", "extended_version"});
-    EXPECT_EQ(3u, ret.size());
+    EXPECT_EQ(3U, ret.size());
     auto purpose = ret["purpose"];
     auto version = ret["version"];
     auto extVersion = ret["extended_version"];
@@ -85,7 +85,7 @@ TEST_F(TestVersion, getExtVersionInfo)
 
     extVersion = "manufacturer=TestManu,model=TestModel";
     ret = Version::getExtVersionInfo(extVersion);
-    EXPECT_EQ(2u, ret.size());
+    EXPECT_EQ(2U, ret.size());
     EXPECT_EQ("TestManu", ret["manufacturer"]);
     EXPECT_EQ("TestModel", ret["model"]);
 }
@@ -96,7 +96,7 @@ TEST_F(TestVersion, getValuesOKonCRLFFormat)
     writeFile(manifestFilePath, validManifestWithCRLF);
     auto ret = Version::getValues(manifestFilePath.string(),
                                   {"purpose", "version", "extended_version"});
-    EXPECT_EQ(3u, ret.size());
+    EXPECT_EQ(3U, ret.size());
     auto purpose = ret["purpose"];
     auto version = ret["version"];
     auto extVersion = ret["extended_version"];

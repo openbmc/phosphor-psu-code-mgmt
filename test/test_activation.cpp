@@ -332,7 +332,7 @@ TEST_F(TestActivation, doUpdateFourPSUsSecondPSUNotCompatible)
     activation->requestedActivation(RequestedStatus::Active);
 
     const auto& psuQueue = getPsuQueue();
-    EXPECT_EQ(3u, psuQueue.size());
+    EXPECT_EQ(3U, psuQueue.size());
 
     // Only 3 PSUs shall be updated, and psu1 shall be skipped
     EXPECT_EQ(Status::Activating, activation->activation());
