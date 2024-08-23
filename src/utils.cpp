@@ -113,6 +113,7 @@ std::vector<std::string> Utils::getServices(
             throw std::runtime_error("Error reading mapper response");
         }
         std::vector<std::string> ret;
+        ret.reserve(mapperResponse.size());
         for (const auto& i : mapperResponse)
         {
             ret.emplace_back(i.first);
