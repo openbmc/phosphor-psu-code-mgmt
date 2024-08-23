@@ -2,10 +2,6 @@
 #include <string>
 #include <vector>
 
-// Get the version string for a PSU and output to stdout
-// In this example, it just returns the last 8 bytes as the version
-constexpr int NUM_OF_BYTES = 8;
-
 int main(int argc, char** argv)
 {
     if (argc < 2)
