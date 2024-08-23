@@ -192,7 +192,16 @@ clang-analyzer-valist.Uninitialized,
 clang-analyzer-valist.Unterminated,
 clang-analyzer-valist.ValistBase,
 clang-analyzer-webkit.NoUncountedMemberChecker,
-clang-analyzer-webkit.RefCntblBaseVirtualDtor'
+clang-analyzer-webkit.RefCntblBaseVirtualDtor,
+cppcoreguidelines-avoid-goto,
+cppcoreguidelines-c-copy-assignment-signature,
+cppcoreguidelines-narrowing-conversions,
+cppcoreguidelines-no-malloc,
+cppcoreguidelines-prefer-member-initializer,
+cppcoreguidelines-pro-type-cstyle-cast,
+cppcoreguidelines-pro-type-static-cast-downcast,
+cppcoreguidelines-pro-type-union-access,
+cppcoreguidelines-slicing'
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
