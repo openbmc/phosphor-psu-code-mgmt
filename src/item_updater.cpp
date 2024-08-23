@@ -81,7 +81,7 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
     }
 
     // Version id is the last item in the path
-    auto pos = path.rfind("/");
+    auto pos = path.rfind('/');
     if (pos == std::string::npos)
     {
         log<level::ERR>("No version id found in object path",
