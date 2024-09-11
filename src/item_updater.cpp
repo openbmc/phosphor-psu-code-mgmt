@@ -420,7 +420,10 @@ void ItemUpdater::processStoredImage()
 {
     scanDirectory(IMG_DIR_BUILTIN);
 
-    scanDirectory(IMG_DIR_PERSIST);
+    if (!ALWAYS_USE_BUILTIN_IMG_DIR)
+    {
+        scanDirectory(IMG_DIR_PERSIST);
+    }
 }
 
 void ItemUpdater::scanDirectory(const fs::path& dir)
@@ -519,7 +522,15 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
 
 std::optional<std::string> ItemUpdater::getLatestVersionId()
 {
-    auto latestVersion = utils::getLatestVersion(versionStrings);
+    std::string latestVersion;
+    if (ALWAYS_USE_BUILTIN_IMG_DIR)
+    {
+        latestVersion = getFWVersionFromBuiltinDir();
+    }
+    else
+    {
+        latestVersion = utils::getLatestVersion(versionStrings);
+    }
     if (latestVersion.empty())
     {
         return {};
@@ -644,6 +655,26 @@ void ItemUpdater::processPSUImageAndSyncToLatest()
     processPSUImage();
     processStoredImage();
     syncToLatestImage();
+}
+
+std::string ItemUpdater::getFWVersionFromBuiltinDir()
+{
+    std::string version;
+    for (const auto& activation : activations)
+    {
+        if (activation.second->path().starts_with(IMG_DIR_BUILTIN))
+        {
+            std::string versionId = activation.second->getVersionId();
+            auto it = versions.find(versionId);
+            if (it != versions.end())
+            {
+                const auto& versionPtr = it->second;
+                version = versionPtr->version();
+                break;
+            }
+        }
+    }
+    return version;
 }
 
 } // namespace updater
