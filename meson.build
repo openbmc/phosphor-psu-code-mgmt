@@ -43,6 +43,8 @@ cdata.set_quoted('IMG_DIR', get_option('IMG_DIR'))
 cdata.set_quoted('IMG_DIR_PERSIST', get_option('IMG_DIR_PERSIST'))
 cdata.set_quoted('IMG_DIR_BUILTIN', get_option('IMG_DIR_BUILTIN'))
 
+cdata.set10('ALWAYS_USE_BUILTIN_IMG_DIR', get_option('ALWAYS_USE_BUILTIN_IMG_DIR'))
+
 phosphor_dbus_interfaces = dependency('phosphor-dbus-interfaces')
 phosphor_logging = dependency('phosphor-logging')
 sdbusplus = dependency('sdbusplus')

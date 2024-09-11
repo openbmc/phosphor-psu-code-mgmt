@@ -58,3 +58,8 @@ option('IMG_DIR_BUILTIN',
        type: 'string',
        value: '/usr/share/obmc/psu',
        description: 'The read-only directory where the built-in PSU images are stored')
+
+option('ALWAYS_USE_BUILTIN_IMG_DIR',
+    type: 'boolean',
+    value: false,
+    description: 'Only scan for PSU images in IMG_BUILTIN_DIR')
