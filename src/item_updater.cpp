@@ -394,13 +394,14 @@ void ItemUpdater::processPSUImage()
     for (const auto& p : paths)
     {
         auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
-        auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
-                                                ITEM_IFACE, PRESENT);
+        psuStatusMap[p].present = utils::getProperty<bool>(
+            bus, service.c_str(), p.c_str(), ITEM_IFACE, PRESENT);
         psuStatusMap[p].model = utils::getProperty<std::string>(
             bus, service.c_str(), p.c_str(), ASSET_IFACE, MODEL);
         auto version = utils::getVersion(p);
+
         if ((psuPathActivationMap.find(p) == psuPathActivationMap.end()) &&
-            present && !version.empty())
+            psuStatusMap[p].present && version.empty())
         {
             createPsuObject(p, version);
             // Add matches for PSU Inventory's property changes
@@ -420,7 +421,10 @@ void ItemUpdater::processStoredImage()
 {
     scanDirectory(IMG_DIR_BUILTIN);
 
-    scanDirectory(IMG_DIR_PERSIST);
+    if (!ALWAYS_USE_BUILTIN_IMG_DIR)
+    {
+        scanDirectory(IMG_DIR_PERSIST);
+    }
 }
 
 void ItemUpdater::scanDirectory(const fs::path& dir)
@@ -519,7 +523,15 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
 
 std::optional<std::string> ItemUpdater::getLatestVersionId()
 {
-    auto latestVersion = utils::getLatestVersion(versionStrings);
+    std::string latestVersion;
+    if (ALWAYS_USE_BUILTIN_IMG_DIR)
+    {
+        latestVersion = getFWVersionFromBuiltinDir();
+    }
+    else
+    {
+        latestVersion = utils::getLatestVersion(versionStrings);
+    }
     if (latestVersion.empty())
     {
         return {};
@@ -644,6 +656,26 @@ void ItemUpdater::processPSUImageAndSyncToLatest()
     processPSUImage();
     processStoredImage();
     syncToLatestImage();
+}
+
+std::string ItemUpdater::getFWVersionFromBuiltinDir()
+{
+    std::string version;
+    for (const auto& activation : activations)
+    {
+        if (activation.second->path().starts_with(IMG_DIR_BUILTIN))
+        {
+            std::string versionId = activation.second->getVersionId();
+            auto it = versions.find(versionId);
+            if (it != versions.end())
+            {
+                const auto& versionPtr = it->second;
+                version = versionPtr->version();
+                break;
+            }
+        }
+    }
+    return version;
 }
 
 } // namespace updater

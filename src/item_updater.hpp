@@ -201,6 +201,16 @@ class ItemUpdater :
      */
     void processPSUImageAndSyncToLatest();
 
+    /** @brief Retrieve FW version from IMG_DIR_BUILTIN
+     *
+     * This function getFWVersionFromBuiltinDir() retrieves the firmware version
+     * associated with the PSU that is in the IMG_DIR_BUILTIN. It loops through
+     * the activations map to find matching path starts with IMG_DIR_BUILTIN,
+     * then gets the corresponding version ID, and then looks it up in the
+     * versions map to retrieve the associated version string.
+     */
+    std::string getFWVersionFromBuiltinDir();
+
     /** @brief Persistent sdbusplus D-Bus bus connection. */
     sdbusplus::bus_t& bus;
 
