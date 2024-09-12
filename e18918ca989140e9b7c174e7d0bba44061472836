@@ -24,6 +24,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "69c05e26_935dce67",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-09-12T20:25:41Z",
+      "side": 1,
+      "message": "removed",
+      "parentUuid": "257973e7_f0de458b",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "78aefe03_c542e099",
@@ -37,6 +61,24 @@
       "writtenOn": "2024-09-12T14:28:51Z",
       "side": 1,
       "message": "Usually the commit message contains a higher level description of what enhancement or fix it provides.  We can see from the diffs what the lower-level implementation looks like.\n\nI think the big picture here is this commit provides an option to only install PSU firmware found in the IMG_BUILTIN_DIR.  This is the required behavior on some systems types.",
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f79aea21_e6bb6d9b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-09-12T20:25:41Z",
+      "side": 1,
+      "message": "Modified to: \nAdded method to retrieve firmware level found in IMG_BUILTIN_DIR. This is required behavior on some sytems types.",
+      "parentUuid": "78aefe03_c542e099",
       "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -128,6 +170,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "0c0c088e_d09f1d66",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-09-12T20:25:41Z",
+      "side": 1,
+      "message": "removed function name",
+      "parentUuid": "e0b46964_43f1e889",
+      "range": {
+        "startLine": 206,
+        "startChar": 21,
+        "endLine": 206,
+        "endChar": 49
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "efecf14b_ff1263d9",
@@ -141,6 +207,30 @@
       "writtenOn": "2024-09-12T14:28:51Z",
       "side": 1,
       "message": "I didn\u0027t understand this part?",
+      "range": {
+        "startLine": 207,
+        "startChar": 7,
+        "endLine": 207,
+        "endChar": 30
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "56f7afaa_7880d8a3",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-09-12T20:25:41Z",
+      "side": 1,
+      "message": "Here is what I meant the version for appropriate PSU Model.\n\nChanged to:\nThis function retrieves the firmware version from the PSU model directory that is in the IMG_DIR_BUILTIN.",
+      "parentUuid": "efecf14b_ff1263d9",
       "range": {
         "startLine": 207,
         "startChar": 7,
