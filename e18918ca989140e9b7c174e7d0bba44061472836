@@ -1,0 +1,130 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "257973e7_f0de458b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-12T14:28:51Z",
+      "side": 1,
+      "message": "Nit: Since this repository only contains one application, you don\u0027t need a prefix indicating the affected application.",
+      "range": {
+        "startLine": 7,
+        "startChar": 0,
+        "endLine": 7,
+        "endChar": 9
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "78aefe03_c542e099",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-12T14:28:51Z",
+      "side": 1,
+      "message": "Usually the commit message contains a higher level description of what enhancement or fix it provides.  We can see from the diffs what the lower-level implementation looks like.\n\nI think the big picture here is this commit provides an option to only install PSU firmware found in the IMG_BUILTIN_DIR.  This is the required behavior on some systems types.",
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a57e8bc1_e01a3ac2",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-12T14:28:51Z",
+      "side": 1,
+      "message": "Looks good in general.  Some smaller things to consider cleaning up.",
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "08289e72_7dc4831c",
+        "filename": "meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-12T14:28:51Z",
+      "side": 1,
+      "message": "Can you use cdata.set() so that the value is a boolean true or false?  I\u0027m not sure why the value needs to be a 0 or 1?\n\nAlso, would this be clearer if it was named ALWAYS_USE_IMG_DIR_BUILTIN so that it exactly matched the option IMG_DIR_BUILTIN?",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 11
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e0b46964_43f1e889",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-12T14:28:51Z",
+      "side": 1,
+      "message": "Probably don\u0027t need to repeat the name in the description.  Otherwise if this is renamed in the future they\u0027ll have to change it in the comment too.",
+      "range": {
+        "startLine": 206,
+        "startChar": 21,
+        "endLine": 206,
+        "endChar": 49
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "efecf14b_ff1263d9",
+        "filename": "src/item_updater.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-12T14:28:51Z",
+      "side": 1,
+      "message": "I didn\u0027t understand this part?",
+      "range": {
+        "startLine": 207,
+        "startChar": 7,
+        "endLine": 207,
+        "endChar": 30
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    }
+  ]
+}
