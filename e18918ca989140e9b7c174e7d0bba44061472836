@@ -81,6 +81,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2ae784f2_7824a7f8",
+        "filename": "meson.build",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-12T19:16:37Z",
+      "side": 1,
+      "message": "I was reading this page when I made my this comment:\n\nhttps://mesonbuild.com/Reference-manual_returned_cfg_data.html#cfg_dataset\n\nIt looked like you could set a variable to a boolean value via set()\n\nHowever, from the following page\n\nhttps://mesonbuild.com/Configuration.html#configuring-without-an-input-file\n\nIt looks like a boolean value results in a simple #define with no value\n\n```\nconf_data.set(\u0027BAR\u0027, true, description : \u0027Set BAR if it is available\u0027)\n\n/* Set BAR if it is available */\n#define BAR\n```\n\nSo I think what you have here is correct and my comment was wrong.",
+      "parentUuid": "08289e72_7dc4831c",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 11
+      },
+      "revId": "e18918ca989140e9b7c174e7d0bba44061472836",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "e0b46964_43f1e889",
