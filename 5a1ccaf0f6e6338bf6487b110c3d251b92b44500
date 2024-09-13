@@ -36,6 +36,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "48032474_aef15000",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1001630
+      },
+      "writtenOn": "2024-09-13T17:09:11Z",
+      "side": 1,
+      "message": "Restored present to previous code",
+      "parentUuid": "1a06ba29_61a67073",
+      "revId": "5a1ccaf0f6e6338bf6487b110c3d251b92b44500",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "7adbb886_a2537067",
