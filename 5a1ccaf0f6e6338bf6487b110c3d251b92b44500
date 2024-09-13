@@ -20,6 +20,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "1a06ba29_61a67073",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-09-13T15:32:44Z",
+      "side": 1,
+      "message": "can you put this in a separate commit.",
+      "parentUuid": "b9ae53da_2dc792f1",
+      "revId": "5a1ccaf0f6e6338bf6487b110c3d251b92b44500",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "7adbb886_a2537067",
         "filename": "src/item_updater.cpp",
         "patchSetId": 3
@@ -31,6 +49,24 @@
       "writtenOn": "2024-09-13T15:22:15Z",
       "side": 1,
       "message": "usually these would be #ifdef/#ifndef, since it is a value known at compile time.  That being said, there is better CI coverage I guess when it isn\u0027t, and I\u0027m not sure if anyone else cares enough either way.",
+      "revId": "5a1ccaf0f6e6338bf6487b110c3d251b92b44500",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "69cde051_8eb7b5db",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 3
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-09-13T15:32:44Z",
+      "side": 1,
+      "message": "Talked with Shawn, and this works as is.",
+      "parentUuid": "7adbb886_a2537067",
       "revId": "5a1ccaf0f6e6338bf6487b110c3d251b92b44500",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
