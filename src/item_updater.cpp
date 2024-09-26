@@ -80,6 +80,13 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
         return;
     }
 
+    // If we are only installing PSU images from the built-in directory, ignore
+    // PSU images from other directories
+    if (ALWAYS_USE_BUILTIN_IMG_DIR && !filePath.starts_with(IMG_DIR_BUILTIN))
+    {
+        return;
+    }
+
     // Version id is the last item in the path
     auto pos = path.rfind('/');
     if (pos == std::string::npos)
