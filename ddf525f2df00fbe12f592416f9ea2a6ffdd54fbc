@@ -16,6 +16,24 @@
       "message": "Does \"src.starts_with(IMG_DIR)\" basically mean \"src \u003d\u003d IMG_DIR\"?  Because all 3 locations start with IMG_DIR, guessing it\u0027s being used as \"\u003d\u003d\"...",
       "revId": "ddf525f2df00fbe12f592416f9ea2a6ffdd54fbc",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c9bbfdac_d8030acb",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-09-27T18:57:11Z",
+      "side": 1,
+      "message": "The three image directory constants based on meson options contain the following default values:\n* IMG_DIR: \"/tmp/images\"\n* IMG_DIR_BUILTIN: \"/usr/share/obmc/psu\"\n* IMG_DIR_PERSIST: \"/var/lib/obmc/psu\"\n\nWithin this method, src is a std::string set to the directory currently containing the PSU image.  So it would look like one of the following:\n* \"/tmp/images/afc2616d\"\n* \"/usr/share/obmc/psu/51E9\"\n* \"/var/lib/obmc/psu/51E9\"\n\nstd::string::starts_with() returns true if the string begins with the specified prefix, false otherwise.  So we are checking if the full path to the PSU image begins with \"/tmp/images\".",
+      "parentUuid": "271a0421_9906d01b",
+      "revId": "ddf525f2df00fbe12f592416f9ea2a6ffdd54fbc",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
