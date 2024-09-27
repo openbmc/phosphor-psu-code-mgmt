@@ -297,15 +297,17 @@ bool Activation::isCompatible(const std::string& psuInventoryPath)
 
 void Activation::storeImage()
 {
-    // Store image in persistent dir separated by model
-    // and only store the latest one by removing old ones
+    // If image is not in IMG_DIR (temporary storage) then exit.  We don't want
+    // to copy from IMG_DIR_PERSIST or IMG_DIR_BUILTIN.
     auto src = path();
-    auto dst = fs::path(IMG_DIR_PERSIST) / model;
-    if (src == dst)
+    if (!src.starts_with(IMG_DIR))
     {
-        // This happens when updating an stored image, no need to store it again
         return;
     }
+
+    // Store image in persistent dir separated by model
+    // and only store the latest one by removing old ones
+    auto dst = fs::path(IMG_DIR_PERSIST) / model;
     try
     {
         fs::remove_all(dst);
