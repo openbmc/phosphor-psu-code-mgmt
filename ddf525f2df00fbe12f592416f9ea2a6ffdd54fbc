@@ -1,0 +1,11 @@
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Code-Review+2: Matt Spinler <spinler@us.ibm.com>
+Code-Review+1: Arun Lal K M <arun.lal@intel.com>
+Code-Review+1: Derek Howard <derekh@us.ibm.com>
+Code-Review+1: <smriti.ayushi@linux.intel.com>
+Submitted-by: Shawn McCarney <shawnmm@us.ibm.com>
+Submitted-at: Mon, 07 Oct 2024 01:13:26 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-psu-code-mgmt/+/74922
+Comments-Total: 6
+Project: openbmc/phosphor-psu-code-mgmt
+Branch: refs/heads/master
