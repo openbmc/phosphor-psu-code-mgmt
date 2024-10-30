@@ -266,8 +266,6 @@ void ItemUpdater::createPsuObject(const std::string& psuInventoryPath,
 
 void ItemUpdater::removePsuObject(const std::string& psuInventoryPath)
 {
-    psuStatusMap[psuInventoryPath] = {false, ""};
-
     auto it = psuPathActivationMap.find(psuInventoryPath);
     if (it == psuPathActivationMap.end())
     {
@@ -299,6 +297,24 @@ void ItemUpdater::removePsuObject(const std::string& psuInventoryPath)
     {
         // Update association
         activationPtr->associations(associations);
+    }
+}
+
+void ItemUpdater::addPsuToStatusMap(const std::string& psuPath)
+{
+    if (!psuStatusMap.contains(psuPath))
+    {
+        psuStatusMap[psuPath] = {false, ""};
+
+        // Add matches for PSU Inventory's property changes
+        psuMatches.emplace_back(
+            bus, MatchRules::propertiesChanged(psuPath, ITEM_IFACE),
+            std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
+                      std::placeholders::_1)); // For present
+        psuMatches.emplace_back(
+            bus, MatchRules::propertiesChanged(psuPath, ASSET_IFACE),
+            std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
+                      std::placeholders::_1)); // For model
     }
 }
 
@@ -371,8 +387,6 @@ void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
             {
                 createPsuObject(psuPath, version);
             }
-            // Check if there is new PSU images to update
-            syncToLatestImage();
         }
         else
         {
@@ -380,6 +394,9 @@ void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
             log<level::ERR>("Failed to get PSU version",
                             entry("PSU=%s", psuPath.c_str()));
         }
+        // Check if there are new PSU images to update
+        processStoredImage();
+        syncToLatestImage();
     }
     else
     {
@@ -390,6 +407,8 @@ void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
             // handled by "Present" callback.
             return;
         }
+        psuStatusMap[psuPath].model = "";
+
         // Remove object or association
         removePsuObject(psuPath);
     }
@@ -400,25 +419,18 @@ void ItemUpdater::processPSUImage()
     auto paths = utils::getPSUInventoryPath(bus);
     for (const auto& p : paths)
     {
+        addPsuToStatusMap(p);
+
         auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
-        auto present = utils::getProperty<bool>(bus, service.c_str(), p.c_str(),
-                                                ITEM_IFACE, PRESENT);
+        psuStatusMap[p].present = utils::getProperty<bool>(
+            bus, service.c_str(), p.c_str(), ITEM_IFACE, PRESENT);
         psuStatusMap[p].model = utils::getProperty<std::string>(
             bus, service.c_str(), p.c_str(), ASSET_IFACE, MODEL);
         auto version = utils::getVersion(p);
         if ((psuPathActivationMap.find(p) == psuPathActivationMap.end()) &&
-            present && !version.empty())
+            psuStatusMap[p].present && !version.empty())
         {
             createPsuObject(p, version);
-            // Add matches for PSU Inventory's property changes
-            psuMatches.emplace_back(
-                bus, MatchRules::propertiesChanged(p, ITEM_IFACE),
-                std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
-                          std::placeholders::_1)); // For present
-            psuMatches.emplace_back(
-                bus, MatchRules::propertiesChanged(p, ASSET_IFACE),
-                std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
-                          std::placeholders::_1)); // For model
         }
     }
 }
@@ -599,8 +611,14 @@ void ItemUpdater::onPSUInterfaceAdded(sdbusplus::message_t& msg)
     msg.read(objPath, interfaces);
     std::string path = objPath.str;
 
-    if (interfaces.find(PSU_INVENTORY_IFACE) == interfaces.end() ||
-        (psuStatusMap[path].present && !psuStatusMap[path].model.empty()))
+    if (interfaces.find(PSU_INVENTORY_IFACE) == interfaces.end())
+    {
+        return;
+    }
+
+    addPsuToStatusMap(path);
+
+    if (psuStatusMap[path].present && !psuStatusMap[path].model.empty())
     {
         return;
     }
