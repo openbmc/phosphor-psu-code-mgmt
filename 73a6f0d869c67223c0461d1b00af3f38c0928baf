@@ -16,6 +16,24 @@
       "message": "could also use if !interfaces.contains()",
       "revId": "73a6f0d869c67223c0461d1b00af3f38c0928baf",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "abadbe5b_b12fd8ab",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 614,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-11-04T20:51:50Z",
+      "side": 1,
+      "message": "Good point.  I just refactored an existing if check into two ifs so I could add some code in between.  Next time I\u0027m updating this section I can change this to contains().",
+      "parentUuid": "77571eb9_aeb24748",
+      "revId": "73a6f0d869c67223c0461d1b00af3f38c0928baf",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
