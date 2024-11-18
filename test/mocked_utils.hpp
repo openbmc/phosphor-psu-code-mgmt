@@ -33,6 +33,9 @@ class MockedUtils : public UtilsInterface
     MOCK_CONST_METHOD1(getVersion,
                        std::string(const std::string& psuInventoryPath));
 
+    MOCK_CONST_METHOD1(getModel,
+                       std::string(const std::string& psuInventoryPath));
+
     MOCK_CONST_METHOD1(getLatestVersion,
                        std::string(const std::set<std::string>& versions));
 

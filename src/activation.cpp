@@ -280,8 +280,7 @@ bool Activation::isCompatible(const std::string& psuInventoryPath)
     auto psuManufacturer = utils::getProperty<std::string>(
         bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE,
         MANUFACTURER);
-    auto psuModel = utils::getProperty<std::string>(
-        bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE, MODEL);
+    auto psuModel = utils::getModel(psuInventoryPath);
     if (psuModel != model)
     {
         // The model shall match

@@ -24,13 +24,22 @@ option('IMG_DIR',
 
 # The PSU_VERSION_UTIL specifies an executable that accepts the PSU
 # inventory path as input, and output the version string, e.g
-#   psutils get-version /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0
+#   psutils --get-version /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0
 # or in vendor-example
 #   get_version <some-psu-path>
 option('PSU_VERSION_UTIL',
        type: 'string',
        value: '/usr/bin/psutils --raw --get-version',
        description: 'The command and arguments to get PSU version')
+
+# The PSU_MODEL_UTIL specifies an executable that accepts the PSU
+# inventory path as input and outputs the PSU model string.
+# For example:
+#   psutils --get-model /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0
+option('PSU_MODEL_UTIL',
+       type: 'string',
+       value: '/usr/bin/psutils --raw --get-model',
+       description: 'The command and arguments to get the PSU model')
 
 # The PSU_VERSION_COMPARE_UTIL specifies an executable that accepts the PSU
 # versions as input, and outputs which version is the newest, e.g.

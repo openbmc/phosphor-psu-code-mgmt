@@ -164,13 +164,19 @@ class ItemUpdater :
     void removePsuObject(const std::string& psuInventoryPath);
 
     /** @brief Add PSU inventory path to the PSU status map
-     *  @details Also adds PropertiesChanged listeners for the inventory path so
-     *           we are notified when the present or model properties change.
+     *  @details Also adds a PropertiesChanged listener for the inventory path
+     *           so we are notified when the Present property changes.
      *           Does nothing if the inventory path already exists in the map.
      *
      * @param[in]  psuPath - The PSU inventory path
      */
     void addPsuToStatusMap(const std::string& psuPath);
+
+    /** @brief Handle a change in presence for a PSU.
+     *
+     * @param[in]  psuPath - The PSU inventory path
+     */
+    void handlePSUPresenceChanged(const std::string& psuPath);
 
     /**
      * @brief Create and populate the active PSU Version.
