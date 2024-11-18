@@ -80,9 +80,17 @@ std::string getVersionId(const std::string& version);
  *
  * @param[in] inventoryPath - The PSU inventory object path
  *
- * @return The version string, or empry string if it fails to get the version
+ * @return The version string, or empty string if it fails to get the version
  */
 std::string getVersion(const std::string& inventoryPath);
+
+/** @brief Get model of PSU specified by the inventory path
+ *
+ * @param[in] inventoryPath - The PSU inventory object path
+ *
+ * @return The model string, or empty string if it fails to get the model
+ */
+std::string getModel(const std::string& inventoryPath);
 
 /** @brief Get latest version from the PSU versions
  *
@@ -133,6 +141,8 @@ class UtilsInterface
 
     virtual std::string getVersion(const std::string& inventoryPath) const = 0;
 
+    virtual std::string getModel(const std::string& inventoryPath) const = 0;
+
     virtual std::string
         getLatestVersion(const std::set<std::string>& versions) const = 0;
 
@@ -171,6 +181,8 @@ class Utils : public UtilsInterface
 
     std::string getVersion(const std::string& inventoryPath) const override;
 
+    std::string getModel(const std::string& inventoryPath) const override;
+
     std::string
         getLatestVersion(const std::set<std::string>& versions) const override;
 
@@ -207,6 +219,11 @@ inline std::string getVersionId(const std::string& version)
 inline std::string getVersion(const std::string& inventoryPath)
 {
     return getUtils().getVersion(inventoryPath);
+}
+
+inline std::string getModel(const std::string& inventoryPath)
+{
+    return getUtils().getModel(inventoryPath);
 }
 
 inline std::string getLatestVersion(const std::set<std::string>& versions)

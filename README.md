@@ -31,6 +31,7 @@ depends on vendor-specific tools to provide the below functions on the real PSU
 hardware:
 
 - Get PSU firmware version
+- Get PSU model
 - Compare the firmware version
 - Update the PSU firmware
 
@@ -38,6 +39,8 @@ It provides configure options for vendor-specific tools for the above functions:
 
 - `PSU_VERSION_UTIL`: It shall be defined as a command-line tool that accepts
   the PSU inventory path as input, and outputs the PSU version string to stdout.
+- `PSU_MODEL_UTIL`: It shall be defined as a command-line tool that accepts the
+  PSU inventory path as input, and outputs the PSU model string to stdout.
 - `PSU_VERSION_COMPARE_UTIL`: It shall be defined as a command-line tool that
   accepts one or more PSU version strings, and outputs the latest version string
   to stdout.
@@ -51,15 +54,16 @@ For example:
 ```text
 meson -Dtests=disabled \
     '-DPSU_VERSION_UTIL=/usr/bin/psutils --raw --get-version' \
+    '-DPSU_MODEL_UTIL=/usr/bin/psutils --raw --get-model' \
     '-DPSU_VERSION_COMPARE_UTIL=/usr/bin/psutils --raw --compare' \
     '-DPSU_UPDATE_SERVICE=psu-update@.service' \
     build
 ```
 
 The above configures the vendor-specific tools to use `psutils` from
-[phosphor-power][3] to get and compare the PSU versions, and use
-`psu-update@.service` to perform the PSU firmware update, where internally it
-invokes `psutils` as well.
+[phosphor-power][3] to get the PSU version and model, compare PSU versions, and
+use `psu-update@.service` to perform the PSU firmware update, where internally
+it invokes `psutils` as well.
 
 ## Usage
 
@@ -151,11 +155,11 @@ E.g.
    persistent storage defined by `IMG_DIR_PERSIST`. When a PSU is replaced, the
    PSU's firmware version will be checked and updated if it's older than the one
    stored in BMC.
-4. It is possible to put a PSU image and MANIFEST in the built-bin OpenBMC image
+4. It is possible to put a PSU image and MANIFEST in the built-in OpenBMC image
    in BMC's read-only filesystem defined by `IMG_DIR_BUILTIN`. When the service
-   starts, it will compare the versions of the built-in image, the stored image
-   (after PSU update), and the existing PSUs, if there is any PSU that has an
-   older firmware, it will be updated to the newest one.
+   starts, it will compare the versions of the built-in image and the existing
+   PSUs. If there is any PSU that has older firmware, it will be updated to the
+   new firmware.
 
 [1]: https://github.com/openbmc/docs/blob/master/testing/local-ci-build.md
 [2]:

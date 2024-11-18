@@ -10,12 +10,13 @@
 
 #include <cassert>
 #include <filesystem>
+#include <format>
+#include <set>
 
 namespace
 {
 constexpr auto MANIFEST_VERSION = "version";
 constexpr auto MANIFEST_EXTENDED_VERSION = "extended_version";
-constexpr auto TIMEOUT = 10;
 } // namespace
 
 namespace phosphor
@@ -306,15 +307,38 @@ void ItemUpdater::addPsuToStatusMap(const std::string& psuPath)
     {
         psuStatusMap[psuPath] = {false, ""};
 
-        // Add matches for PSU Inventory's property changes
+        // Add PropertiesChanged listener for Item interface so we are notified
+        // when Present property changes
         psuMatches.emplace_back(
             bus, MatchRules::propertiesChanged(psuPath, ITEM_IFACE),
             std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
-                      std::placeholders::_1)); // For present
-        psuMatches.emplace_back(
-            bus, MatchRules::propertiesChanged(psuPath, ASSET_IFACE),
-            std::bind(&ItemUpdater::onPsuInventoryChangedMsg, this,
-                      std::placeholders::_1)); // For model
+                      std::placeholders::_1));
+    }
+}
+
+void ItemUpdater::handlePSUPresenceChanged(const std::string& psuPath)
+{
+    if (psuStatusMap.contains(psuPath))
+    {
+        if (psuStatusMap[psuPath].present)
+        {
+            // PSU is now present
+            psuStatusMap[psuPath].model = utils::getModel(psuPath);
+            auto version = utils::getVersion(psuPath);
+            if (!version.empty() && !psuPathActivationMap.contains(psuPath))
+            {
+                createPsuObject(psuPath, version);
+            }
+        }
+        else
+        {
+            // PSU is now missing
+            psuStatusMap[psuPath].model.clear();
+            if (psuPathActivationMap.contains(psuPath))
+            {
+                removePsuObject(psuPath);
+            }
+        }
     }
 }
 
@@ -345,93 +369,55 @@ void ItemUpdater::onPsuInventoryChangedMsg(sdbusplus::message_t& msg)
 void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
                                         const Properties& properties)
 {
-    std::optional<bool> present;
-    std::optional<std::string> model;
-
-    // The code was expecting to get callback on multiple properties changed.
-    // But in practice, the callback is received one-by-one for each property.
-    // So it has to handle Present and Version property separately.
-    auto p = properties.find(PRESENT);
-    if (p != properties.end())
+    try
     {
-        present = std::get<bool>(p->second);
-        psuStatusMap[psuPath].present = *present;
-    }
-    p = properties.find(MODEL);
-    if (p != properties.end())
-    {
-        model = std::get<std::string>(p->second);
-        psuStatusMap[psuPath].model = *model;
-    }
-
-    // If present or model is not changed, ignore
-    if (!present.has_value() && !model.has_value())
-    {
-        return;
-    }
-
-    if (psuStatusMap[psuPath].present)
-    {
-        // If model is not updated, let's wait for it
-        if (psuStatusMap[psuPath].model.empty())
+        if (psuStatusMap.contains(psuPath) && properties.contains(PRESENT))
         {
-            log<level::DEBUG>("Waiting for model to be updated");
-            return;
-        }
-
-        auto version = utils::getVersion(psuPath);
-        if (!version.empty())
-        {
-            if (psuPathActivationMap.find(psuPath) ==
-                psuPathActivationMap.end())
+            psuStatusMap[psuPath].present =
+                std::get<bool>(properties.at(PRESENT));
+            handlePSUPresenceChanged(psuPath);
+            if (psuStatusMap[psuPath].present)
             {
-                createPsuObject(psuPath, version);
+                // Check if there are new PSU images to update
+                processStoredImage();
+                syncToLatestImage();
             }
         }
-        else
-        {
-            // TODO: log an event
-            log<level::ERR>("Failed to get PSU version",
-                            entry("PSU=%s", psuPath.c_str()));
-        }
-        // Check if there are new PSU images to update
-        processStoredImage();
-        syncToLatestImage();
     }
-    else
+    catch (const std::exception& e)
     {
-        if (!present.has_value())
-        {
-            // If a PSU is plugged out, model property is update to empty as
-            // well, and we get callback here, but ignore that because it is
-            // handled by "Present" callback.
-            return;
-        }
-        psuStatusMap[psuPath].model = "";
-
-        // Remove object or association
-        removePsuObject(psuPath);
+        log<level::ERR>(
+            std::format(
+                "Unable to handle inventory PropertiesChanged event: {}",
+                e.what())
+                .c_str());
     }
 }
 
 void ItemUpdater::processPSUImage()
 {
-    auto paths = utils::getPSUInventoryPath(bus);
-    for (const auto& p : paths)
+    try
     {
-        addPsuToStatusMap(p);
-
-        auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
-        psuStatusMap[p].present = utils::getProperty<bool>(
-            bus, service.c_str(), p.c_str(), ITEM_IFACE, PRESENT);
-        psuStatusMap[p].model = utils::getProperty<std::string>(
-            bus, service.c_str(), p.c_str(), ASSET_IFACE, MODEL);
-        auto version = utils::getVersion(p);
-        if ((psuPathActivationMap.find(p) == psuPathActivationMap.end()) &&
-            psuStatusMap[p].present && !version.empty())
+        auto paths = utils::getPSUInventoryPath(bus);
+        for (const auto& p : paths)
         {
-            createPsuObject(p, version);
+            try
+            {
+                addPsuToStatusMap(p);
+                auto service = utils::getService(bus, p.c_str(), ITEM_IFACE);
+                psuStatusMap[p].present = utils::getProperty<bool>(
+                    bus, service.c_str(), p.c_str(), ITEM_IFACE, PRESENT);
+                handlePSUPresenceChanged(p);
+            }
+            catch (const std::exception& e)
+            {
+                // Ignore errors; the information might not be available yet
+            }
         }
+    }
+    catch (const std::exception& e)
+    {
+        // Ignore errors; the information might not be available yet
     }
 }
 
@@ -583,15 +569,19 @@ void ItemUpdater::syncToLatestImage()
     auto paths = utils::getPSUInventoryPath(bus);
     for (const auto& p : paths)
     {
-        // As long as there is a PSU is not associated with the latest
+        // If there is a present PSU that is not associated with the latest
         // image, run the activation so that all PSUs are running the same
         // latest image.
-        if (!utils::isAssociated(p, assocs))
+        if (psuStatusMap.contains(p) && psuStatusMap[p].present)
         {
-            log<level::INFO>("Automatically update PSU",
-                             entry("VERSION_ID=%s", latestVersionId->c_str()));
-            invokeActivation(activation);
-            break;
+            if (!utils::isAssociated(p, assocs))
+            {
+                log<level::INFO>(
+                    "Automatically update PSU",
+                    entry("VERSION_ID=%s", latestVersionId->c_str()));
+                invokeActivation(activation);
+                break;
+            }
         }
     }
 }
@@ -604,74 +594,48 @@ void ItemUpdater::invokeActivation(
 
 void ItemUpdater::onPSUInterfaceAdded(sdbusplus::message_t& msg)
 {
-    sdbusplus::message::object_path objPath;
-    std::map<std::string,
-             std::map<std::string, std::variant<bool, std::string>>>
-        interfaces;
-    msg.read(objPath, interfaces);
-    std::string path = objPath.str;
+    // Maintain static set of valid PSU paths. This is needed if PSU interface
+    // comes in a separate InterfacesAdded message from Item interface.
+    static std::set<std::string> psuPaths{};
 
-    if (interfaces.find(PSU_INVENTORY_IFACE) == interfaces.end())
+    try
     {
-        return;
-    }
+        sdbusplus::message::object_path objPath;
+        std::map<std::string,
+                 std::map<std::string, std::variant<bool, std::string>>>
+            interfaces;
+        msg.read(objPath, interfaces);
+        std::string path = objPath.str;
 
-    addPsuToStatusMap(path);
-
-    if (psuStatusMap[path].present && !psuStatusMap[path].model.empty())
-    {
-        return;
-    }
-
-    auto timeout = std::chrono::steady_clock::now() +
-                   std::chrono::seconds(TIMEOUT);
-
-    // Poll the inventory item until it gets the present property
-    // or the timeout is reached
-    while (std::chrono::steady_clock::now() < timeout)
-    {
-        try
+        if (interfaces.contains(PSU_INVENTORY_IFACE))
         {
-            psuStatusMap[path].present = utils::getProperty<bool>(
-                bus, msg.get_sender(), path.c_str(), ITEM_IFACE, PRESENT);
-            break;
+            psuPaths.insert(path);
         }
-        catch (const std::exception& e)
+
+        if (interfaces.contains(ITEM_IFACE) && psuPaths.contains(path) &&
+            !psuStatusMap.contains(path))
         {
-            auto err = errno;
-            log<level::INFO>(
-                std::format("Failed to get Inventory Item Present. errno={}",
-                            err)
-                    .c_str());
-            sleep(1);
+            auto interface = interfaces[ITEM_IFACE];
+            if (interface.contains(PRESENT))
+            {
+                addPsuToStatusMap(path);
+                psuStatusMap[path].present = std::get<bool>(interface[PRESENT]);
+                handlePSUPresenceChanged(path);
+                if (psuStatusMap[path].present)
+                {
+                    // Check if there are new PSU images to update
+                    processStoredImage();
+                    syncToLatestImage();
+                }
+            }
         }
     }
-
-    // Poll the inventory item until it retrieves model or the timeout is
-    // reached. The model is the path trail of the firmware's and manifest
-    // subdirectory. If the model not found the firmware and manifest
-    // cannot be located.
-    timeout = std::chrono::steady_clock::now() + std::chrono::seconds(TIMEOUT);
-    while (std::chrono::steady_clock::now() < timeout &&
-           psuStatusMap[path].present)
+    catch (const std::exception& e)
     {
-        try
-        {
-            psuStatusMap[path].model = utils::getProperty<std::string>(
-                bus, msg.get_sender(), path.c_str(), ASSET_IFACE, MODEL);
-            processPSUImageAndSyncToLatest();
-            break;
-        }
-        catch (const std::exception& e)
-        {
-            auto err = errno;
-            log<level::INFO>(
-                std::format(
-                    "Failed to get Inventory Decorator Asset model. errno={}",
-                    err)
-                    .c_str());
-            sleep(1);
-        }
+        log<level::ERR>(
+            std::format("Unable to handle inventory InterfacesAdded event: {}",
+                        e.what())
+                .c_str());
     }
 }
 

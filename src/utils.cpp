@@ -157,10 +157,19 @@ std::string Utils::getVersionId(const std::string& version) const
 
 std::string Utils::getVersion(const std::string& inventoryPath) const
 {
-    // Invoke vendor-specify tool to get the version string, e.g.
-    //   psutils get-version
+    // Invoke vendor-specific tool to get the version string, e.g.
+    //   psutils --get-version
     //   /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0
     auto [rc, r] = internal::exec(PSU_VERSION_UTIL, inventoryPath);
+    return (rc == 0) ? r : "";
+}
+
+std::string Utils::getModel(const std::string& inventoryPath) const
+{
+    // Invoke vendor-specific tool to get the model string, e.g.
+    //   psutils --get-model
+    //   /xyz/openbmc_project/inventory/system/chassis/motherboard/powersupply0
+    auto [rc, r] = internal::exec(PSU_MODEL_UTIL, inventoryPath);
     return (rc == 0) ? r : "";
 }
 

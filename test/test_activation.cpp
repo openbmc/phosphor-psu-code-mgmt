@@ -35,8 +35,8 @@ class TestActivation : public ::testing::Test
         // By default make it compatible with the test software
         ON_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(MANUFACTURER)))
             .WillByDefault(Return(any(PropertyType(std::string("TestManu")))));
-        ON_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(MODEL)))
-            .WillByDefault(Return(any(PropertyType(std::string("TestModel")))));
+        ON_CALL(mockedUtils, getModel(_))
+            .WillByDefault(Return(std::string("TestModel")));
         ON_CALL(mockedUtils, isAssociated(_, _)).WillByDefault(Return(false));
     }
     ~TestActivation() override
@@ -320,9 +320,8 @@ TEST_F(TestActivation, doUpdateFourPSUsSecondPSUNotCompatible)
     constexpr auto psu1 = "/com/example/inventory/psu1";
     constexpr auto psu2 = "/com/example/inventory/psu2";
     constexpr auto psu3 = "/com/example/inventory/psu3";
-    ON_CALL(mockedUtils, getPropertyImpl(_, _, StrEq(psu1), _, StrEq(MODEL)))
-        .WillByDefault(
-            Return(any(PropertyType(std::string("DifferentModel")))));
+    ON_CALL(mockedUtils, getModel(StrEq(psu1)))
+        .WillByDefault(Return(std::string("DifferentModel")));
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
