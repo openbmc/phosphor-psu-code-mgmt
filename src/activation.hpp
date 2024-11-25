@@ -16,6 +16,7 @@
 #include <xyz/openbmc_project/Software/ExtendedVersion/server.hpp>
 
 #include <queue>
+#include <string>
 
 class TestActivation;
 
@@ -237,6 +238,8 @@ class Activation : public ActivationInherit
     void storeImage();
 
     /** @brief Construct the systemd service name
+     *
+     *  @details Throws an exception if an error occurs
      *
      * @param[in] psuInventoryPath - The PSU inventory to be updated.
      *

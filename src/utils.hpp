@@ -24,11 +24,21 @@ using std::any_cast;
 const UtilsInterface& getUtils();
 
 /**
- * @brief Get PSU inventory object path from DBus
+ * @brief Get PSU inventory object paths from DBus
+ *
+ * @details The returned vector will be empty if an error occurs or no paths are
+ *          found.
+ *
+ * @param[in] bus - The Dbus bus object
+ *
+ * @return PSU inventory object paths that were found (if any)
  */
 std::vector<std::string> getPSUInventoryPaths(sdbusplus::bus_t& bus);
 
 /** @brief Get service name from object path and interface
+ *
+ *  @details Throws an exception if an error occurs or no service name was
+ *           found.
  *
  * @param[in] bus          - The Dbus bus object
  * @param[in] path         - The Dbus object path
@@ -39,18 +49,23 @@ std::vector<std::string> getPSUInventoryPaths(sdbusplus::bus_t& bus);
 std::string getService(sdbusplus::bus_t& bus, const char* path,
                        const char* interface);
 
-/** @brief Get all the service names from object path and interface
+/** @brief Get all service names from object path and interface
+ *
+ *  @details The returned vector will be empty if no service names were found.
+ *           Throws an exception if an error occurs.
  *
  * @param[in] bus          - The Dbus bus object
  * @param[in] path         - The Dbus object path
  * @param[in] interface    - The Dbus interface
  *
- * @return The name of the services
+ * @return The name of the services (if any)
  */
 std::vector<std::string> getServices(sdbusplus::bus_t& bus, const char* path,
                                      const char* interface);
 
 /** @brief The template function to get property from the requested dbus path
+ *
+ *  @details Throws an exception if an error occurs
  *
  * @param[in] bus          - The Dbus bus object
  * @param[in] service      - The Dbus service name
@@ -96,7 +111,8 @@ std::string getModel(const std::string& inventoryPath);
  *
  * @param[in] versions - The list of the versions
  *
- * @return The latest version string
+ * @return The latest version string, or empty string if it fails to get the
+ *         latest version
  */
 std::string getLatestVersion(const std::set<std::string>& versions);
 
