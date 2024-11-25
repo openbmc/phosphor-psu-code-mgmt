@@ -7,8 +7,11 @@
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/lg2.hpp>
 
-#include <cassert>
+#include <exception>
 #include <filesystem>
+#include <format>
+#include <stdexcept>
+#include <vector>
 
 namespace phosphor
 {
@@ -68,37 +71,46 @@ void Activation::unitStateChange(sdbusplus::message_t& msg)
     std::string newStateUnit{};
     std::string newStateResult{};
 
-    // Read the msg and populate each variable
-    msg.read(newStateID, newStateObjPath, newStateUnit, newStateResult);
-
-    if (newStateUnit == psuUpdateUnit)
+    try
     {
-        if (newStateResult == "done")
+        // Read the msg and populate each variable
+        msg.read(newStateID, newStateObjPath, newStateUnit, newStateResult);
+
+        if (newStateUnit == psuUpdateUnit)
         {
-            onUpdateDone();
+            if (newStateResult == "done")
+            {
+                onUpdateDone();
+            }
+            if (newStateResult == "failed" || newStateResult == "dependency")
+            {
+                onUpdateFailed();
+            }
         }
-        if (newStateResult == "failed" || newStateResult == "dependency")
-        {
-            onUpdateFailed();
-        }
+    }
+    catch (const std::exception& e)
+    {
+        lg2::error("Unable to handle unit state change event: {ERROR}", "ERROR",
+                   e);
     }
 }
 
 bool Activation::doUpdate(const std::string& psuInventoryPath)
 {
     currentUpdatingPsu = psuInventoryPath;
-    psuUpdateUnit = getUpdateService(currentUpdatingPsu);
     try
     {
+        psuUpdateUnit = getUpdateService(currentUpdatingPsu);
         auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
                                           SYSTEMD_INTERFACE, "StartUnit");
         method.append(psuUpdateUnit, "replace");
         bus.call_noreply(method);
         return true;
     }
-    catch (const sdbusplus::exception_t& e)
+    catch (const std::exception& e)
     {
-        lg2::error("Error starting service: {ERROR}", "ERROR", e);
+        lg2::error("Error starting update service for PSU {PSU}: {ERROR}",
+                   "PSU", psuInventoryPath, "ERROR", e);
         onUpdateFailed();
         return false;
     }
@@ -235,13 +247,23 @@ void Activation::finishActivation()
 void Activation::deleteImageManagerObject()
 {
     // Get the Delete object for <versionID> inside image_manager
-    constexpr auto versionServiceStr = "xyz.openbmc_project.Software.Version";
+    std::vector<std::string> services;
     constexpr auto deleteInterface = "xyz.openbmc_project.Object.Delete";
-    std::string versionService;
-    auto services = utils::getServices(bus, objPath.c_str(), deleteInterface);
+    try
+    {
+        services = utils::getServices(bus, objPath.c_str(), deleteInterface);
+    }
+    catch (const std::exception& e)
+    {
+        lg2::error(
+            "Unable to find services to Delete object path {PATH}: {ERROR}",
+            "PATH", objPath, "ERROR", e);
+    }
 
     // We need to find the phosphor-version-software-manager's version service
     // to invoke the delete interface
+    constexpr auto versionServiceStr = "xyz.openbmc_project.Software.Version";
+    std::string versionService;
     for (const auto& service : services)
     {
         if (service.find(versionServiceStr) != std::string::npos)
@@ -258,39 +280,48 @@ void Activation::deleteImageManagerObject()
     }
 
     // Call the Delete object for <versionID> inside image_manager
-    auto method = bus.new_method_call(versionService.c_str(), objPath.c_str(),
-                                      deleteInterface, "Delete");
     try
     {
+        auto method = bus.new_method_call(
+            versionService.c_str(), objPath.c_str(), deleteInterface, "Delete");
         bus.call(method);
     }
-    catch (const sdbusplus::exception_t& e)
+    catch (const std::exception& e)
     {
-        lg2::error(
-            "Error performing call to Delete object path {PATH}: {ERROR}",
-            "PATH", objPath, "ERROR", e);
+        lg2::error("Unable to Delete object path {PATH}: {ERROR}", "PATH",
+                   objPath, "ERROR", e);
     }
 }
 
 bool Activation::isCompatible(const std::string& psuInventoryPath)
 {
-    auto service =
-        utils::getService(bus, psuInventoryPath.c_str(), ASSET_IFACE);
-    auto psuManufacturer = utils::getProperty<std::string>(
-        bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE,
-        MANUFACTURER);
-    auto psuModel = utils::getModel(psuInventoryPath);
-    if (psuModel != model)
+    bool isCompat{false};
+    try
     {
+        auto service =
+            utils::getService(bus, psuInventoryPath.c_str(), ASSET_IFACE);
+        auto psuManufacturer = utils::getProperty<std::string>(
+            bus, service.c_str(), psuInventoryPath.c_str(), ASSET_IFACE,
+            MANUFACTURER);
+        auto psuModel = utils::getModel(psuInventoryPath);
         // The model shall match
-        return false;
+        if (psuModel == model)
+        {
+            // If PSU inventory has manufacturer property, it shall match
+            if (psuManufacturer.empty() || (psuManufacturer == manufacturer))
+            {
+                isCompat = true;
+            }
+        }
     }
-    if (!psuManufacturer.empty())
+    catch (const std::exception& e)
     {
-        // If PSU inventory has manufacturer property, it shall match
-        return psuManufacturer == manufacturer;
+        lg2::error(
+            "Unable to determine if PSU {PSU} is compatible with firmware "
+            "versionId {VERSION_ID}: {ERROR}",
+            "PSU", psuInventoryPath, "VERSION_ID", versionId, "ERROR", e);
     }
-    return true;
+    return isCompat;
 }
 
 void Activation::storeImage()
@@ -332,7 +363,11 @@ std::string Activation::getUpdateService(const std::string& psuInventoryPath)
 
     std::string service = PSU_UPDATE_SERVICE;
     auto p = service.find('@');
-    assert(p != std::string::npos);
+    if (p == std::string::npos)
+    {
+        throw std::runtime_error{std::format(
+            "Invalid PSU update service name: {}", PSU_UPDATE_SERVICE)};
+    }
     service.insert(p + 1, args);
     return service;
 }

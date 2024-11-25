@@ -14,6 +14,10 @@
 #include <xyz/openbmc_project/Collection/DeleteAll/server.hpp>
 
 #include <filesystem>
+#include <map>
+#include <string>
+#include <variant>
+#include <vector>
 
 class TestItemUpdater;
 
@@ -54,14 +58,14 @@ class ItemUpdater :
         versionMatch(
             bus,
             MatchRules::interfacesAdded() + MatchRules::path(SOFTWARE_OBJPATH),
-            std::bind(std::mem_fn(&ItemUpdater::createActivation), this,
-                      std::placeholders::_1)),
+            std::bind(std::mem_fn(&ItemUpdater::onVersionInterfacesAddedMsg),
+                      this, std::placeholders::_1)),
         psuInterfaceMatch(
             bus,
             MatchRules::interfacesAdded() +
                 MatchRules::path("/xyz/openbmc_project/inventory") +
                 MatchRules::sender("xyz.openbmc_project.Inventory.Manager"),
-            std::bind(std::mem_fn(&ItemUpdater::onPSUInterfaceAdded), this,
+            std::bind(std::mem_fn(&ItemUpdater::onPSUInterfacesAdded), this,
                       std::placeholders::_1))
     {
         processPSUImageAndSyncToLatest();
@@ -109,25 +113,37 @@ class ItemUpdater :
                       const std::string& psuInventoryPath) override;
 
   private:
+    using Properties =
+        std::map<std::string, utils::UtilsInterface::PropertyType>;
+    using InterfacesAddedMap =
+        std::map<std::string,
+                 std::map<std::string, std::variant<bool, std::string>>>;
+
     /** @brief Callback function for Software.Version match.
-     *  @details Creates an Activation D-Bus object.
      *
      * @param[in]  msg       - Data associated with subscribed signal
      */
-    void createActivation(sdbusplus::message_t& msg);
+    void onVersionInterfacesAddedMsg(sdbusplus::message_t& msg);
 
-    using Properties =
-        std::map<std::string, utils::UtilsInterface::PropertyType>;
+    /** @brief Called when new Software.Version interfaces are found
+     *  @details Creates an Activation D-Bus object if appropriate
+     *           Throws an exception if an error occurs.
+     *
+     * @param[in]  path       - D-Bus object path
+     * @param[in]  interfaces - D-Bus interfaces that were added
+     */
+    void onVersionInterfacesAdded(const std::string& path,
+                                  const InterfacesAddedMap& interfaces);
 
     /** @brief Callback function for PSU inventory match.
-     *  @details Update an Activation D-Bus object for PSU inventory.
      *
      * @param[in]  msg       - Data associated with subscribed signal
      */
     void onPsuInventoryChangedMsg(sdbusplus::message_t& msg);
 
-    /** @brief Callback function for PSU inventory match.
+    /** @brief Called when a PSU inventory object has changed
      *  @details Update an Activation D-Bus object for PSU inventory.
+     *           Throws an exception if an error occurs.
      *
      * @param[in]  psuPath - The PSU inventory path
      * @param[in]  properties - The updated properties
@@ -186,8 +202,21 @@ class ItemUpdater :
     /** @brief Create PSU Version from stored images */
     void processStoredImage();
 
-    /** @brief Scan a directory and create PSU Version from stored images */
-    void scanDirectory(const fs::path& p);
+    /** @brief Scan a directory and create PSU Version from stored images
+     *  @details Throws an exception if an error occurs
+     *
+     * @param[in] dir Directory path to scan
+     */
+    void scanDirectory(const fs::path& dir);
+
+    /** @brief Find the PSU model subdirectory within the specified directory
+     *  @details Throws an exception if an error occurs
+     *
+     * @param[in] dir Directory path to search
+     *
+     * @return Subdirectory path, or an empty path if none found
+     */
+    fs::path findModelDirectory(const fs::path& dir);
 
     /** @brief Get the versionId of the latest PSU version */
     std::optional<std::string> getLatestVersionId();
@@ -200,12 +229,12 @@ class ItemUpdater :
 
     /** @brief Callback function for interfaces added signal.
      *
-     * This method is called when a new interface is added. It updates the
-     * internal status map and process the new PSU if it's present.
+     * This method is called when new interfaces are added. It updates the
+     * internal status map and processes the new PSU if it's present.
      *
      *  @param[in] msg - Data associated with subscribed signal
      */
-    void onPSUInterfaceAdded(sdbusplus::message_t& msg);
+    void onPSUInterfacesAdded(sdbusplus::message_t& msg);
 
     /**
      * @brief Handles the processing of PSU images.

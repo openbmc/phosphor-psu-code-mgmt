@@ -2,16 +2,18 @@
 
 #include "item_updater.hpp"
 
+#include "runtime_warning.hpp"
 #include "utils.hpp"
 
 #include <phosphor-logging/elog-errors.hpp>
 #include <phosphor-logging/lg2.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
-#include <cassert>
+#include <exception>
 #include <filesystem>
 #include <format>
 #include <set>
+#include <stdexcept>
 
 namespace
 {
@@ -32,14 +34,27 @@ using namespace phosphor::logging;
 using SVersion = server::Version;
 using VersionPurpose = SVersion::VersionPurpose;
 
-void ItemUpdater::createActivation(sdbusplus::message_t& m)
+void ItemUpdater::onVersionInterfacesAddedMsg(sdbusplus::message_t& msg)
 {
-    sdbusplus::message::object_path objPath;
-    std::map<std::string, std::map<std::string, std::variant<std::string>>>
-        interfaces;
-    m.read(objPath, interfaces);
+    try
+    {
+        sdbusplus::message::object_path objPath;
+        InterfacesAddedMap interfaces;
+        msg.read(objPath, interfaces);
 
-    std::string path(std::move(objPath));
+        std::string path(std::move(objPath));
+        onVersionInterfacesAdded(path, interfaces);
+    }
+    catch (const std::exception& e)
+    {
+        lg2::error("Unable to handle version InterfacesAdded event: {ERROR}",
+                   "ERROR", e);
+    }
+}
+
+void ItemUpdater::onVersionInterfacesAdded(const std::string& path,
+                                           const InterfacesAddedMap& interfaces)
+{
     std::string filePath;
     auto purpose = VersionPurpose::Unknown;
     std::string version;
@@ -123,7 +138,6 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
             createVersionObject(path, versionId, version, purpose);
         versions.emplace(versionId, std::move(versionPtr));
     }
-    return;
 }
 
 void ItemUpdater::erase(const std::string& versionId)
@@ -207,8 +221,15 @@ void ItemUpdater::onUpdateDone(const std::string& versionId,
     }
 
     auto it = activations.find(versionId);
-    assert(it != activations.end());
-    psuPathActivationMap.emplace(psuInventoryPath, it->second);
+    if (it == activations.end())
+    {
+        lg2::error("Unable to find Activation for version ID {VERSION_ID}",
+                   "VERSION_ID", versionId);
+    }
+    else
+    {
+        psuPathActivationMap.emplace(psuInventoryPath, it->second);
+    }
 }
 
 std::unique_ptr<Activation> ItemUpdater::createActivationObject(
@@ -355,38 +376,37 @@ std::unique_ptr<Version> ItemUpdater::createVersionObject(
 
 void ItemUpdater::onPsuInventoryChangedMsg(sdbusplus::message_t& msg)
 {
-    using Interface = std::string;
-    Interface interface;
-    Properties properties;
-    std::string psuPath = msg.get_path();
-
-    msg.read(interface, properties);
-    onPsuInventoryChanged(psuPath, properties);
-}
-
-void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
-                                        const Properties& properties)
-{
     try
     {
-        if (psuStatusMap.contains(psuPath) && properties.contains(PRESENT))
-        {
-            psuStatusMap[psuPath].present =
-                std::get<bool>(properties.at(PRESENT));
-            handlePSUPresenceChanged(psuPath);
-            if (psuStatusMap[psuPath].present)
-            {
-                // Check if there are new PSU images to update
-                processStoredImage();
-                syncToLatestImage();
-            }
-        }
+        using Interface = std::string;
+        Interface interface;
+        Properties properties;
+        std::string psuPath = msg.get_path();
+
+        msg.read(interface, properties);
+        onPsuInventoryChanged(psuPath, properties);
     }
     catch (const std::exception& e)
     {
         lg2::error(
             "Unable to handle inventory PropertiesChanged event: {ERROR}",
             "ERROR", e);
+    }
+}
+
+void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
+                                        const Properties& properties)
+{
+    if (psuStatusMap.contains(psuPath) && properties.contains(PRESENT))
+    {
+        psuStatusMap[psuPath].present = std::get<bool>(properties.at(PRESENT));
+        handlePSUPresenceChanged(psuPath);
+        if (psuStatusMap[psuPath].present)
+        {
+            // Check if there are new PSU images to update
+            processStoredImage();
+            syncToLatestImage();
+        }
     }
 }
 
@@ -419,102 +439,158 @@ void ItemUpdater::processPSUImage()
 
 void ItemUpdater::processStoredImage()
 {
-    scanDirectory(IMG_DIR_BUILTIN);
-
+    // Build list of directories to scan
+    std::vector<fs::path> paths;
+    paths.emplace_back(IMG_DIR_BUILTIN);
     if (!ALWAYS_USE_BUILTIN_IMG_DIR)
     {
-        scanDirectory(IMG_DIR_PERSIST);
+        paths.emplace_back(IMG_DIR_PERSIST);
+    }
+
+    // Scan directories
+    auto logMsg = "Unable to find PSU firmware in directory {PATH}: {ERROR}";
+    for (const auto& path : paths)
+    {
+        try
+        {
+            scanDirectory(path);
+        }
+        catch (const RuntimeWarning& r)
+        {
+            lg2::warning(logMsg, "PATH", path, "ERROR", r);
+        }
+        catch (const std::exception& e)
+        {
+            lg2::error(logMsg, "PATH", path, "ERROR", e);
+        }
     }
 }
 
 void ItemUpdater::scanDirectory(const fs::path& dir)
 {
-    auto manifest = dir;
-    auto path = dir;
-    // The directory shall put PSU images in directories named with model
-    if (!fs::exists(dir))
+    // Find the model subdirectory within the specified directory
+    auto modelDir = findModelDirectory(dir);
+    if (modelDir.empty())
     {
-        // Skip
-        return;
-    }
-    if (!fs::is_directory(dir))
-    {
-        lg2::error("The path is not a directory: {PATH}", "PATH", dir);
         return;
     }
 
+    // Verify a manifest file exists within the model subdirectory
+    auto manifest = modelDir / MANIFEST_FILE;
+    if (!fs::exists(manifest))
+    {
+        throw std::runtime_error{
+            std::format("Manifest file does not exist: {}", manifest.c_str())};
+    }
+    if (!fs::is_regular_file(manifest))
+    {
+        throw std::runtime_error{
+            std::format("Path is not a file: {}", manifest.c_str())};
+    }
+
+    // Get version, extVersion, and model from manifest file
+    auto ret = Version::getValues(
+        manifest.string(), {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
+    auto version = ret[MANIFEST_VERSION];
+    auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
+    auto info = Version::getExtVersionInfo(extVersion);
+    auto model = info["model"];
+
+    // Verify version and model are valid
+    if (version.empty() || model.empty())
+    {
+        throw std::runtime_error{std::format(
+            "Invalid information in manifest: path={}, version={}, model={}",
+            manifest.c_str(), version, model)};
+    }
+
+    // Verify model from manifest matches the subdirectory name
+    if (modelDir.stem() != model)
+    {
+        throw std::runtime_error{std::format(
+            "Model in manifest does not match path: model={}, path={}", model,
+            modelDir.c_str())};
+    }
+
+    // Found a valid PSU image directory; write path to journal
+    lg2::info("Found PSU firmware image directory: {PATH}", "PATH", modelDir);
+
+    // Calculate version ID and check if an Activation for it exists
+    auto versionId = utils::getVersionId(version);
+    auto it = activations.find(versionId);
+    if (it == activations.end())
+    {
+        // This is a version that is different than the running PSUs
+        auto activationState = Activation::Status::Ready;
+        auto purpose = VersionPurpose::PSU;
+        auto objPath = std::string(SOFTWARE_OBJPATH) + "/" + versionId;
+
+        auto activation = createActivationObject(objPath, versionId, extVersion,
+                                                 activationState, {}, modelDir);
+        activations.emplace(versionId, std::move(activation));
+
+        auto versionPtr =
+            createVersionObject(objPath, versionId, version, purpose);
+        versions.emplace(versionId, std::move(versionPtr));
+    }
+    else
+    {
+        // This is a version that a running PSU is using, set the path
+        // on the version object
+        it->second->path(modelDir);
+    }
+}
+
+fs::path ItemUpdater::findModelDirectory(const fs::path& dir)
+{
+    fs::path modelDir;
+
+    // Verify directory path exists and is a directory
+    if (!fs::exists(dir))
+    {
+        // Warning condition. IMG_DIR_BUILTIN might not be used. IMG_DIR_PERSIST
+        // might not exist if an image from IMG_DIR has not been stored.
+        throw RuntimeWarning{
+            std::format("Directory does not exist: {}", dir.c_str())};
+    }
+    if (!fs::is_directory(dir))
+    {
+        throw std::runtime_error{
+            std::format("Path is not a directory: {}", dir.c_str())};
+    }
+
+    // Get the model name of the PSUs that have been found.  Note that we
+    // might not have found the PSU information yet on D-Bus.
+    std::string model;
     for (const auto& [key, item] : psuStatusMap)
     {
         if (!item.model.empty())
         {
-            path = path / item.model;
-            manifest = dir / item.model / MANIFEST_FILE;
+            model = item.model;
             break;
         }
     }
-    if (path == dir)
+    if (!model.empty())
     {
-        lg2::error("Model directory not found");
-        return;
-    }
-
-    if (!fs::is_directory(path))
-    {
-        lg2::error("The path is not a directory: {PATH}", "PATH", path);
-        return;
-    }
-
-    if (!fs::exists(manifest))
-    {
-        lg2::error("No MANIFEST found at {PATH}", "PATH", manifest);
-        return;
-    }
-    // If the model in manifest does not match the dir name
-    // Log a warning
-    if (fs::is_regular_file(manifest))
-    {
-        auto ret = Version::getValues(
-            manifest.string(), {MANIFEST_VERSION, MANIFEST_EXTENDED_VERSION});
-        auto version = ret[MANIFEST_VERSION];
-        auto extVersion = ret[MANIFEST_EXTENDED_VERSION];
-        auto info = Version::getExtVersionInfo(extVersion);
-        auto model = info["model"];
-        if (path.stem() != model)
+        // Verify model subdirectory path exists and is a directory
+        auto subDir = dir / model;
+        if (!fs::exists(subDir))
         {
-            lg2::error("Unmatched model: path={PATH}, model={MODEL}", "PATH",
-                       path, "MODEL", model);
+            // Warning condition. Subdirectory may not exist in IMG_DIR_PERSIST
+            // if no image has been stored there.  May also not exist if
+            // firmware update is not supported for this PSU model.
+            throw RuntimeWarning{
+                std::format("Directory does not exist: {}", subDir.c_str())};
         }
-        else
+        if (!fs::is_directory(subDir))
         {
-            auto versionId = utils::getVersionId(version);
-            auto it = activations.find(versionId);
-            if (it == activations.end())
-            {
-                // This is a version that is different than the running PSUs
-                auto activationState = Activation::Status::Ready;
-                auto purpose = VersionPurpose::PSU;
-                auto objPath = std::string(SOFTWARE_OBJPATH) + "/" + versionId;
-
-                auto activation = createActivationObject(
-                    objPath, versionId, extVersion, activationState, {}, path);
-                activations.emplace(versionId, std::move(activation));
-
-                auto versionPtr =
-                    createVersionObject(objPath, versionId, version, purpose);
-                versions.emplace(versionId, std::move(versionPtr));
-            }
-            else
-            {
-                // This is a version that a running PSU is using, set the path
-                // on the version object
-                it->second->path(path);
-            }
+            throw std::runtime_error{
+                std::format("Path is not a directory: {}", subDir.c_str())};
         }
+        modelDir = subDir;
     }
-    else
-    {
-        lg2::error("MANIFEST is not a file: {PATH}", "PATH", manifest);
-    }
+
+    return modelDir;
 }
 
 std::optional<std::string> ItemUpdater::getLatestVersionId()
@@ -542,7 +618,11 @@ std::optional<std::string> ItemUpdater::getLatestVersionId()
             break;
         }
     }
-    assert(versionId.has_value());
+    if (!versionId.has_value())
+    {
+        lg2::error("Unable to find versionId for latest version {VERSION}",
+                   "VERSION", latestVersion);
+    }
     return versionId;
 }
 
@@ -554,7 +634,13 @@ void ItemUpdater::syncToLatestImage()
         return;
     }
     const auto& it = activations.find(*latestVersionId);
-    assert(it != activations.end());
+    if (it == activations.end())
+
+    {
+        lg2::error("Unable to find Activation for versionId {VERSION_ID}",
+                   "VERSION_ID", *latestVersionId);
+        return;
+    }
     const auto& activation = it->second;
     const auto& assocs = activation->associations();
 
@@ -568,7 +654,7 @@ void ItemUpdater::syncToLatestImage()
         {
             if (!utils::isAssociated(p, assocs))
             {
-                lg2::info("Automatically update PSUs to version {VERSION_ID}",
+                lg2::info("Automatically update PSUs to versionId {VERSION_ID}",
                           "VERSION_ID", *latestVersionId);
                 invokeActivation(activation);
                 break;
@@ -583,7 +669,7 @@ void ItemUpdater::invokeActivation(
     activation->requestedActivation(Activation::RequestedActivations::Active);
 }
 
-void ItemUpdater::onPSUInterfaceAdded(sdbusplus::message_t& msg)
+void ItemUpdater::onPSUInterfacesAdded(sdbusplus::message_t& msg)
 {
     // Maintain static set of valid PSU paths. This is needed if PSU interface
     // comes in a separate InterfacesAdded message from Item interface.
@@ -592,9 +678,7 @@ void ItemUpdater::onPSUInterfaceAdded(sdbusplus::message_t& msg)
     try
     {
         sdbusplus::message::object_path objPath;
-        std::map<std::string,
-                 std::map<std::string, std::variant<bool, std::string>>>
-            interfaces;
+        InterfacesAddedMap interfaces;
         msg.read(objPath, interfaces);
         std::string path = objPath.str;
 
