@@ -478,7 +478,7 @@ TEST_F(TestItemUpdater, scanDirOnNoPSU)
     // The valid image in test/psu-images-one-valid-one-invalid/model-1/
     auto objPathValid = getObjPath("psu-test.v0.4");
     auto objPathInvalid = getObjPath("psu-test.v0.5");
-    // activation and version object will be added on scan dir
+    // No activation or version objects will be added on scan dir
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPathValid)))
         .Times(0);
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPathInvalid)))
@@ -502,7 +502,7 @@ TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
                                              _, StrEq(PRESENT)))
         .WillOnce(Return(any(PropertyType(true)))); // present
     EXPECT_CALL(mockedUtils, getModel(StrEq(psuPath)))
-        .WillOnce(Return(std::string("dummyModel")));
+        .WillOnce(Return(std::string("model-3")));
 
     // The item updater itself
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(dBusPath)))
@@ -522,7 +522,7 @@ TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
                                _, StrEq(objPath),
                                StrEq("xyz.openbmc_project.Common.FilePath"),
                                Pointee(StrEq("Path"))))
-        .Times(0);
+        .Times(1);
     scanDirectory("./psu-images-valid-version0");
 }
 

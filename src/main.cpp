@@ -2,27 +2,42 @@
 
 #include "item_updater.hpp"
 
-#include <phosphor-logging/log.hpp>
+#include <phosphor-logging/lg2.hpp>
 #include <sdbusplus/bus.hpp>
 #include <sdbusplus/server/manager.hpp>
 
-#include <system_error>
+#include <exception>
 
 int main(int /* argc */, char* /* argv */[])
 {
-    auto bus = sdbusplus::bus::new_default();
-
-    // Add sdbusplus ObjectManager.
-    sdbusplus::server::manager_t objManager(bus, SOFTWARE_OBJPATH);
-
-    phosphor::software::updater::ItemUpdater updater(bus, SOFTWARE_OBJPATH);
-
-    bus.request_name(BUSNAME_UPDATER);
-
-    while (true)
+    int rc{0};
+    try
     {
-        bus.process_discard();
-        bus.wait();
+        auto bus = sdbusplus::bus::new_default();
+
+        // Add sdbusplus ObjectManager.
+        sdbusplus::server::manager_t objManager(bus, SOFTWARE_OBJPATH);
+
+        phosphor::software::updater::ItemUpdater updater(bus, SOFTWARE_OBJPATH);
+
+        bus.request_name(BUSNAME_UPDATER);
+
+        while (true)
+        {
+            bus.process_discard();
+            bus.wait();
+        }
     }
-    return 0;
+    catch (const std::exception& e)
+    {
+        lg2::error("Error: {ERROR}", "ERROR", e);
+        rc = 1;
+    }
+    catch (...)
+    {
+        lg2::error("Caught unexpected exception type");
+        rc = 1;
+    }
+
+    return rc;
 }
