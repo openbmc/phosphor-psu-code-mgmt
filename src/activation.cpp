@@ -5,7 +5,7 @@
 #include "utils.hpp"
 
 #include <phosphor-logging/elog-errors.hpp>
-#include <phosphor-logging/log.hpp>
+#include <phosphor-logging/lg2.hpp>
 
 #include <cassert>
 #include <filesystem>
@@ -98,7 +98,7 @@ bool Activation::doUpdate(const std::string& psuInventoryPath)
     }
     catch (const sdbusplus::exception_t& e)
     {
-        log<level::ERR>("Error staring service", entry("ERROR=%s", e.what()));
+        lg2::error("Error starting service: {ERROR}", "ERROR", e);
         onUpdateFailed();
         return false;
     }
@@ -139,8 +139,7 @@ void Activation::onUpdateDone()
 void Activation::onUpdateFailed()
 {
     // TODO: report an event
-    log<level::ERR>("Failed to update PSU",
-                    entry("PSU=%s", psuQueue.front().c_str()));
+    lg2::error("Failed to update PSU {PSU}", "PSU", psuQueue.front());
     std::queue<std::string>().swap(psuQueue); // Clear the queue
     activation(Status::Failed);
 }
@@ -150,15 +149,16 @@ Activation::Status Activation::startActivation()
     // Check if the activation has file path
     if (path().empty())
     {
-        log<level::WARNING>("No image for the activation, skipped",
-                            entry("VERSION_ID=%s", versionId.c_str()));
+        lg2::warning(
+            "No image for the activation, skipped version {VERSION_ID}",
+            "VERSION_ID", versionId);
         return activation(); // Return the previous activation status
     }
 
     auto psuPaths = utils::getPSUInventoryPath(bus);
     if (psuPaths.empty())
     {
-        log<level::WARNING>("No PSU inventory found");
+        lg2::warning("No PSU inventory found");
         return Status::Failed;
     }
 
@@ -168,22 +168,21 @@ Activation::Status Activation::startActivation()
         {
             if (utils::isAssociated(p, associations()))
             {
-                log<level::NOTICE>("PSU already running the image, skipping",
-                                   entry("PSU=%s", p.c_str()));
+                lg2::notice("PSU {PSU} is already running the image, skipping",
+                            "PSU", p);
                 continue;
             }
             psuQueue.push(p);
         }
         else
         {
-            log<level::NOTICE>("PSU not compatible",
-                               entry("PSU=%s", p.c_str()));
+            lg2::notice("PSU {PSU} is not compatible", "PSU", p);
         }
     }
 
     if (psuQueue.empty())
     {
-        log<level::WARNING>("No PSU compatible with the software");
+        lg2::warning("No PSU compatible with the software");
         return activation(); // Return the previous activation status
     }
 
@@ -267,9 +266,9 @@ void Activation::deleteImageManagerObject()
     }
     catch (const sdbusplus::exception_t& e)
     {
-        log<level::ERR>("Error performing call to Delete object path",
-                        entry("ERROR=%s", e.what()),
-                        entry("PATH=%s", objPath.c_str()));
+        lg2::error(
+            "Error performing call to Delete object path {PATH}: {ERROR}",
+            "PATH", objPath, "ERROR", e);
     }
 }
 
@@ -316,9 +315,8 @@ void Activation::storeImage()
     }
     catch (const fs::filesystem_error& e)
     {
-        log<level::ERR>("Error storing PSU image", entry("ERROR=%s", e.what()),
-                        entry("SRC=%s", src.c_str()),
-                        entry("DST=%s", dst.c_str()));
+        lg2::error("Error storing PSU image: src={SRC}, dst={DST}: {ERROR}",
+                   "SRC", src, "DST", dst, "ERROR", e);
     }
 }
 
@@ -341,7 +339,7 @@ std::string Activation::getUpdateService(const std::string& psuInventoryPath)
 
 void ActivationBlocksTransition::enableRebootGuard()
 {
-    log<level::INFO>("PSU image activating - BMC reboots are disabled.");
+    lg2::info("PSU image activating - BMC reboots are disabled.");
 
     auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
                                       SYSTEMD_INTERFACE, "StartUnit");
@@ -351,7 +349,7 @@ void ActivationBlocksTransition::enableRebootGuard()
 
 void ActivationBlocksTransition::disableRebootGuard()
 {
-    log<level::INFO>("PSU activation has ended - BMC reboots are re-enabled.");
+    lg2::info("PSU activation has ended - BMC reboots are re-enabled.");
 
     auto method = bus.new_method_call(SYSTEMD_BUSNAME, SYSTEMD_PATH,
                                       SYSTEMD_INTERFACE, "StartUnit");
