@@ -3,7 +3,8 @@
 #include "item_updater.hpp"
 
 #include <phosphor-logging/elog-errors.hpp>
-#include <phosphor-logging/log.hpp>
+#include <phosphor-logging/elog.hpp>
+#include <phosphor-logging/lg2.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
 #include <fstream>
@@ -28,7 +29,7 @@ std::map<std::string, std::string> Version::getValues(
 {
     if (filePath.empty())
     {
-        log<level::ERR>("Error filePath is empty");
+        lg2::error("Error filePath is empty");
         elog<InvalidArgument>(Argument::ARGUMENT_NAME("FilePath"),
                               Argument::ARGUMENT_VALUE(filePath.c_str()));
     }

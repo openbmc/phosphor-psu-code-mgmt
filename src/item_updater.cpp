@@ -5,7 +5,7 @@
 #include "utils.hpp"
 
 #include <phosphor-logging/elog-errors.hpp>
-#include <phosphor-logging/log.hpp>
+#include <phosphor-logging/lg2.hpp>
 #include <xyz/openbmc_project/Common/error.hpp>
 
 #include <cassert>
@@ -92,8 +92,8 @@ void ItemUpdater::createActivation(sdbusplus::message_t& m)
     auto pos = path.rfind('/');
     if (pos == std::string::npos)
     {
-        log<level::ERR>("No version id found in object path",
-                        entry("OBJPATH=%s", path.c_str()));
+        lg2::error("No version id found in object path {OBJPATH}", "OBJPATH",
+                   path);
         return;
     }
 
@@ -131,10 +131,9 @@ void ItemUpdater::erase(const std::string& versionId)
     auto it = versions.find(versionId);
     if (it == versions.end())
     {
-        log<level::ERR>(("Error: Failed to find version " + versionId +
-                         " in item updater versions map."
-                         " Unable to remove.")
-                            .c_str());
+        lg2::error("Error: Failed to find version {VERSION_ID} in "
+                   "item updater versions map. Unable to remove.",
+                   "VERSION_ID", versionId);
     }
     else
     {
@@ -146,10 +145,9 @@ void ItemUpdater::erase(const std::string& versionId)
     auto ita = activations.find(versionId);
     if (ita == activations.end())
     {
-        log<level::ERR>(("Error: Failed to find version " + versionId +
-                         " in item updater activations map."
-                         " Unable to remove.")
-                            .c_str());
+        lg2::error("Error: Failed to find version {VERSION_ID} in "
+                   "item updater activations map. Unable to remove.",
+                   "VERSION_ID", versionId);
     }
     else
     {
@@ -270,8 +268,8 @@ void ItemUpdater::removePsuObject(const std::string& psuInventoryPath)
     auto it = psuPathActivationMap.find(psuInventoryPath);
     if (it == psuPathActivationMap.end())
     {
-        log<level::ERR>("No Activation found for PSU",
-                        entry("PSUPATH=%s", psuInventoryPath.c_str()));
+        lg2::error("No Activation found for PSU {PSUPATH}", "PSUPATH",
+                   psuInventoryPath);
         return;
     }
     const auto& activationPtr = it->second;
@@ -386,11 +384,9 @@ void ItemUpdater::onPsuInventoryChanged(const std::string& psuPath,
     }
     catch (const std::exception& e)
     {
-        log<level::ERR>(
-            std::format(
-                "Unable to handle inventory PropertiesChanged event: {}",
-                e.what())
-                .c_str());
+        lg2::error(
+            "Unable to handle inventory PropertiesChanged event: {ERROR}",
+            "ERROR", e);
     }
 }
 
@@ -443,8 +439,7 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
     }
     if (!fs::is_directory(dir))
     {
-        log<level::ERR>("The path is not a directory",
-                        entry("PATH=%s", dir.c_str()));
+        lg2::error("The path is not a directory: {PATH}", "PATH", dir.c_str());
         return;
     }
 
@@ -459,21 +454,19 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
     }
     if (path == dir)
     {
-        log<level::ERR>("Model directory not found");
+        lg2::error("Model directory not found");
         return;
     }
 
     if (!fs::is_directory(path))
     {
-        log<level::ERR>("The path is not a directory",
-                        entry("PATH=%s", path.c_str()));
+        lg2::error("The path is not a directory: {PATH}", "PATH", path.c_str());
         return;
     }
 
     if (!fs::exists(manifest))
     {
-        log<level::ERR>("No MANIFEST found",
-                        entry("PATH=%s", manifest.c_str()));
+        lg2::error("No MANIFEST found at {PATH}", "PATH", manifest.c_str());
         return;
     }
     // If the model in manifest does not match the dir name
@@ -488,8 +481,8 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
         auto model = info["model"];
         if (path.stem() != model)
         {
-            log<level::ERR>("Unmatched model", entry("PATH=%s", path.c_str()),
-                            entry("MODEL=%s", model.c_str()));
+            lg2::error("Unmatched model: path={PATH}, model={MODEL}", "PATH",
+                       path.c_str(), "MODEL", model);
         }
         else
         {
@@ -520,8 +513,7 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
     }
     else
     {
-        log<level::ERR>("MANIFEST is not a file",
-                        entry("PATH=%s", manifest.c_str()));
+        lg2::error("MANIFEST is not a file: {PATH}", "PATH", manifest.c_str());
     }
 }
 
@@ -576,9 +568,8 @@ void ItemUpdater::syncToLatestImage()
         {
             if (!utils::isAssociated(p, assocs))
             {
-                log<level::INFO>(
-                    "Automatically update PSU",
-                    entry("VERSION_ID=%s", latestVersionId->c_str()));
+                lg2::info("Automatically update PSUs to version {VERSION_ID}",
+                          "VERSION_ID", *latestVersionId);
                 invokeActivation(activation);
                 break;
             }
@@ -632,10 +623,8 @@ void ItemUpdater::onPSUInterfaceAdded(sdbusplus::message_t& msg)
     }
     catch (const std::exception& e)
     {
-        log<level::ERR>(
-            std::format("Unable to handle inventory InterfacesAdded event: {}",
-                        e.what())
-                .c_str());
+        lg2::error("Unable to handle inventory InterfacesAdded event: {ERROR}",
+                   "ERROR", e);
     }
 }
 
