@@ -37,6 +37,24 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "4ccc5a97_b98d04ab",
+        "filename": "src/activation.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-02T18:02:05Z",
+      "side": 1,
+      "message": "Good catch.  I didn\u0027t see fs::path listed in https://github.com/openbmc/phosphor-logging/blob/master/docs/structured-logging.md.  But I see it in the code.",
+      "parentUuid": "c70030f0_6fd9b9d3",
+      "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "0604ec94_d3ea032f",
         "filename": "src/item_updater.cpp",
         "patchSetId": 1
