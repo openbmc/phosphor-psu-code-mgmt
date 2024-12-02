@@ -53,6 +53,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "2c97be45_eacd97ae",
+        "filename": "src/activation.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-02T21:42:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ccc5a97_b98d04ab",
+      "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "0604ec94_d3ea032f",
@@ -66,6 +84,24 @@
       "writtenOn": "2024-11-28T03:41:18Z",
       "side": 1,
       "message": "Use dir directly",
+      "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "11bbe849_44ad80b9",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-02T21:42:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0604ec94_d3ea032f",
       "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -87,6 +123,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "56ab9489_554a4964",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 463,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-02T21:42:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "520be8b2_aa684452",
+      "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "601bf4fd_cfcad422",
@@ -100,6 +154,24 @@
       "writtenOn": "2024-11-28T03:41:18Z",
       "side": 1,
       "message": "The same as above",
+      "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "3d266d4e_bcfd7f55",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 469,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-02T21:42:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "601bf4fd_cfcad422",
       "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
@@ -121,6 +193,24 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "4ab1abbe_c86a7702",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 485,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-02T21:42:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea2a261b_0c583fa5",
+      "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "355aae02_2816b2ab",
@@ -134,6 +224,24 @@
       "writtenOn": "2024-11-28T03:41:18Z",
       "side": 1,
       "message": "The same as above",
+      "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "a26286ba_f12adc3c",
+        "filename": "src/item_updater.cpp",
+        "patchSetId": 1
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-02T21:42:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "355aae02_2816b2ab",
       "revId": "d1723bd46868bf2a85ce25780a37f04e0c58c737",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
