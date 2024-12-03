@@ -394,7 +394,7 @@ void ItemUpdater::processPSUImage()
 {
     try
     {
-        auto paths = utils::getPSUInventoryPath(bus);
+        auto paths = utils::getPSUInventoryPaths(bus);
         for (const auto& p : paths)
         {
             try
@@ -558,7 +558,7 @@ void ItemUpdater::syncToLatestImage()
     const auto& activation = it->second;
     const auto& assocs = activation->associations();
 
-    auto paths = utils::getPSUInventoryPath(bus);
+    auto paths = utils::getPSUInventoryPaths(bus);
     for (const auto& p : paths)
     {
         // If there is a present PSU that is not associated with the latest

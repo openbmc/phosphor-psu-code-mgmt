@@ -16,7 +16,7 @@ class MockedUtils : public UtilsInterface
 
     ~MockedUtils() override = default;
 
-    MOCK_CONST_METHOD1(getPSUInventoryPath,
+    MOCK_CONST_METHOD1(getPSUInventoryPaths,
                        std::vector<std::string>(sdbusplus::bus_t& bus));
 
     MOCK_CONST_METHOD3(getService,

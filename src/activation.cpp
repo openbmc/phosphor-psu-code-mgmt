@@ -155,7 +155,7 @@ Activation::Status Activation::startActivation()
         return activation(); // Return the previous activation status
     }
 
-    auto psuPaths = utils::getPSUInventoryPath(bus);
+    auto psuPaths = utils::getPSUInventoryPaths(bus);
     if (psuPaths.empty())
     {
         lg2::warning("No PSU inventory found");

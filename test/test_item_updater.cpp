@@ -83,7 +83,7 @@ TEST_F(TestItemUpdater, NotCreateObjectOnNotPresent)
     constexpr auto service = "com.example.Software.Psu";
     constexpr auto version = "version0";
     std::string objPath = getObjPath(version);
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
@@ -107,7 +107,7 @@ TEST_F(TestItemUpdater, CreateOnePSUOnPresent)
     constexpr auto service = "com.example.Software.Psu";
     constexpr auto version = "version0";
     std::string objPath = getObjPath(version);
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
@@ -139,7 +139,7 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithSameVersion)
     auto objPath0 = getObjPath(version0);
     auto objPath1 = getObjPath(version1);
 
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psu0, psu1})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu0), _))
         .WillOnce(Return(service));
@@ -189,7 +189,7 @@ TEST_F(TestItemUpdater, CreateTwoPSUsWithDifferentVersion)
     auto objPath0 = getObjPath(version0);
     auto objPath1 = getObjPath(version1);
 
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psu0, psu1})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu0), _))
         .WillOnce(Return(service));
@@ -241,7 +241,7 @@ TEST_F(TestItemUpdater, OnOnePSURemoved)
     constexpr auto service = "com.example.Software.Psu";
     constexpr auto version = "version0";
     std::string objPath = getObjPath(version);
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
@@ -279,7 +279,7 @@ TEST_F(TestItemUpdater, OnOnePSUAdded)
     constexpr auto service = "com.example.Software.Psu";
     constexpr auto version = "version0";
     std::string objPath = getObjPath(version);
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
@@ -313,7 +313,7 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithLatestVersion)
     constexpr auto service = "com.example.Software.Psu";
     constexpr auto version = "version0";
     std::string objPath = getObjPath(version);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
@@ -375,7 +375,7 @@ TEST_F(TestItemUpdater,
     auto objPath0 = getObjPath(version0);
     auto objPath1 = getObjPath(version1);
 
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psu0, psu1})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu0), _))
         .WillOnce(Return(service));
@@ -458,7 +458,7 @@ TEST_F(TestItemUpdater, scanDirOnNoPSU)
     constexpr auto service = "com.example.Software.Psu";
     constexpr auto version = "version0";
     std::string objPath = getObjPath(version);
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
@@ -492,7 +492,7 @@ TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
     constexpr auto service = "com.example.Software.Psu";
     constexpr auto version = "version0";
     std::string objPath = getObjPath(version);
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service));
@@ -538,7 +538,7 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithSameVersion)
     auto objPath0 = getObjPath(version0);
     auto objPath1 = getObjPath(version1);
 
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psu0, psu1})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu0), _))
         .WillOnce(Return(service));
@@ -606,7 +606,7 @@ TEST_F(TestItemUpdater, OnUpdateDoneOnTwoPSUsWithDifferentVersion)
     auto objPath0 = getObjPath(version0);
     auto objPath1 = getObjPath(version1);
 
-    EXPECT_CALL(mockedUtils, getPSUInventoryPath(_))
+    EXPECT_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillOnce(Return(std::vector<std::string>({psu0, psu1})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psu0), _))
         .WillOnce(Return(service));
@@ -665,7 +665,7 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithOldVersion)
     std::string versionId =
         version; // In testing versionId is the same as version
     std::string objPath = getObjPath(version);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
         .WillOnce(Return(service))

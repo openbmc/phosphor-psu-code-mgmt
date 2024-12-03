@@ -57,7 +57,7 @@ TEST(Utils, GetPSUInventoryPath)
     EXPECT_CALL(sdbusMock, sd_bus_message_exit_container(IsNull()))
         .WillOnce(Return(0)); /* end of std::vector */
 
-    auto ret = utils::getPSUInventoryPath(bus);
+    auto ret = utils::getPSUInventoryPaths(bus);
     EXPECT_EQ(2U, ret.size());
     EXPECT_EQ(path0, ret[0]);
     EXPECT_EQ(path1, ret[1]);

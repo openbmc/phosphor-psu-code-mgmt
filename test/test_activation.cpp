@@ -115,7 +115,7 @@ TEST_F(TestActivation, doUpdateWhenNoPSU)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(
             Return(std::vector<std::string>({}))); // No PSU inventory
     activation->requestedActivation(RequestedStatus::Active);
@@ -136,7 +136,7 @@ TEST_F(TestActivation, doUpdateOnePSUOK)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(
             Return(std::vector<std::string>({psu0}))); // One PSU inventory
     activation->requestedActivation(RequestedStatus::Active);
@@ -165,7 +165,7 @@ TEST_F(TestActivation, doUpdateFourPSUsOK)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(
             std::vector<std::string>({psu0, psu1, psu2, psu3}))); // 4 PSUs
     activation->requestedActivation(RequestedStatus::Active);
@@ -217,7 +217,7 @@ TEST_F(TestActivation, doUpdateFourPSUsFailonSecond)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(
             std::vector<std::string>({psu0, psu1, psu2, psu3}))); // 4 PSUs
     activation->requestedActivation(RequestedStatus::Active);
@@ -249,7 +249,7 @@ TEST_F(TestActivation, doUpdateOnExceptionFromDbus)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(
             Return(std::vector<std::string>({psu0}))); // One PSU inventory
     ON_CALL(sdbusMock, sd_bus_call(_, _, _, _, nullptr))
@@ -266,7 +266,7 @@ TEST_F(TestActivation, doUpdateOnePSUModelNotCompatible)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(std::vector<std::string>({psu0})));
     activation->requestedActivation(RequestedStatus::Active);
 
@@ -280,7 +280,7 @@ TEST_F(TestActivation, doUpdateOnePSUManufactureNotCompatible)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(std::vector<std::string>({psu0})));
     activation->requestedActivation(RequestedStatus::Active);
 
@@ -297,7 +297,7 @@ TEST_F(TestActivation, doUpdateOnePSUSelfManufactureIsEmpty)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(
             Return(std::vector<std::string>({psu0}))); // One PSU inventory
     activation->requestedActivation(RequestedStatus::Active);
@@ -325,7 +325,7 @@ TEST_F(TestActivation, doUpdateFourPSUsSecondPSUNotCompatible)
     activation = std::make_unique<Activation>(
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(
             std::vector<std::string>({psu0, psu1, psu2, psu3}))); // 4 PSUs
     activation->requestedActivation(RequestedStatus::Active);
@@ -366,7 +366,7 @@ TEST_F(TestActivation, doUpdateWhenNoFilePathInActiveState)
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
 
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(
             Return(std::vector<std::string>({psu0}))); // One PSU inventory
 
@@ -389,7 +389,7 @@ TEST_F(TestActivation, doUpdateWhenNoFilePathInReadyState)
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
 
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(
             Return(std::vector<std::string>({psu0}))); // One PSU inventory
 
@@ -410,7 +410,7 @@ TEST_F(TestActivation, doUpdateWhenPSUIsAssociated)
         mockedBus, dBusPath, versionId, extVersion, status, associations,
         filePath, &mockedAssociationInterface, &mockedActivationListener);
 
-    ON_CALL(mockedUtils, getPSUInventoryPath(_))
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(
             Return(std::vector<std::string>({psu0}))); // One PSU inventory
 

@@ -26,7 +26,7 @@ const UtilsInterface& getUtils();
 /**
  * @brief Get PSU inventory object path from DBus
  */
-std::vector<std::string> getPSUInventoryPath(sdbusplus::bus_t& bus);
+std::vector<std::string> getPSUInventoryPaths(sdbusplus::bus_t& bus);
 
 /** @brief Get service name from object path and interface
  *
@@ -128,7 +128,7 @@ class UtilsInterface
     virtual ~UtilsInterface() = default;
 
     virtual std::vector<std::string>
-        getPSUInventoryPath(sdbusplus::bus_t& bus) const = 0;
+        getPSUInventoryPaths(sdbusplus::bus_t& bus) const = 0;
 
     virtual std::string getService(sdbusplus::bus_t& bus, const char* path,
                                    const char* interface) const = 0;
@@ -168,7 +168,7 @@ class Utils : public UtilsInterface
 {
   public:
     std::vector<std::string>
-        getPSUInventoryPath(sdbusplus::bus_t& bus) const override;
+        getPSUInventoryPaths(sdbusplus::bus_t& bus) const override;
 
     std::string getService(sdbusplus::bus_t& bus, const char* path,
                            const char* interface) const override;
@@ -206,9 +206,9 @@ inline std::vector<std::string>
     return getUtils().getServices(bus, path, interface);
 }
 
-inline std::vector<std::string> getPSUInventoryPath(sdbusplus::bus_t& bus)
+inline std::vector<std::string> getPSUInventoryPaths(sdbusplus::bus_t& bus)
 {
-    return getUtils().getPSUInventoryPath(bus);
+    return getUtils().getPSUInventoryPaths(bus);
 }
 
 inline std::string getVersionId(const std::string& version)
