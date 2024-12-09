@@ -16,6 +16,75 @@
       "message": "Note to reviewers: The diffs are not helpful for the changes to scanDirectory().  I did not change the core logic.  I converted a bunch of log() + return statements to exceptions.  I also refactored the first third of this method into a new method named findModelDirectory(). This was done because scanDirectory() was so long and was getting hard to follow.",
       "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "e5f47ad2_89262640",
+        "filename": "src/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-12-09T22:23:44Z",
+      "side": 1,
+      "message": "why do you want to prevent a core dump here?",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 35
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "43d37a4f_a153fc1a",
+        "filename": "src/utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-12-09T22:23:44Z",
+      "side": 1,
+      "message": "The convention is to catch the sdbusplus exception.  Was there a particular reason you changed it?",
+      "range": {
+        "startLine": 103,
+        "startChar": 17,
+        "endLine": 103,
+        "endChar": 34
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "26265e43_b615029b",
+        "filename": "src/utils.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-12-09T22:23:44Z",
+      "side": 1,
+      "message": "nit: strange spacing",
+      "range": {
+        "startLine": 32,
+        "startChar": 18,
+        "endLine": 32,
+        "endChar": 27
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
