@@ -67,6 +67,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "7e76c83b_00bb6220",
+        "filename": "src/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-12-09T22:53:41Z",
+      "side": 1,
+      "message": "here\u0027s an example of when there is no catch:\n mboxd[992]: terminate called after throwing an instance of \u0027sdbusplus::exception::SdBusError\u0027\n mboxd[992]:   what():  sd_bus_call: org.freedesktop.DBus.Error.Timeout: Connection timed out\n \nso it does print the message.\n \nI think the core dump may be useful since with all the code in this commit it should never actually happen, so it may be a tough debug to find otherwise.",
+      "parentUuid": "607031dc_1fe2c968",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 35
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "43d37a4f_a153fc1a",
         "filename": "src/utils.cpp",
         "patchSetId": 2
@@ -102,6 +126,30 @@
       "side": 1,
       "message": "Some of the D-Bus related code in this application can throw exceptions that are not derived from sdbusplus::exception_t.  For example, getProperty() in utils.hpp and several methods in item_updater.cpp use std::get() to get values from a std::variant.  If there is a data type mixup, it compiles in some cases and throws a std::exception at run-time.\n\nMy goal was to avoid an exception escaping to main() or to the sdbusplus event handling code.  So I thought it was safer to catch std::exception in all cases.\n\nIs there an advantage to catching the more specific class here?",
       "parentUuid": "43d37a4f_a153fc1a",
+      "range": {
+        "startLine": 103,
+        "startChar": 17,
+        "endLine": 103,
+        "endChar": 34
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "f1df7393_9da0e78a",
+        "filename": "src/utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-12-09T22:53:41Z",
+      "side": 1,
+      "message": "It probably doesn\u0027t matter much.  In this particular case, you\u0027re not using any of those helper functions is all.",
+      "parentUuid": "3331a465_9ea0139b",
       "range": {
         "startLine": 103,
         "startChar": 17,
@@ -149,6 +197,30 @@
       "side": 1,
       "message": "I was trying to match the other doxygen in this file.  I\u0027m not sure why they lined up param descriptions at this column.  I can fix if you think that is better.",
       "parentUuid": "26265e43_b615029b",
+      "range": {
+        "startLine": 32,
+        "startChar": 18,
+        "endLine": 32,
+        "endChar": 27
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "ddc19db4_d7d6f365",
+        "filename": "src/utils.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000008
+      },
+      "writtenOn": "2024-12-09T22:53:41Z",
+      "side": 1,
+      "message": "If you have a reason for it that\u0027s fine.",
+      "parentUuid": "b06e85de_accd4dc5",
       "range": {
         "startLine": 32,
         "startChar": 18,
