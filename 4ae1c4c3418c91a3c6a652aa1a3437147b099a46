@@ -89,6 +89,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "882d4937_7d19181f",
+        "filename": "src/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-09T23:10:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e76c83b_00bb6220",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 35
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "43d37a4f_a153fc1a",
@@ -160,6 +184,30 @@
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     },
     {
+      "unresolved": false,
+      "key": {
+        "uuid": "a0602ace_fc433acc",
+        "filename": "src/utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-09T23:10:26Z",
+      "side": 1,
+      "message": "I think I\u0027ll leave it more generic rather than go through each DBus-related block and try to determine if any non-sdbusplus exceptions can be thrown.\n\nIf I make some of them more specific, and someone else makes changes to the code, they might add something that throws an unhandled exception type and not realize they need to update the catch.",
+      "parentUuid": "f1df7393_9da0e78a",
+      "range": {
+        "startLine": 103,
+        "startChar": 17,
+        "endLine": 103,
+        "endChar": 34
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
       "unresolved": true,
       "key": {
         "uuid": "26265e43_b615029b",
@@ -221,6 +269,30 @@
       "side": 1,
       "message": "If you have a reason for it that\u0027s fine.",
       "parentUuid": "b06e85de_accd4dc5",
+      "range": {
+        "startLine": 32,
+        "startChar": 18,
+        "endLine": 32,
+        "endChar": 27
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "c2da38f3_1bf49701",
+        "filename": "src/utils.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-09T23:10:26Z",
+      "side": 1,
+      "message": "In looking at it, it is strange.  Fixed.",
+      "parentUuid": "ddc19db4_d7d6f365",
       "range": {
         "startLine": 32,
         "startChar": 18,
