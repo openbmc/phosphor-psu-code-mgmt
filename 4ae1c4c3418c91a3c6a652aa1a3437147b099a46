@@ -43,6 +43,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "607031dc_1fe2c968",
+        "filename": "src/main.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-09T22:39:52Z",
+      "side": 1,
+      "message": "I was hoping to ensure that the exception message is logged.  Also, I\u0027m not sure if we want to trigger a core dump and BMC dump?  If you think we do want that, I can remove the try/catch here.",
+      "parentUuid": "e5f47ad2_89262640",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 35
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "43d37a4f_a153fc1a",
         "filename": "src/utils.cpp",
         "patchSetId": 2
@@ -66,6 +90,30 @@
     {
       "unresolved": true,
       "key": {
+        "uuid": "3331a465_9ea0139b",
+        "filename": "src/utils.cpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-09T22:39:52Z",
+      "side": 1,
+      "message": "Some of the D-Bus related code in this application can throw exceptions that are not derived from sdbusplus::exception_t.  For example, getProperty() in utils.hpp and several methods in item_updater.cpp use std::get() to get values from a std::variant.  If there is a data type mixup, it compiles in some cases and throws a std::exception at run-time.\n\nMy goal was to avoid an exception escaping to main() or to the sdbusplus event handling code.  So I thought it was safer to catch std::exception in all cases.\n\nIs there an advantage to catching the more specific class here?",
+      "parentUuid": "43d37a4f_a153fc1a",
+      "range": {
+        "startLine": 103,
+        "startChar": 17,
+        "endLine": 103,
+        "endChar": 34
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
         "uuid": "26265e43_b615029b",
         "filename": "src/utils.hpp",
         "patchSetId": 2
@@ -77,6 +125,30 @@
       "writtenOn": "2024-12-09T22:23:44Z",
       "side": 1,
       "message": "nit: strange spacing",
+      "range": {
+        "startLine": 32,
+        "startChar": 18,
+        "endLine": 32,
+        "endChar": 27
+      },
+      "revId": "4ae1c4c3418c91a3c6a652aa1a3437147b099a46",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "b06e85de_accd4dc5",
+        "filename": "src/utils.hpp",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2024-12-09T22:39:52Z",
+      "side": 1,
+      "message": "I was trying to match the other doxygen in this file.  I\u0027m not sure why they lined up param descriptions at this column.  I can fix if you think that is better.",
+      "parentUuid": "26265e43_b615029b",
       "range": {
         "startLine": 32,
         "startChar": 18,
