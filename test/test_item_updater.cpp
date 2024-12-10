@@ -668,13 +668,13 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithOldVersion)
     ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(std::vector<std::string>({psuPath})));
     EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
-        .WillOnce(Return(service))
         .WillOnce(Return(service));
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
         .WillOnce(Return(std::string(version)));
-    ON_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath), _,
-                                         StrEq(PRESENT)))
-        .WillByDefault(Return(any(PropertyType(true)))); // present
+    EXPECT_CALL(mockedUtils,
+                getPropertyImpl(_, StrEq(service), StrEq(psuPath), _,
+                                StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(true)))); // present
     EXPECT_CALL(mockedUtils, getModel(StrEq(psuPath)))
         .WillOnce(Return(std::string("dummyModel")));
 
@@ -692,6 +692,13 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithOldVersion)
 
     // On PSU inserted, it checks and finds a newer version
     auto oldVersion = "old-version";
+    EXPECT_CALL(mockedUtils, getService(_, StrEq(psuPath), _))
+        .WillOnce(Return(service))
+        .WillOnce(Return(service));
+    EXPECT_CALL(mockedUtils,
+                getPropertyImpl(_, StrEq(service), StrEq(psuPath), _,
+                                StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(true)))); // present
     EXPECT_CALL(mockedUtils, getVersion(StrEq(psuPath)))
         .WillOnce(Return(std::string(oldVersion)));
     EXPECT_CALL(mockedUtils, getPropertyImpl(_, StrEq(service), StrEq(psuPath),

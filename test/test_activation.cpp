@@ -32,7 +32,11 @@ class TestActivation : public ::testing::Test
         mockedUtils(
             reinterpret_cast<const utils::MockedUtils&>(utils::getUtils()))
     {
-        // By default make it compatible with the test software
+        // By default make PSU present
+        ON_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(PRESENT)))
+            .WillByDefault(Return(any(PropertyType(true))));
+
+        // By default make PSU compatible with the test software
         ON_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(MANUFACTURER)))
             .WillByDefault(Return(any(PropertyType(std::string("TestManu")))));
         ON_CALL(mockedUtils, getModel(_))
@@ -257,6 +261,21 @@ TEST_F(TestActivation, doUpdateOnExceptionFromDbus)
     activation->requestedActivation(RequestedStatus::Active);
 
     EXPECT_EQ(Status::Failed, activation->activation());
+}
+
+TEST_F(TestActivation, doUpdateOnePSUNotPresent)
+{
+    constexpr auto psu0 = "/com/example/inventory/psu0";
+    activation = std::make_unique<Activation>(
+        mockedBus, dBusPath, versionId, extVersion, status, associations,
+        filePath, &mockedAssociationInterface, &mockedActivationListener);
+    ON_CALL(mockedUtils, getPSUInventoryPaths(_))
+        .WillByDefault(Return(std::vector<std::string>({psu0})));
+    EXPECT_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(PRESENT)))
+        .WillOnce(Return(any(PropertyType(false)))); // not present
+    activation->requestedActivation(RequestedStatus::Active);
+
+    EXPECT_EQ(Status::Ready, activation->activation());
 }
 
 TEST_F(TestActivation, doUpdateOnePSUModelNotCompatible)

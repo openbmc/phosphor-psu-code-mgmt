@@ -231,6 +231,9 @@ class Activation : public ActivationInherit
     /** @brief Finish PSU update */
     void finishActivation();
 
+    /** @brief Check if the PSU is present */
+    bool isPresent(const std::string& psuInventoryPath);
+
     /** @brief Check if the PSU is compatible with this software*/
     bool isCompatible(const std::string& psuInventoryPath);
 

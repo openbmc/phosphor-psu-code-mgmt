@@ -176,6 +176,10 @@ Activation::Status Activation::startActivation()
 
     for (const auto& p : psuPaths)
     {
+        if (!isPresent(p))
+        {
+            continue;
+        }
         if (isCompatible(p))
         {
             if (utils::isAssociated(p, associations()))
@@ -291,6 +295,27 @@ void Activation::deleteImageManagerObject()
         lg2::error("Unable to Delete object path {PATH}: {ERROR}", "PATH",
                    objPath, "ERROR", e);
     }
+}
+
+bool Activation::isPresent(const std::string& psuInventoryPath)
+{
+    bool isPres{false};
+    try
+    {
+        auto service =
+            utils::getService(bus, psuInventoryPath.c_str(), ITEM_IFACE);
+        isPres = utils::getProperty<bool>(bus, service.c_str(),
+                                          psuInventoryPath.c_str(), ITEM_IFACE,
+                                          PRESENT);
+    }
+    catch (const std::exception& e)
+    {
+        // Treat as a warning condition and assume the PSU is missing.  The
+        // D-Bus information might not be available if the PSU is missing.
+        lg2::warning("Unable to determine if PSU {PSU} is present: {ERROR}",
+                     "PSU", psuInventoryPath, "ERROR", e);
+    }
+    return isPres;
 }
 
 bool Activation::isCompatible(const std::string& psuInventoryPath)
