@@ -148,10 +148,6 @@ class Activation : public ActivationInherit
         associations(assocs);
         path(filePath);
 
-        auto info = Version::getExtVersionInfo(extVersion);
-        manufacturer = info["manufacturer"];
-        model = info["model"];
-
         // Emit deferred signal.
         emit_object_added();
     }
@@ -175,6 +171,14 @@ class Activation : public ActivationInherit
      */
     RequestedActivations
         requestedActivation(RequestedActivations value) override;
+
+    /** @brief Overloaded ExtendedVersion property setter function
+     *
+     * @param[in] value - Extended version value
+     *
+     * @return New value of property
+     */
+    std::string extendedVersion(std::string value) override;
 
     /** @brief Get the object path */
     const std::string& getObjectPath() const

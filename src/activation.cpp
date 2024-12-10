@@ -25,10 +25,12 @@ constexpr auto SYSTEMD_PATH = "/org/freedesktop/systemd1";
 constexpr auto SYSTEMD_INTERFACE = "org.freedesktop.systemd1.Manager";
 
 namespace fs = std::filesystem;
-namespace softwareServer = sdbusplus::xyz::openbmc_project::Software::server;
 
 using namespace phosphor::logging;
-using SoftwareActivation = softwareServer::Activation;
+using SoftwareActivation =
+    sdbusplus::server::xyz::openbmc_project::software::Activation;
+using ExtendedVersion =
+    sdbusplus::server::xyz::openbmc_project::software::ExtendedVersion;
 
 auto Activation::activation(Activations value) -> Activations
 {
@@ -62,6 +64,15 @@ auto Activation::requestedActivation(RequestedActivations value)
         }
     }
     return SoftwareActivation::requestedActivation(value);
+}
+
+auto Activation::extendedVersion(std::string value) -> std::string
+{
+    auto info = Version::getExtVersionInfo(value);
+    manufacturer = info["manufacturer"];
+    model = info["model"];
+
+    return ExtendedVersion::extendedVersion(value);
 }
 
 void Activation::unitStateChange(sdbusplus::message_t& msg)

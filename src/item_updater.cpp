@@ -535,9 +535,12 @@ void ItemUpdater::scanDirectory(const fs::path& dir)
     }
     else
     {
-        // This is a version that a running PSU is using, set the path
-        // on the version object
+        // Activation already exists. It may have been created for code that is
+        // running on one or more PSUs. Set Path and ExtendedVersion properties.
+        // The properties are not set when the Activation is created for code
+        // running on a PSU. The properties are needed to update other PSUs.
         it->second->path(modelDir);
+        it->second->extendedVersion(extVersion);
     }
 }
 

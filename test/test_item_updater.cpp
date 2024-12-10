@@ -514,14 +514,20 @@ TEST_F(TestItemUpdater, scanDirOnSamePSUVersion)
     itemUpdater = std::make_unique<ItemUpdater>(mockedBus, dBusPath);
 
     // The valid image in test/psu-images-valid-version0/model-3/ has the same
-    // version as the running PSU, so no objects will be created, but only the
-    // path will be set to the version object
+    // version as the running PSU, so no objects will be created. However, the
+    // Path and ExtendedVersion properties will be set on the Activation object.
     EXPECT_CALL(sdbusMock, sd_bus_emit_object_added(_, StrEq(objPath)))
         .Times(0);
     EXPECT_CALL(sdbusMock, sd_bus_emit_properties_changed_strv(
                                _, StrEq(objPath),
                                StrEq("xyz.openbmc_project.Common.FilePath"),
                                Pointee(StrEq("Path"))))
+        .Times(1);
+    EXPECT_CALL(sdbusMock,
+                sd_bus_emit_properties_changed_strv(
+                    _, StrEq(objPath),
+                    StrEq("xyz.openbmc_project.Software.ExtendedVersion"),
+                    Pointee(StrEq("ExtendedVersion"))))
         .Times(1);
     scanDirectory("./psu-images-valid-version0");
 }
