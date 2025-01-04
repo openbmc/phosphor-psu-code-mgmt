@@ -50,17 +50,28 @@ auto Activation::activation(Activations value) -> Activations
 auto Activation::requestedActivation(RequestedActivations value)
     -> RequestedActivations
 {
-    if ((value == SoftwareActivation::RequestedActivations::Active) &&
-        (SoftwareActivation::requestedActivation() !=
-         SoftwareActivation::RequestedActivations::Active))
+    if (value == SoftwareActivation::RequestedActivations::Active)
     {
-        // PSU image could be activated even when it's in active,
-        // e.g. in case a PSU is replaced and has a older image, it will be
-        // updated with the running PSU image that is stored in BMC.
-        if ((activation() == Status::Ready) ||
-            (activation() == Status::Failed) || activation() == Status::Active)
+        if (SoftwareActivation::requestedActivation() !=
+            SoftwareActivation::RequestedActivations::Active)
         {
-            activation(Status::Activating);
+            // PSU image could be activated even when it's in active,
+            // e.g. in case a PSU is replaced and has a older image, it will be
+            // updated with the running PSU image that is stored in BMC.
+            if ((activation() == Status::Ready) ||
+                (activation() == Status::Failed) ||
+                (activation() == Status::Active))
+            {
+                activation(Status::Activating);
+            }
+        }
+        else if (activation() == Status::Activating)
+        {
+            // Activation was requested when one was already in progress.
+            // Activate again once the current activation is done. New PSU
+            // information may have been found on D-Bus, or a new PSU may have
+            // been plugged in.
+            shouldActivateAgain = true;
         }
     }
     return SoftwareActivation::requestedActivation(value);
@@ -165,6 +176,7 @@ void Activation::onUpdateFailed()
     lg2::error("Failed to update PSU {PSU}", "PSU", psuQueue.front());
     std::queue<std::string>().swap(psuQueue); // Clear the queue
     activation(Status::Failed);
+    shouldActivateAgain = false;
 }
 
 Activation::Status Activation::startActivation()
@@ -257,6 +269,15 @@ void Activation::finishActivation()
     // future
     requestedActivation(SoftwareActivation::RequestedActivations::None);
     activation(Status::Active);
+
+    // Automatically restart activation if a request occurred while code update
+    // was already in progress. New PSU information may have been found on
+    // D-Bus, or a new PSU may have been plugged in.
+    if (shouldActivateAgain)
+    {
+        shouldActivateAgain = false;
+        requestedActivation(SoftwareActivation::RequestedActivations::Active);
+    }
 }
 
 void Activation::deleteImageManagerObject()

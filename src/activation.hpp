@@ -295,6 +295,10 @@ class Activation : public ActivationInherit
 
     /** @brief The PSU model of the software */
     std::string model;
+
+    /** @brief Indicates whether to automatically activate again after current
+     * request finishes */
+    bool shouldActivateAgain{false};
 };
 
 } // namespace updater
