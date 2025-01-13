@@ -10,12 +10,13 @@
 using ::testing::_;
 using ::testing::Invoke;
 using ::testing::IsNull;
+using ::testing::NiceMock;
 using ::testing::Return;
 using ::testing::StrEq;
 
 TEST(Utils, GetPSUInventoryPath)
 {
-    sdbusplus::SdBusMock sdbusMock;
+    NiceMock<sdbusplus::SdBusMock> sdbusMock;
     auto bus = sdbusplus::get_mocked_new(&sdbusMock);
 
     EXPECT_CALL(sdbusMock, sd_bus_message_new_method_call(

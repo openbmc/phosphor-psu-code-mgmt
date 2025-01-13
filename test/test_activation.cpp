@@ -11,6 +11,7 @@
 using namespace phosphor::software::updater;
 
 using ::testing::_;
+using ::testing::NiceMock;
 using ::testing::Return;
 using ::testing::StrEq;
 
@@ -69,7 +70,7 @@ class TestActivation : public ::testing::Test
         return activation->getUpdateService(psuInventoryPath);
     }
 
-    sdbusplus::SdBusMock sdbusMock;
+    NiceMock<sdbusplus::SdBusMock> sdbusMock;
     sdbusplus::bus_t mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
     const utils::MockedUtils& mockedUtils;
     MockedAssociationInterface mockedAssociationInterface;
@@ -271,8 +272,8 @@ TEST_F(TestActivation, doUpdateOnePSUNotPresent)
         filePath, &mockedAssociationInterface, &mockedActivationListener);
     ON_CALL(mockedUtils, getPSUInventoryPaths(_))
         .WillByDefault(Return(std::vector<std::string>({psu0})));
-    EXPECT_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(PRESENT)))
-        .WillOnce(Return(any(PropertyType(false)))); // not present
+    ON_CALL(mockedUtils, getPropertyImpl(_, _, _, _, StrEq(PRESENT)))
+        .WillByDefault(Return(any(PropertyType(false)))); // not present
     activation->requestedActivation(RequestedStatus::Active);
 
     EXPECT_EQ(Status::Ready, activation->activation());

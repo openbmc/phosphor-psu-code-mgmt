@@ -9,6 +9,7 @@
 using namespace phosphor::software::updater;
 using ::testing::_;
 using ::testing::ContainerEq;
+using ::testing::NiceMock;
 using ::testing::Pointee;
 using ::testing::Return;
 using ::testing::ReturnArg;
@@ -63,7 +64,7 @@ class TestItemUpdater : public ::testing::Test
     }
 
     static constexpr auto dBusPath = SOFTWARE_OBJPATH;
-    sdbusplus::SdBusMock sdbusMock;
+    NiceMock<sdbusplus::SdBusMock> sdbusMock;
     sdbusplus::bus_t mockedBus = sdbusplus::get_mocked_new(&sdbusMock);
     const utils::MockedUtils& mockedUtils;
     std::unique_ptr<ItemUpdater> itemUpdater;
