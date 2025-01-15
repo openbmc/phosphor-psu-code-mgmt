@@ -16,6 +16,24 @@
       "message": "Is there any reference for the bus?",
       "revId": "b8590f56389a9dfd1af6ae4f722cc2fed46de918",
       "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "bce0e5ad_f6e50c9b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1000331
+      },
+      "writtenOn": "2025-01-15T02:28:13Z",
+      "side": 1,
+      "message": "I found a few bug reports like this one: https://github.com/google/googletest/issues/4352\n\nI also reproduced part of the problem in a very simple test.  In that test I verified that the following scenario results in a failure:\n* There is an ON_CALL for a mock method\n* There is a later EXPECT_CALL for the same method that is more specific\n* The test case calls the mock method twice, once that matches the EXPECT_CALL and once that matches the ON_CALL\n* gmock reports this as a failure, saying they both should have matched the EXPECT_CALL and falling back on the ON_CALL is an error.\n\nHowever, when I modified the real test cases to have more EXPECT_CALLs to work around this problem, I still ran into a more mysterious problem.  About 6 different tests failed, and all of failure messages blamed the EXPECT_CALL in doUpdateOnePSUNotPresent().  I verified that each test case is constructed/destructed in sequence - they are not created in parallel.  I also verified that the constructor was correctly creating a new MockedUtils and the destructor was deleting it.  So I have no idea why an EXPECT_CALL in one test case (TEST_F) would have any effect on other test cases.\n\nThis CI failure just started happening last week when the openbmc-build-tools repo was updated with new commits.\n\nI have spent about 3 days on this, so I decided to make the simple change in this commit.  If someone else has time to further debug, maybe they can find a better fix.",
+      "parentUuid": "b23de87a_29ac3fed",
+      "revId": "b8590f56389a9dfd1af6ae4f722cc2fed46de918",
+      "serverId": "adbd0a64-1f21-4d83-b585-671fe73cb6e4"
     }
   ]
 }
