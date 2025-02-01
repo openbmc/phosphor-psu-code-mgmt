@@ -666,8 +666,8 @@ void ItemUpdater::syncToLatestImage()
     }
 }
 
-void
-    ItemUpdater::invokeActivation(const std::unique_ptr<Activation>& activation)
+void ItemUpdater::invokeActivation(
+    const std::unique_ptr<Activation>& activation)
 {
     activation->requestedActivation(Activation::RequestedActivations::Active);
 }

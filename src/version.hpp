@@ -129,8 +129,8 @@ class Version : public VersionInherit
      *
      * @return The map of key/value pairs
      */
-    static std::map<std::string, std::string>
-        getExtVersionInfo(const std::string& extVersion);
+    static std::map<std::string, std::string> getExtVersionInfo(
+        const std::string& extVersion);
 
     /** @brief The temUpdater's erase callback. */
     eraseFunc eraseCallback;

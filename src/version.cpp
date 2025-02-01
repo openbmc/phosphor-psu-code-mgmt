@@ -72,8 +72,8 @@ std::string Version::getValue(const std::string& filePath,
     return ret;
 }
 
-std::map<std::string, std::string>
-    Version::getExtVersionInfo(const std::string& extVersion)
+std::map<std::string, std::string> Version::getExtVersionInfo(
+    const std::string& extVersion)
 {
     // The extVersion shall be key/value pairs separated by comma,
     // e.g. key1=value1,key2=value2
