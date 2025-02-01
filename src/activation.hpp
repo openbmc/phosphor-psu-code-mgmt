@@ -43,11 +43,11 @@ class ActivationBlocksTransition : public ActivationBlocksTransitionInherit
   public:
     ActivationBlocksTransition() = delete;
     ActivationBlocksTransition(const ActivationBlocksTransition&) = delete;
-    ActivationBlocksTransition&
-        operator=(const ActivationBlocksTransition&) = delete;
+    ActivationBlocksTransition& operator=(const ActivationBlocksTransition&) =
+        delete;
     ActivationBlocksTransition(ActivationBlocksTransition&&) = delete;
-    ActivationBlocksTransition&
-        operator=(ActivationBlocksTransition&&) = delete;
+    ActivationBlocksTransition& operator=(ActivationBlocksTransition&&) =
+        delete;
 
     /** @brief Constructs ActivationBlocksTransition.
      *
@@ -169,8 +169,8 @@ class Activation : public ActivationInherit
      *
      * @return Success or exception thrown
      */
-    RequestedActivations
-        requestedActivation(RequestedActivations value) override;
+    RequestedActivations requestedActivation(
+        RequestedActivations value) override;
 
     /** @brief Overloaded ExtendedVersion property setter function
      *

@@ -85,8 +85,8 @@ const UtilsInterface& getUtils()
     return utils;
 }
 
-std::vector<std::string>
-    Utils::getPSUInventoryPaths(sdbusplus::bus_t& bus) const
+std::vector<std::string> Utils::getPSUInventoryPaths(
+    sdbusplus::bus_t& bus) const
 {
     std::vector<std::string> paths;
     try

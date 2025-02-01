@@ -9,8 +9,8 @@ class MockedActivationListener : public ActivationListener
   public:
     MockedActivationListener() = default;
     MockedActivationListener(const MockedActivationListener&) = delete;
-    MockedActivationListener&
-        operator=(const MockedActivationListener&) = delete;
+    MockedActivationListener& operator=(const MockedActivationListener&) =
+        delete;
     MockedActivationListener(MockedActivationListener&&) = delete;
     MockedActivationListener& operator=(MockedActivationListener&&) = delete;
 

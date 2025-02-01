@@ -143,15 +143,15 @@ class UtilsInterface
 
     virtual ~UtilsInterface() = default;
 
-    virtual std::vector<std::string>
-        getPSUInventoryPaths(sdbusplus::bus_t& bus) const = 0;
+    virtual std::vector<std::string> getPSUInventoryPaths(
+        sdbusplus::bus_t& bus) const = 0;
 
     virtual std::string getService(sdbusplus::bus_t& bus, const char* path,
                                    const char* interface) const = 0;
 
-    virtual std::vector<std::string>
-        getServices(sdbusplus::bus_t& bus, const char* path,
-                    const char* interface) const = 0;
+    virtual std::vector<std::string> getServices(
+        sdbusplus::bus_t& bus, const char* path,
+        const char* interface) const = 0;
 
     virtual std::string getVersionId(const std::string& version) const = 0;
 
@@ -159,8 +159,8 @@ class UtilsInterface
 
     virtual std::string getModel(const std::string& inventoryPath) const = 0;
 
-    virtual std::string
-        getLatestVersion(const std::set<std::string>& versions) const = 0;
+    virtual std::string getLatestVersion(
+        const std::set<std::string>& versions) const = 0;
 
     virtual bool isAssociated(const std::string& psuInventoryPath,
                               const AssociationList& assocs) const = 0;
@@ -183,8 +183,8 @@ class UtilsInterface
 class Utils : public UtilsInterface
 {
   public:
-    std::vector<std::string>
-        getPSUInventoryPaths(sdbusplus::bus_t& bus) const override;
+    std::vector<std::string> getPSUInventoryPaths(
+        sdbusplus::bus_t& bus) const override;
 
     std::string getService(sdbusplus::bus_t& bus, const char* path,
                            const char* interface) const override;
@@ -199,8 +199,8 @@ class Utils : public UtilsInterface
 
     std::string getModel(const std::string& inventoryPath) const override;
 
-    std::string
-        getLatestVersion(const std::set<std::string>& versions) const override;
+    std::string getLatestVersion(
+        const std::set<std::string>& versions) const override;
 
     bool isAssociated(const std::string& psuInventoryPath,
                       const AssociationList& assocs) const override;
@@ -216,8 +216,8 @@ inline std::string getService(sdbusplus::bus_t& bus, const char* path,
     return getUtils().getService(bus, path, interface);
 }
 
-inline std::vector<std::string>
-    getServices(sdbusplus::bus_t& bus, const char* path, const char* interface)
+inline std::vector<std::string> getServices(
+    sdbusplus::bus_t& bus, const char* path, const char* interface)
 {
     return getUtils().getServices(bus, path, interface);
 }

@@ -9,11 +9,11 @@ class MockedAssociationInterface : public AssociationInterface
   public:
     MockedAssociationInterface() = default;
     MockedAssociationInterface(const MockedAssociationInterface&) = delete;
-    MockedAssociationInterface&
-        operator=(const MockedAssociationInterface&) = delete;
+    MockedAssociationInterface& operator=(const MockedAssociationInterface&) =
+        delete;
     MockedAssociationInterface(MockedAssociationInterface&&) = delete;
-    MockedAssociationInterface&
-        operator=(MockedAssociationInterface&&) = delete;
+    MockedAssociationInterface& operator=(MockedAssociationInterface&&) =
+        delete;
 
     ~MockedAssociationInterface() override = default;
 
