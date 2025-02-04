@@ -50,10 +50,10 @@ auto Activation::activation(Activations value) -> Activations
 auto Activation::requestedActivation(RequestedActivations value)
     -> RequestedActivations
 {
-    if (value == SoftwareActivation::RequestedActivations::Active)
+    if (value == RequestedActivations::Active)
     {
         if (SoftwareActivation::requestedActivation() !=
-            SoftwareActivation::RequestedActivations::Active)
+            RequestedActivations::Active)
         {
             // PSU image could be activated even when it's in active,
             // e.g. in case a PSU is replaced and has a older image, it will be
@@ -62,7 +62,11 @@ auto Activation::requestedActivation(RequestedActivations value)
                 (activation() == Status::Failed) ||
                 (activation() == Status::Active))
             {
-                activation(Status::Activating);
+                if (activation(Status::Activating) != Status::Activating)
+                {
+                    // Activation attempt failed
+                    value = RequestedActivations::None;
+                }
             }
         }
         else if (activation() == Status::Activating)
@@ -176,6 +180,7 @@ void Activation::onUpdateFailed()
     lg2::error("Failed to update PSU {PSU}", "PSU", psuQueue.front());
     std::queue<std::string>().swap(psuQueue); // Clear the queue
     activation(Status::Failed);
+    requestedActivation(RequestedActivations::None);
     shouldActivateAgain = false;
 }
 
@@ -267,7 +272,7 @@ void Activation::finishActivation()
 
     // Reset RequestedActivations to none so that it could be activated in
     // future
-    requestedActivation(SoftwareActivation::RequestedActivations::None);
+    requestedActivation(RequestedActivations::None);
     activation(Status::Active);
 
     // Automatically restart activation if a request occurred while code update
@@ -276,7 +281,7 @@ void Activation::finishActivation()
     if (shouldActivateAgain)
     {
         shouldActivateAgain = false;
-        requestedActivation(SoftwareActivation::RequestedActivations::Active);
+        requestedActivation(RequestedActivations::Active);
     }
 }
 
