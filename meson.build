@@ -75,6 +75,6 @@ if build_examples
     subdir('vendor-example')
 endif
 
-if not build_tests.disabled()
+if build_tests.allowed()
     subdir('test')
 endif
