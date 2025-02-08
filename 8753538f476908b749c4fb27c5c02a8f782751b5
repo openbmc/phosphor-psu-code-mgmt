@@ -1,0 +1,8 @@
+Code-Review+2: George Liu <liuxiwei@ieisystem.com>
+Verified+1: OpenBMC CI <openbmcbump-ci@yahoo.com>
+Submitted-by: Patrick Williams <patrick@stwcx.xyz>
+Submitted-at: Sat, 08 Feb 2025 04:12:34 +0000
+Reviewed-on: https://gerrit.openbmc.org/c/openbmc/phosphor-psu-code-mgmt/+/77596
+Comments-Total: 2
+Project: openbmc/phosphor-psu-code-mgmt
+Branch: refs/heads/master
