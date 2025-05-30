@@ -77,7 +77,7 @@ class Version : public VersionInherit
             VersionPurpose versionPurpose, eraseFunc callback) :
         VersionInherit(bus, (objPath).c_str(),
                        VersionInherit::action::defer_emit),
-        eraseCallback(std::move(callback)), bus(bus), objPath(objPath),
+        eraseCallback(std::move(callback)), objPath(objPath),
         versionId(versionId), versionStr(versionString)
     {
         // Set properties.
@@ -142,9 +142,6 @@ class Version : public VersionInherit
     }
 
   private:
-    /** @brief Persistent sdbusplus DBus bus connection */
-    sdbusplus::bus_t& bus;
-
     /** @brief Persistent DBus object path */
     std::string objPath;
 
