@@ -12,7 +12,7 @@ project(
 )
 
 systemd = dependency('systemd')
-servicedir = systemd.get_variable('systemdsystemunitdir')
+servicedir = systemd.get_variable('systemd_system_unit_dir')
 subdir('services')
 
 # Common configurations for src and test
