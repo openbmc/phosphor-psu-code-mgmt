@@ -132,9 +132,8 @@ std::vector<std::string> Utils::getServices(
 
         auto mapperResponseMsg = bus.call(mapper);
 
-        std::vector<std::pair<std::string, std::vector<std::string>>>
-            mapperResponse;
-        mapperResponseMsg.read(mapperResponse);
+        auto mapperResponse = mapperResponseMsg.unpack<
+            std::vector<std::pair<std::string, std::vector<std::string>>>>();
         services.reserve(mapperResponse.size());
         for (const auto& i : mapperResponse)
         {
