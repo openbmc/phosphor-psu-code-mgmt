@@ -88,76 +88,76 @@ machineName=""
 
 
 while [[ $# -gt 0 ]]; do
-  key="$1"
-  case $key in
-    --image)
-      image="$2"
-      shift 2
-      ;;
-    --version)
-      version="$2"
-      shift 2
-      ;;
-    --model)
-      model="$2"
-      shift 2
-      ;;
-    --manufacturer)
-      manufacturer="$2"
-      shift 2
-      ;;
-    --machineName)
-      machineName="$2"
-      shift 2
-      ;;
-    --outfile)
-      outfile="$2"
-      shift 2
-      ;;
-    --sign)
-      do_sign=true
-      if [[ -n "${2}"  && "${2}" != -* ]]; then
-        private_key_path="$2"
-        shift 2
-      else
-        shift 1
-      fi
-      ;;
-    --help)
-      echo "$help"
-      exit
-      ;;
-    *)
-      echo "Please enter the correct parameters."
-      echo "$help"
-      exit 1
-      ;;
-  esac
+    key="$1"
+    case $key in
+        --image)
+            image="$2"
+            shift 2
+            ;;
+        --version)
+            version="$2"
+            shift 2
+            ;;
+        --model)
+            model="$2"
+            shift 2
+            ;;
+        --manufacturer)
+            manufacturer="$2"
+            shift 2
+            ;;
+        --machineName)
+            machineName="$2"
+            shift 2
+            ;;
+        --outfile)
+            outfile="$2"
+            shift 2
+            ;;
+        --sign)
+            do_sign=true
+            if [[ -n "${2}"  && "${2}" != -* ]]; then
+                private_key_path="$2"
+                shift 2
+            else
+                shift 1
+            fi
+            ;;
+        --help)
+            echo "$help"
+            exit
+            ;;
+        *)
+            echo "Please enter the correct parameters."
+            echo "$help"
+            exit 1
+            ;;
+    esac
 done
 
 if [ ! -f "${image}" ]; then
-  echo "Please enter a valid PSU FW image file."
-  echo "$help"
-  exit 1
+    echo "Please enter a valid PSU FW image file."
+    echo "$help"
+    exit 1
 fi
 
 if [  -z "${version}" ]; then
-  echo "Please enter a valid PSU FW image version."
-  echo "$help"
-  exit 1
+    echo "Please enter a valid PSU FW image version."
+    echo "$help"
+    exit 1
 fi
 
 
 if [  -z "${model}" ]; then
-  echo "Please enter a valid PSU FW image model."
-  echo "$help"
-  exit 1
+    echo "Please enter a valid PSU FW image model."
+    echo "$help"
+    exit 1
 fi
 
 if [  -z "${manufacturer}" ]; then
-  echo "Please enter a valid PSU FW image manufacturer."
-  echo "$help"
-  exit 1
+    echo "Please enter a valid PSU FW image manufacturer."
+    echo "$help"
+    exit 1
 fi
 
 if [  -z "${outfile}" ]; then
@@ -171,24 +171,24 @@ scratch_dir=$(mktemp -d)
 trap "{ rm -r ${scratch_dir}; }" EXIT
 
 if [[ "${do_sign}" == true ]]; then
-  if [[ -z "${private_key_path}" ]]; then
-    private_key_path=${scratch_dir}/OpenBMC.priv
-    echo "${private_key}" > "${private_key_path}"
-    echo "Image is NOT secure!! Signing with the open private key!"
-  else
-    if [[ ! -f "${private_key_path}" ]]; then
-      echo "Couldn't find private key ${private_key_path}."
-      exit 1
+    if [[ -z "${private_key_path}" ]]; then
+        private_key_path=${scratch_dir}/OpenBMC.priv
+        echo "${private_key}" > "${private_key_path}"
+        echo "Image is NOT secure!! Signing with the open private key!"
+    else
+        if [[ ! -f "${private_key_path}" ]]; then
+            echo "Couldn't find private key ${private_key_path}."
+            exit 1
+        fi
+
+        echo "Signing with ${private_key_path}."
     fi
 
-    echo "Signing with ${private_key_path}."
-  fi
+    public_key_file=publickey
+    public_key_path=${scratch_dir}/$public_key_file
+    openssl pkey -in "${private_key_path}" -pubout -out "${public_key_path}"
 
-  public_key_file=publickey
-  public_key_path=${scratch_dir}/$public_key_file
-  openssl pkey -in "${private_key_path}" -pubout -out "${public_key_path}"
-
-  cp "${private_key_path}" "${scratch_dir}/private_key"
+    cp "${private_key_path}" "${scratch_dir}/private_key"
 
 fi
 
@@ -207,16 +207,16 @@ if [[ -n "${machineName}" ]]; then
 fi
 
 if [[ "${do_sign}" == true ]]; then
-  private_key_name=$(basename "${private_key_path}")
-  key_type="${private_key_name%.*}"
-  echo KeyType="${key_type}" >> $manifest_location
-  echo HashType="RSA-SHA256" >> $manifest_location
+    private_key_name=$(basename "${private_key_path}")
+    key_type="${private_key_name%.*}"
+    echo KeyType="${key_type}" >> $manifest_location
+    echo HashType="RSA-SHA256" >> $manifest_location
 
-  for file in $files_to_sign; do
-    openssl dgst -sha256 -sign private_key -out "${file}.sig" "$file"
-  done
+    for file in $files_to_sign; do
+        openssl dgst -sha256 -sign private_key -out "${file}.sig" "$file"
+    done
 
-  additional_files="*.sig"
+    additional_files="*.sig"
 fi
 
 # shellcheck disable=SC2086
