@@ -38,7 +38,7 @@ void ItemUpdater::onVersionInterfacesAddedMsg(sdbusplus::message_t& msg)
 {
     try
     {
-        sdbusplus::message::object_path objPath;
+        sdbusplus::object_path objPath;
         InterfacesAddedMap interfaces;
         msg.read(objPath, interfaces);
 
@@ -680,7 +680,7 @@ void ItemUpdater::onPSUInterfacesAdded(sdbusplus::message_t& msg)
 
     try
     {
-        sdbusplus::message::object_path objPath;
+        sdbusplus::object_path objPath;
         InterfacesAddedMap interfaces;
         msg.read(objPath, interfaces);
         std::string path = objPath.str;
