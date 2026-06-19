@@ -264,7 +264,7 @@ class Activation : public ActivationInherit
     std::string versionId;
 
     /** @brief Used to subscribe to dbus systemd signals */
-    sdbusplus::bus::match_t systemdSignals;
+    sdbusplus::match systemdSignals;
 
     /** @brief The queue of psu objects to be updated */
     std::queue<std::string> psuQueue;
