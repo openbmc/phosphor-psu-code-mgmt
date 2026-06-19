@@ -27,7 +27,7 @@ namespace software
 namespace updater
 {
 
-namespace sdbusRule = sdbusplus::bus::match::rules;
+namespace sdbusRule = sdbusplus::match_rules;
 
 using ActivationBlocksTransitionInherit =
     sdbusplus::server::object_t<sdbusplus::xyz::openbmc_project::Software::
@@ -264,7 +264,7 @@ class Activation : public ActivationInherit
     std::string versionId;
 
     /** @brief Used to subscribe to dbus systemd signals */
-    sdbusplus::bus::match_t systemdSignals;
+    sdbusplus::match systemdSignals;
 
     /** @brief The queue of psu objects to be updated */
     std::queue<std::string> psuQueue;

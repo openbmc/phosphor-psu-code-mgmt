@@ -33,7 +33,7 @@ class Version;
 using ItemUpdaterInherit = sdbusplus::server::object_t<
     sdbusplus::xyz::openbmc_project::Association::server::Definitions>;
 
-namespace MatchRules = sdbusplus::bus::match::rules;
+namespace MatchRules = sdbusplus::match_rules;
 
 namespace fs = std::filesystem;
 
@@ -272,10 +272,10 @@ class ItemUpdater :
         psuPathActivationMap;
 
     /** @brief sdbusplus signal match for PSU Software*/
-    sdbusplus::bus::match_t versionMatch;
+    sdbusplus::match versionMatch;
 
     /** @brief sdbusplus signal matches for PSU Inventory */
-    std::vector<sdbusplus::bus::match_t> psuMatches;
+    std::vector<sdbusplus::match> psuMatches;
 
     /** @brief This entry's associations */
     AssociationList assocs;
@@ -302,7 +302,7 @@ class ItemUpdater :
      * added. When such a signal received, it triggers the
      * `onInterfacesAdded` method to handle the new PSU.
      */
-    sdbusplus::bus::match_t psuInterfaceMatch;
+    sdbusplus::match psuInterfaceMatch;
 };
 
 } // namespace updater
