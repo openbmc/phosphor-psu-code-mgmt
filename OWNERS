@@ -32,7 +32,6 @@
 # data within them will be kept sorted.
 
 owners:
-- duanzhijia01@ieisystem.com
 - liuxiwei@ieisystem.com
 - mine260309@gmail.com
 - spinler@us.ibm.com
@@ -40,9 +39,6 @@ owners:
 matchers:
 
 openbmc:
-- name: Chicago Duan
-  email: duanzhijia01@ieisystem.com
-  discord: Chicago Duan
 - name: George Liu
   email: liuxiwei@ieisystem.com
   discord: George Liu
