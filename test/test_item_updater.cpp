@@ -366,7 +366,7 @@ TEST_F(TestItemUpdater, OnOnePSURemovedAndAddedWithLatestVersion)
 }
 
 TEST_F(TestItemUpdater,
-       TwoPSUsWithSameVersionRemovedAndAddedWithDifferntVersion)
+       TwoPSUsWithSameVersionRemovedAndAddedWithDifferentVersion)
 {
     constexpr auto psu0 = "/com/example/inventory/psu0";
     constexpr auto psu1 = "/com/example/inventory/psu1";
